@@ -15,10 +15,10 @@ import Profile from './pages/Profile'
 import Leaderboard from './pages/Leaderboard'
 import Forum from './pages/Forum'
 import Topic from './pages/Topic'
-import Auth from './pages/Auth'
 import MainPage from './pages/MainPage'
 import NotFound from './pages/NotFound'
 import InternalServerError from './pages/InternalServerError'
+import SignIn from './pages/SignIn'
 
 export const authRoutes = [
   {
@@ -34,11 +34,11 @@ export const authRoutes = [
 export const publicRoutes = [
   {
     path: LOGIN_ROUTE,
-    Component: Auth,
+    Component: SignIn,
   },
   {
     path: REGISTRATION_ROUTE,
-    Component: Auth,
+    Component: SignIn,
   },
   {
     path: MAIN_ROUTE,
