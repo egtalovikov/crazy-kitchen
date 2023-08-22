@@ -53,9 +53,9 @@ const SignUp = () => {
                 <TextField
                   required
                   fullWidth
-                  id="last_name"
+                  id="second_name"
                   label="Фамилия"
-                  name="last_name"
+                  name="second_name"
                 />
               </Grid>
               <Grid item xs={12}>
