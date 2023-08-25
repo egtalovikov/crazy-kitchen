@@ -51,7 +51,10 @@ const ChangeAvatar = ({
             Загрузить файл
             <input
               type="file"
-              onChange={e => setAvatar(e.target.files![0])}
+              onChange={e => {
+                if (!e.target.files) return
+                setAvatar(e.target.files[0])
+              }}
               hidden
             />
           </Button>

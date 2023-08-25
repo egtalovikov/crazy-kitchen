@@ -22,7 +22,7 @@ const ChangePassword = ({ open, handleClose }: ChangePasswordProps) => {
     changePassword({
       oldPassword: oldPasswordValue,
       newPassword: newPasswordValue,
-    }).then(data => {
+    }).then(() => {
       setOldPasswordValue('')
       setNewPasswordValue('')
       handleClose()
