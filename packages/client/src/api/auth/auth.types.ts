@@ -3,11 +3,9 @@ export interface SignInData {
   password: FormDataEntryValue | null
 }
 
-export interface SignUpData {
+export interface SignUpData extends SignInData {
   first_name: FormDataEntryValue | null
   second_name: FormDataEntryValue | null
   phone: FormDataEntryValue | null
-  login: FormDataEntryValue | null
   email: FormDataEntryValue | null
-  password: FormDataEntryValue | null
 }
