@@ -19,6 +19,7 @@ import MainPage from './pages/MainPage'
 import NotFound from './pages/NotFound'
 import InternalServerError from './pages/InternalServerError'
 import SignIn from './pages/SignIn'
+import SignUp from './pages/SignUp'
 
 export const authRoutes = [
   {
@@ -38,7 +39,7 @@ export const publicRoutes = [
   },
   {
     path: REGISTRATION_ROUTE,
-    Component: SignIn,
+    Component: SignUp,
   },
   {
     path: MAIN_ROUTE,
