@@ -6,7 +6,7 @@ import { AUTHORIZATION_STATUS } from './utils/consts'
 
 const appContent = 'Войти'
 
-// @ts-ignore
+//@ts-ignore
 global.fetch = jest.fn(() =>
   Promise.resolve({ json: () => Promise.resolve('hey') })
 )
