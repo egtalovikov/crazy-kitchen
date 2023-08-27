@@ -1,0 +1,12 @@
+@import '../../stylus/style-constants.module';
+
+.background {
+  @include background();
+  background-image: url('../../assets/mainBackground.png');
+}
+
+.container {
+  background: $pure-white;
+  padding: 24px;
+  border-radius: 12px;
+}
