@@ -13,7 +13,7 @@ export const useSignIn = () => {
     navigate(REGISTRATION_ROUTE)
   }
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const data = new FormData(event.currentTarget)
 
@@ -22,14 +22,14 @@ export const useSignIn = () => {
       password: data.get('password'),
     }
 
-    postSignIn(signInData)
-      .then(() => {
-        dispatch(fetchUserData())
-        navigate(MAIN_ROUTE)
-      })
-      .catch(error => {
-        console.error(error)
-      })
+    try {
+      await postSignIn(signInData)
+
+      dispatch(fetchUserData())
+      navigate(MAIN_ROUTE)
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   return {

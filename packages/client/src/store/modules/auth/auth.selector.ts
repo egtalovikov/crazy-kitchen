@@ -1,3 +1,9 @@
-export const authorizedStatusSelector = (state: {
-  authReducer: { authorizedStatus: string }
-}) => state?.authReducer?.authorizedStatus
+import { createSelector } from '@reduxjs/toolkit'
+import { CoreRootState } from '../../types'
+
+const authSelector = (state: CoreRootState) => state?.authReducer
+
+export const authorizedStatusSelector = createSelector(
+  [authSelector],
+  authSelector => authSelector?.authorizedStatus
+)
