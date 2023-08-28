@@ -10,27 +10,46 @@ import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
 import Button from '@mui/material/Button'
 import { getUserInfo } from '../../api/user'
-import { REACT_APP_API_URL } from '../../utils/consts'
 import ChangePassword from '../../components/modals/ChangePassword'
 import ChangeAvatar from '../../components/modals/ChangeAvatar'
+import { User } from '../../types/user'
 
 const Profile = () => {
   const [changePasswordVisible, setChangePasswordVisible] = useState(false)
   const [changeAvatarVisible, setChangeAvatarVisible] = useState(false)
+  const [avatarUrl, setAvatarUrl] = useState('')
 
-  const [user, setUser] = useState({
-    avatar: '',
-    email: '',
-    login: '',
-    first_name: '',
-    second_name: '',
-    display_name: '',
-    phone: '',
-  })
+  const [user, setUser] = useState({} as User)
+  const [userForList, setUserForList] = useState({})
 
   useEffect(() => {
-    getUserInfo().then(data => setUser(data))
+    const fetchUser = async () => {
+      try {
+        const data = await getUserInfo()
+        setUser(data)
+      } catch (e) {
+        console.log(e)
+      }
+    }
+    void fetchUser()
   }, [])
+
+  useEffect(() => {
+    if (user.avatar) {
+      setAvatarUrl(import.meta.env.VITE_API_URL + 'resources' + user.avatar)
+    }
+  }, [user.avatar])
+
+  useEffect(() => {
+    setUserForList({
+      Почта: user.email,
+      Логин: user.login,
+      Имя: user.first_name,
+      Фамилия: user.second_name,
+      'Имя в игре': user.display_name,
+      Телефон: user.phone,
+    })
+  }, [user])
 
   return (
     <div className={styles.background}>
@@ -51,74 +70,26 @@ const Profile = () => {
           p={5}>
           <Avatar
             alt={`${user.first_name} ${user.second_name}`}
-            src={
-              user.avatar ? REACT_APP_API_URL + 'resources' + user.avatar : ''
-            }
+            src={avatarUrl}
             sx={{
               height: 150,
               width: 150,
             }}
           />
           <List className={styles.list}>
-            <ListItem
-              divider
-              disableGutters
-              secondaryAction={
-                <Typography className={styles.valueText}>
-                  {user.email}
-                </Typography>
-              }>
-              <ListItemText primary="Почта" />
-            </ListItem>
-            <ListItem
-              divider
-              disableGutters
-              secondaryAction={
-                <Typography className={styles.valueText}>
-                  {user.login}
-                </Typography>
-              }>
-              <ListItemText primary="Логин" />
-            </ListItem>
-            <ListItem
-              divider
-              disableGutters
-              secondaryAction={
-                <Typography className={styles.valueText}>
-                  {user.first_name}
-                </Typography>
-              }>
-              <ListItemText primary="Имя" />
-            </ListItem>
-            <ListItem
-              divider
-              disableGutters
-              secondaryAction={
-                <Typography className={styles.valueText}>
-                  {user.second_name}
-                </Typography>
-              }>
-              <ListItemText primary="Фамилия" />
-            </ListItem>
-            <ListItem
-              divider
-              disableGutters
-              secondaryAction={
-                <Typography className={styles.valueText}>
-                  {user.display_name}
-                </Typography>
-              }>
-              <ListItemText primary="Имя в игре" />
-            </ListItem>
-            <ListItem
-              disableGutters
-              secondaryAction={
-                <Typography className={styles.valueText}>
-                  {user.phone}
-                </Typography>
-              }>
-              <ListItemText primary="Телефон" />
-            </ListItem>
+            {Object.entries(userForList).map(([key, value]) => (
+              <ListItem
+                key={key}
+                divider={Object.keys(userForList).pop() !== key ? true : false}
+                disableGutters
+                secondaryAction={
+                  <Typography className={styles.valueText}>
+                    {`${value}`}
+                  </Typography>
+                }>
+                <ListItemText primary={key} />
+              </ListItem>
+            ))}
           </List>
           <Box
             p={5}

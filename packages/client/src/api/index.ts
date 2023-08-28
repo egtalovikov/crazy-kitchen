@@ -1,12 +1,11 @@
 import axios, { InternalAxiosRequestConfig } from 'axios'
-import { REACT_APP_API_URL } from '../utils/consts'
 
 const $host = axios.create({
-  baseURL: REACT_APP_API_URL,
+  baseURL: import.meta.env.VITE_API_URL,
 })
 
 const $authHost = axios.create({
-  baseURL: REACT_APP_API_URL,
+  baseURL: import.meta.env.VITE_API_URL,
 })
 
 const authInterceptor = (config: InternalAxiosRequestConfig) => {

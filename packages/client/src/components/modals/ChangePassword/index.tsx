@@ -7,7 +7,7 @@ import {
   DialogTitle,
 } from '@mui/material'
 import TextField from '@mui/material/TextField'
-import { changePassword } from '../../../api/user'
+import { changeAvatar, changePassword } from '../../../api/user'
 
 type ChangePasswordProps = {
   open: boolean
@@ -18,15 +18,18 @@ const ChangePassword = ({ open, handleClose }: ChangePasswordProps) => {
   const [oldPasswordValue, setOldPasswordValue] = useState('')
   const [newPasswordValue, setNewPasswordValue] = useState('')
 
-  const updatePassword = () => {
-    changePassword({
-      oldPassword: oldPasswordValue,
-      newPassword: newPasswordValue,
-    }).then(() => {
+  const updatePassword = async () => {
+    try {
+      await changePassword({
+        oldPassword: oldPasswordValue,
+        newPassword: newPasswordValue,
+      })
       setOldPasswordValue('')
       setNewPasswordValue('')
       handleClose()
-    })
+    } catch (e) {
+      console.log(e)
+    }
   }
 
   return (

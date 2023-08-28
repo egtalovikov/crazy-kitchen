@@ -7,16 +7,8 @@ import {
   DialogTitle,
 } from '@mui/material'
 import { changeAvatar } from '../../../api/user'
+import { User } from '../../../types/user'
 
-type User = {
-  avatar: string
-  email: string
-  login: string
-  first_name: string
-  second_name: string
-  display_name: string
-  phone: string
-}
 type ChangeAvatarProps = {
   open: boolean
   handleClose: () => void
@@ -32,14 +24,22 @@ const ChangeAvatar = ({
 }: ChangeAvatarProps) => {
   const [avatar, setAvatar] = useState<File | undefined>(undefined)
 
-  const updateAvatar = () => {
+  const updateAvatar = async () => {
     if (avatar && avatar.type?.split('/')[0] === 'image') {
-      changeAvatar(avatar).then(data => {
+      try {
+        const { data } = await changeAvatar(avatar)
         setAvatar(undefined)
-        setUser({ ...user, avatar: data.data.avatar })
+        setUser({ ...user, avatar: data.avatar })
         handleClose()
-      })
+      } catch (e) {
+        console.log(e)
+      }
     }
+  }
+
+  const onChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
+    if (!ev.target.files) return
+    setAvatar(ev.target.files[0])
   }
 
   return (
@@ -49,14 +49,7 @@ const ChangeAvatar = ({
         <DialogContent>
           <Button variant="contained" component="label">
             Загрузить файл
-            <input
-              type="file"
-              onChange={e => {
-                if (!e.target.files) return
-                setAvatar(e.target.files[0])
-              }}
-              hidden
-            />
+            <input type="file" onChange={onChange} hidden />
           </Button>
         </DialogContent>
         <DialogActions>
