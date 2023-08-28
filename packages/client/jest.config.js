@@ -7,6 +7,7 @@ export default {
   testMatch: ['<rootDir>/src/**/*.test.{ts,tsx}'],
   globals: {
     __SERVER_PORT__: process.env.SERVER_PORT,
+    __BASE_URL__: process.env.BASE_URL,
   },
   moduleNameMapper: {
     '\\-icon.(svg)$': '<rootDir>/src/__mocks__/svg.js',

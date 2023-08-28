@@ -47,7 +47,7 @@ const SignIn = () => {
               fullWidth
               id="login"
               label="Логин"
-              name="Login"
+              name="login"
               autoFocus
             />
             <TextField

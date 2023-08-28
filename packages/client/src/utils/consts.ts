@@ -8,3 +8,9 @@ export const TOPIC_ROUTE = '/topic'
 export const MAIN_ROUTE = '/'
 export const NOT_FOUND_ROUTE = '/not-found'
 export const INTERNAL_SERVER_ERROR_ROUTE = '/internal-server-error'
+
+export const AUTHORIZATION_STATUS = {
+  AUTH: 'AUTH',
+  NO_AUTH: 'NO_AUTH',
+  UNKNOWN: 'UNKNOWN',
+}

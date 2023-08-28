@@ -2,6 +2,8 @@ import { useEffect } from 'react'
 import './App.css'
 import { BrowserRouter } from 'react-router-dom'
 import AppRouter from './components/AppRouter'
+import { store } from './store'
+import { fetchUserData } from './store/modules/auth/auth.reducer'
 
 function App() {
   useEffect(() => {
@@ -14,6 +16,11 @@ function App() {
 
     fetchServerData()
   }, [])
+
+  useEffect(() => {
+    store.dispatch(fetchUserData())
+  }, [])
+
   return (
     <BrowserRouter>
       <AppRouter />

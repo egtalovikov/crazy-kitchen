@@ -21,17 +21,6 @@ import InternalServerError from './pages/InternalServerError'
 import SignIn from './pages/SignIn'
 import SignUp from './pages/SignUp'
 
-export const authRoutes = [
-  {
-    path: PROFILE_ROUTE,
-    Component: Profile,
-  },
-  {
-    path: GAME_ROUTE,
-    Component: Game,
-  },
-]
-
 export const publicRoutes = [
   {
     path: LOGIN_ROUTE,
@@ -40,6 +29,17 @@ export const publicRoutes = [
   {
     path: REGISTRATION_ROUTE,
     Component: SignUp,
+  },
+]
+
+export const privateRoutes = [
+  {
+    path: PROFILE_ROUTE,
+    Component: Profile,
+  },
+  {
+    path: GAME_ROUTE,
+    Component: Game,
   },
   {
     path: MAIN_ROUTE,
