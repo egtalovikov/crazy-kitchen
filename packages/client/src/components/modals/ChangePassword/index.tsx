@@ -7,7 +7,7 @@ import {
   DialogTitle,
 } from '@mui/material'
 import TextField from '@mui/material/TextField'
-import { changeAvatar, changePassword } from '../../../api/user'
+import { changePassword } from '../../../api/user'
 
 type ChangePasswordProps = {
   open: boolean
