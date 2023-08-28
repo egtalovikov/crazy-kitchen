@@ -1,0 +1,27 @@
+@import '../../stylus/style-constants.module';
+
+.background {
+  @include background();
+  background-image: url('../../assets/mainBackground.png');
+}
+
+.wrapper {
+  height: calc(100vh - 50px);
+}
+
+.profileContainer {
+  background: $pure-white;
+  border-radius: 12px;
+}
+
+.list {
+  width: 100%;
+}
+
+.valueText {
+  color: grey;
+}
+
+.buttonsContainer {
+  display: flex;
+}
