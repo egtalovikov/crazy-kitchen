@@ -5,8 +5,7 @@ import CardActions from '@mui/material/CardActions'
 import CardContent from '@mui/material/CardContent'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
-
-export const TopicCard: FC<CardProps> = ({ mainText, title }) => (
+export const TopicCardPreview: FC<CardProps> = ({ mainText, title }) => (
   <React.Fragment>
     <Card sx={{ minWidth: 275, marginBottom: 3 }}>
       <CardContent>
