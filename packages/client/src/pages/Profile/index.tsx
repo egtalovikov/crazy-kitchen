@@ -36,7 +36,7 @@ const Profile = () => {
 
   useEffect(() => {
     if (user.avatar) {
-      setAvatarUrl(import.meta.env.VITE_API_URL + 'resources' + user.avatar)
+      setAvatarUrl(__BASE_URL__ + 'resources' + user.avatar)
     }
   }, [user.avatar])
 

@@ -1,11 +1,7 @@
 import axios, { InternalAxiosRequestConfig } from 'axios'
 
 const $host = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-})
-
-const $authHost = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: __BASE_URL__,
 })
 
 const authInterceptor = (config: InternalAxiosRequestConfig) => {
@@ -13,6 +9,6 @@ const authInterceptor = (config: InternalAxiosRequestConfig) => {
   return config
 }
 
-$authHost.interceptors.request.use(authInterceptor)
+$host.interceptors.request.use(authInterceptor)
 
-export { $host, $authHost }
+export { $host }
