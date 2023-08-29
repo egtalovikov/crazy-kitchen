@@ -4,16 +4,17 @@ import CssBaseline from '@mui/material/CssBaseline'
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import { useNavigate } from 'react-router-dom'
 import { MAIN_ROUTE, NOT_FOUND_ROUTE } from '../../utils/consts'
 import Typography from '@mui/material/Typography'
+import { useGoToRoute } from '../../utils/useGoToRoute'
 
 const ErrorPage = () => {
-  const navigate = useNavigate()
   const isNotFound = location.pathname === NOT_FOUND_ROUTE
 
+  const { goRoute } = useGoToRoute()
+
   const goToGame = () => {
-    navigate(MAIN_ROUTE)
+    goRoute(MAIN_ROUTE)
   }
 
   return (
