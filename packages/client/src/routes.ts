@@ -16,12 +16,11 @@ import Profile from './pages/Profile'
 import Leaderboard from './pages/Leaderboard'
 import Forum from './pages/Forum'
 import Topic from './pages/Topic'
-import NotFound from './pages/NotFound'
-import InternalServerError from './pages/InternalServerError'
 import SignIn from './pages/SignIn'
 import SignUp from './pages/SignUp'
 import MainPage from './pages/MainPage'
 import StartPage from './pages/StartPage'
+import ErrorPage from './pages/ErrorPage/ErrorPage'
 
 export const publicRoutes = [
   {
@@ -65,10 +64,10 @@ export const privateRoutes = [
   },
   {
     path: NOT_FOUND_ROUTE,
-    Component: NotFound,
+    Component: ErrorPage,
   },
   {
     path: INTERNAL_SERVER_ERROR_ROUTE,
-    Component: InternalServerError,
+    Component: ErrorPage,
   },
 ]
