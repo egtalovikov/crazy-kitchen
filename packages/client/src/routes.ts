@@ -13,7 +13,7 @@ import {
   TOPIC_ROUTE,
 } from './utils/consts'
 import Profile from './pages/Profile'
-import Leaderboard from './pages/Leaderboard'
+import Leaderboard from './pages/LeaderBoard'
 import Forum from './pages/Forum'
 import Topic from './pages/Topic'
 import SignIn from './pages/SignIn'
