@@ -6,7 +6,7 @@ import CardContent from '@mui/material/CardContent'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 export const TopicCardPreview: FC<CardProps> = ({ mainText, title }) => (
-  <React.Fragment>
+  <>
     <Card sx={{ minWidth: 275, marginBottom: 3 }}>
       <CardContent>
         <Typography
@@ -21,7 +21,7 @@ export const TopicCardPreview: FC<CardProps> = ({ mainText, title }) => (
         <Button size="small">Learn More</Button>
       </CardActions>
     </Card>
-  </React.Fragment>
+  </>
 )
 
 export interface CardProps {
