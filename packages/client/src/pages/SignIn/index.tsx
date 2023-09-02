@@ -1,4 +1,5 @@
 import React from 'react'
+import { useEffect } from 'react'
 import styles from './SignIn.module.scss'
 import Button from '@mui/material/Button'
 import CssBaseline from '@mui/material/CssBaseline'
@@ -10,7 +11,21 @@ import Container from '@mui/material/Container'
 import { useSignIn } from './useSignIn'
 
 const SignIn = () => {
-  const { goToSignIn, handleSubmit } = useSignIn()
+  const {
+    goToSignIn,
+    handleSubmit,
+    isSubmitSuccessful,
+    errors,
+    reset,
+    register,
+    onSubmitHandler,
+  } = useSignIn()
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset()
+    }
+  }, [isSubmitSuccessful])
 
   return (
     <div className={styles.background}>
@@ -40,25 +55,29 @@ const SignIn = () => {
             component="form"
             noValidate
             sx={{ mt: 1 }}
-            onSubmit={handleSubmit}>
+            onSubmit={handleSubmit(onSubmitHandler)}>
             <TextField
               margin="normal"
               required
               fullWidth
               id="login"
               label="Логин"
-              name="login"
+              error={!!errors['login']}
+              helperText={errors['login'] ? errors['login'].message : ''}
+              {...register('login')}
               autoFocus
             />
             <TextField
               margin="normal"
               required
               fullWidth
-              name="password"
               label="Пароль"
               type="password"
               id="password"
               autoComplete="current-password"
+              error={!!errors['password']}
+              helperText={errors['password'] ? errors['password'].message : ''}
+              {...register('password')}
             />
             <Button
               type="submit"

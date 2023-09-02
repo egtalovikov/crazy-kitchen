@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styles from './SignUp.module.scss'
 import CssBaseline from '@mui/material/CssBaseline'
 import TextField from '@mui/material/TextField'
@@ -12,7 +12,21 @@ import Container from '@mui/material/Container'
 import { useSignUp } from './useSignUp'
 
 const SignUp = () => {
-  const { goToSignUp, handleSubmit } = useSignUp()
+  const {
+    goToSignUp,
+    handleSubmit,
+    isSubmitSuccessful,
+    errors,
+    reset,
+    register,
+    onSubmitHandler,
+  } = useSignUp()
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset()
+    }
+  }, [isSubmitSuccessful])
 
   return (
     <div className={styles.background}>
@@ -36,16 +50,20 @@ const SignUp = () => {
           <Box
             component="form"
             noValidate
-            onSubmit={handleSubmit}
+            onSubmit={handleSubmit(onSubmitHandler)}
             sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  name="first_name"
                   required
                   fullWidth
                   id="first_name"
                   label="Имя"
+                  error={!!errors['first_name']}
+                  helperText={
+                    errors['first_name'] ? errors['first_name'].message : ''
+                  }
+                  {...register('first_name')}
                   autoFocus
                 />
               </Grid>
@@ -55,7 +73,11 @@ const SignUp = () => {
                   fullWidth
                   id="second_name"
                   label="Фамилия"
-                  name="second_name"
+                  error={!!errors['second_name']}
+                  helperText={
+                    errors['second_name'] ? errors['second_name'].message : ''
+                  }
+                  {...register('second_name')}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -64,7 +86,9 @@ const SignUp = () => {
                   fullWidth
                   id="login"
                   label="Логин"
-                  name="login"
+                  error={!!errors['login']}
+                  helperText={errors['login'] ? errors['login'].message : ''}
+                  {...register('login')}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -73,27 +97,35 @@ const SignUp = () => {
                   fullWidth
                   id="email"
                   label="Email"
-                  name="email"
+                  error={!!errors['email']}
+                  helperText={errors['email'] ? errors['email'].message : ''}
+                  {...register('email')}
                 />
               </Grid>
               <Grid item xs={12}>
                 <TextField
                   required
                   fullWidth
-                  name="password"
                   label="Пароль"
                   type="password"
                   id="password"
+                  error={!!errors['password']}
+                  helperText={
+                    errors['password'] ? errors['password'].message : ''
+                  }
+                  {...register('password')}
                 />
               </Grid>
               <Grid item xs={12}>
                 <TextField
                   required
                   fullWidth
-                  name="phone"
                   label="Телефон"
                   type="tel"
                   id="phone"
+                  error={!!errors['phone']}
+                  helperText={errors['phone'] ? errors['phone'].message : ''}
+                  {...register('phone')}
                 />
               </Grid>
             </Grid>
