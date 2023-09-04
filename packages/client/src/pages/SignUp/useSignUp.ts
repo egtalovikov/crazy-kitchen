@@ -5,7 +5,7 @@ import { postSignUp } from '../../api/auth'
 import { fetchUserData } from '../../store/modules/auth/auth.reducer'
 import { useAppDispatch } from '../../hooks/useAppDispatch'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { RegisterInput, registerSchema } from '../../utils/validationsSchema'
+import { loginSchema, LoginInputs } from '../../utils/validationsSchema'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 export const useSignUp = () => {
@@ -14,8 +14,9 @@ export const useSignUp = () => {
     formState: { errors, isSubmitSuccessful },
     reset,
     handleSubmit,
-  } = useForm<RegisterInput>({
-    resolver: zodResolver(registerSchema),
+  } = useForm<LoginInputs>({
+    mode: 'all',
+    resolver: zodResolver(loginSchema),
   })
 
   const navigate = useNavigate()
@@ -25,7 +26,7 @@ export const useSignUp = () => {
     navigate(LOGIN_ROUTE)
   }
 
-  const onSubmitHandler: SubmitHandler<RegisterInput> = async values => {
+  const onSubmitHandler: SubmitHandler<LoginInputs> = async values => {
     console.log(values)
 
     try {

@@ -1,8 +1,9 @@
 import { object, string, TypeOf } from 'zod'
 
-export type RegisterInput = TypeOf<typeof registerSchema>
+export type LoginInputs = TypeOf<typeof loginSchema>
+export type RegisterInputs = TypeOf<typeof registerSchema>
 
-export const registerSchema = object({
+export const loginSchema = object({
   login: string()
     .min(3, 'Имя пользователя должно содержать не менее 3 символов')
     .max(20, 'Имя пользователя не может содержать более 20 символов')
@@ -49,5 +50,28 @@ export const registerSchema = object({
     .regex(/^\+?\d+$/, {
       message:
         'Номер телефона должен состоять из цифр и может начинаться с плюса',
+    }),
+})
+
+export const registerSchema = object({
+  login: string()
+    .min(3, 'Имя пользователя должно содержать не менее 3 символов')
+    .max(20, 'Имя пользователя не может содержать более 20 символов')
+    .regex(/^[a-zA-Z0-9_-]+$/, {
+      message:
+        'Имя пользователя должно содержать только латинские буквы, цифры, дефисы и нижние подчеркивания',
+    })
+    .refine(value => !/^\d+$/.test(value), {
+      message: 'Имя пользователя не может состоять только из цифр',
+    })
+    .refine(value => !/\s/.test(value), {
+      message: 'Имя пользователя не может содержать пробелы',
+    }),
+  password: string()
+    .min(8, 'Пароль должен содержать не менее 8 символов')
+    .max(40, 'Пароль не может содержать более 40 символов')
+    .regex(/^(?=.*[A-Z])(?=.*\d).+$/, {
+      message:
+        'Пароль должен содержать хотя бы одну заглавную букву и одну цифру',
     }),
 })
