@@ -2,11 +2,23 @@ import { useNavigate } from 'react-router-dom'
 
 import { MAIN_ROUTE, LOGIN_ROUTE } from '../../utils/consts'
 import { postSignUp } from '../../api/auth'
-import { FormEvent } from 'react'
 import { fetchUserData } from '../../store/modules/auth/auth.reducer'
 import { useAppDispatch } from '../../hooks/useAppDispatch'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { loginSchema, LoginInputs } from '../../utils/validationsSchema'
+import { zodResolver } from '@hookform/resolvers/zod'
 
 export const useSignUp = () => {
+  const {
+    register,
+    formState: { errors, isSubmitSuccessful },
+    reset,
+    handleSubmit,
+  } = useForm<LoginInputs>({
+    mode: 'all',
+    resolver: zodResolver(loginSchema),
+  })
+
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
 
@@ -14,21 +26,11 @@ export const useSignUp = () => {
     navigate(LOGIN_ROUTE)
   }
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    const data = new FormData(event.currentTarget)
-
-    const signUpData = {
-      first_name: data.get('first_name'),
-      second_name: data.get('second_name'),
-      phone: data.get('phone'),
-      login: data.get('login'),
-      email: data.get('email'),
-      password: data.get('password'),
-    }
+  const onSubmitHandler: SubmitHandler<LoginInputs> = async values => {
+    console.log(values)
 
     try {
-      await postSignUp(signUpData)
+      await postSignUp(values)
 
       dispatch(fetchUserData())
       navigate(MAIN_ROUTE)
@@ -39,6 +41,11 @@ export const useSignUp = () => {
 
   return {
     goToSignUp,
+    register,
+    errors,
+    isSubmitSuccessful,
+    reset,
+    onSubmitHandler,
     handleSubmit,
   }
 }

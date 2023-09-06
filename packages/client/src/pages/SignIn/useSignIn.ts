@@ -1,11 +1,23 @@
 import { useNavigate } from 'react-router-dom'
 import { useAppDispatch } from '../../hooks/useAppDispatch'
-import { FormEvent } from 'react'
 import { MAIN_ROUTE, REGISTRATION_ROUTE } from '../../utils/consts'
 import { postSignIn } from '../../api/auth'
 import { fetchUserData } from '../../store/modules/auth/auth.reducer'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { registerSchema, RegisterInputs } from '../../utils/validationsSchema'
 
 export const useSignIn = () => {
+  const {
+    register,
+    formState: { errors, isSubmitSuccessful },
+    reset,
+    handleSubmit,
+  } = useForm<RegisterInputs>({
+    mode: 'all',
+    resolver: zodResolver(registerSchema),
+  })
+
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
 
@@ -13,17 +25,10 @@ export const useSignIn = () => {
     navigate(REGISTRATION_ROUTE)
   }
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    const data = new FormData(event.currentTarget)
-
-    const signInData = {
-      login: data.get('login'),
-      password: data.get('password'),
-    }
-
+  const onSubmitHandler: SubmitHandler<RegisterInputs> = async values => {
+    console.log(values)
     try {
-      await postSignIn(signInData)
+      await postSignIn(values)
 
       dispatch(fetchUserData())
       navigate(MAIN_ROUTE)
@@ -34,6 +39,11 @@ export const useSignIn = () => {
 
   return {
     goToSignIn,
+    register,
+    errors,
+    isSubmitSuccessful,
+    reset,
+    onSubmitHandler,
     handleSubmit,
   }
 }
