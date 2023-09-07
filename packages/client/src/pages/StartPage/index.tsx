@@ -1,7 +1,7 @@
 import React from 'react'
 import styles from './StartPage.module.scss'
 import { MAIN_ROUTE } from '../../utils/consts'
-import { useGoToRoute } from '../../utils/useGoToRoute'
+import { useGoToRoute } from '../../hooks/useGoToRoute'
 import { ButtonBlue } from '../../components/Button'
 
 const StartPage = () => {

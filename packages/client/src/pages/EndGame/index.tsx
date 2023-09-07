@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './EndGame.module.scss'
-import { useGoToRoute } from '../../utils/useGoToRoute'
+import { useGoToRoute } from '../../hooks/useGoToRoute'
 import { MAIN_ROUTE } from '../../utils/consts'
 import { ButtonBlue } from '../../components/Button'
 

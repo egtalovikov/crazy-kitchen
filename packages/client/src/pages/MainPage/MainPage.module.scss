@@ -23,10 +23,20 @@
 .wrapperTopButtons {
   display: flex;
   flex-direction: row;
+  padding-left: 24px;
+  padding-right: 24px;
+  top: 12px;
+  justify-content: space-between;
+  position: absolute;
+  width: 100%;
+}
+
+.wrapperRightButtons {
+  display: flex;
+  flex-direction: row;
   gap: 20px;
   align-self: end;
   margin-right: 24px;
-  position: absolute;
   top: 12px;
 }
 

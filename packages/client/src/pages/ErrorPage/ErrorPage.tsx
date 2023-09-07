@@ -6,7 +6,7 @@ import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import { MAIN_ROUTE, NOT_FOUND_ROUTE } from '../../utils/consts'
 import Typography from '@mui/material/Typography'
-import { useGoToRoute } from '../../utils/useGoToRoute'
+import { useGoToRoute } from '../../hooks/useGoToRoute'
 
 const ErrorPage = () => {
   const isNotFound = location.pathname === NOT_FOUND_ROUTE
