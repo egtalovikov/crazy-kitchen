@@ -5,7 +5,11 @@ import { postSignIn } from '../../api/auth'
 import { fetchUserData } from '../../store/modules/auth/auth.reducer'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { registerSchema, RegisterInputs } from '../../utils/validationsSchema'
+import {
+  registerSchema,
+  RegisterInputs,
+  LoginInputs,
+} from '../../utils/validationsSchema'
 
 export const useSignIn = () => {
   const {
@@ -25,7 +29,11 @@ export const useSignIn = () => {
     navigate(REGISTRATION_ROUTE)
   }
 
-  const onSubmitHandler: SubmitHandler<RegisterInputs> = async values => {
+  const onSubmitHandler: SubmitHandler<RegisterInputs> = async (
+    values,
+    event
+  ) => {
+    event?.preventDefault()
     console.log(values)
     try {
       await postSignIn(values)
