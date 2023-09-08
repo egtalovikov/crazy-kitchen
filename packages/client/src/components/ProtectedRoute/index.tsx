@@ -4,7 +4,9 @@ import { Navigate, Outlet } from 'react-router-dom'
 const ProtectedRoute = () => {
   const { isAuthorized } = useAuthorizationStatus()
 
-  if (!isAuthorized) {
+  console.log('isAuthorized-pro', isAuthorized)
+
+  if (isAuthorized !== true) {
     return <Navigate to="/login" replace />
   }
 

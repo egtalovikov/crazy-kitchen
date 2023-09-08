@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux'
-import { AuthState } from '../../store/types'
+// import { AuthState } from '../../store/types'
+import { authorizedStatusSelector } from '../../store/modules/auth/auth.selector'
 
 interface AuthorizationStatusProps {
   authorizationStatus: string
@@ -9,11 +10,10 @@ interface AuthorizationStatusProps {
 }
 
 const useAuthorizationStatus = (): AuthorizationStatusProps => {
-  const authorizationStatus = useSelector(
-    (state: AuthState) => state.authorizedStatus
-  )
+  const authorizationStatus = useSelector(authorizedStatusSelector)
 
   const isAuthorized = authorizationStatus === 'AUTH'
+  console.log('isAuthorized', isAuthorized)
   const isNotAuthorized = authorizationStatus === 'NO_AUTH'
   const isUnknown = authorizationStatus === 'UNKNOWN'
 

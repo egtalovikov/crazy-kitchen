@@ -4,13 +4,12 @@ import ProtectedRoute from '../ProtectedRoute'
 import { privateRoutes, publicRoutes } from '../../routes'
 // import { authorizedStatusSelector } from '../../store/modules/auth/auth.selector'
 import LoadingScreen from '../../pages/LoadingScreen'
-import { AUTHORIZATION_STATUS } from '../../utils/consts'
 import useAuthorizationStatus from '../../hooks/useAuthorizationStatus'
 
 const AppRouter = () => {
-  const { authorizationStatus } = useAuthorizationStatus()
+  const { isUnknown } = useAuthorizationStatus()
 
-  if (authorizationStatus === AUTHORIZATION_STATUS.UNKNOWN) {
+  if (isUnknown) {
     return <LoadingScreen />
   }
 
