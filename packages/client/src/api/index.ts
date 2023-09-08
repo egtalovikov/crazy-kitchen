@@ -1,7 +1,7 @@
 import axios, { InternalAxiosRequestConfig } from 'axios'
 
 const $host = axios.create({
-  baseURL: __BASE_URL__,
+  baseURL: 'https://ya-praktikum.tech/api/v2',
 })
 
 const authInterceptor = (config: InternalAxiosRequestConfig) => {

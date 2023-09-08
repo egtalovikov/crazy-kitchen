@@ -1,15 +1,16 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import ProtectedRoute from '../ProtectedRoute'
-import { useSelector } from 'react-redux'
+// import { useSelector } from 'react-redux'
 import { privateRoutes, publicRoutes } from '../../routes'
-import { authorizedStatusSelector } from '../../store/modules/auth/auth.selector'
+// import { authorizedStatusSelector } from '../../store/modules/auth/auth.selector'
 import LoadingScreen from '../../pages/LoadingScreen'
 import { AUTHORIZATION_STATUS } from '../../utils/consts'
+import useAuthorizationStatus from '../../hooks/useAuthorizationStatus'
 
 const AppRouter = () => {
-  const authorizedStatus = useSelector(authorizedStatusSelector)
+  const { authorizationStatus } = useAuthorizationStatus()
 
-  if (authorizedStatus === AUTHORIZATION_STATUS.UNKNOWN) {
+  if (authorizationStatus === AUTHORIZATION_STATUS.UNKNOWN) {
     return <LoadingScreen />
   }
 
