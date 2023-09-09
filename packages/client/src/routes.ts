@@ -1,4 +1,3 @@
-import Game from './pages/Game'
 import {
   END_GAME_ROUTE,
   FORUM_ROUTE,
@@ -23,6 +22,7 @@ import { EndGame } from './pages/EndGame'
 import MainPage from './pages/MainPage'
 import StartPage from './pages/StartPage'
 import ErrorPage from './pages/ErrorPage/ErrorPage'
+import Game from './pages/Game'
 
 export const publicRoutes = [
   {
