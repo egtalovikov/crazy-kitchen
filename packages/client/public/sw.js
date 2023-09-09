@@ -1,4 +1,3 @@
-// @ts-ignore
 const CACHE_NAME = 'crazy-kitchen-cache-v1'
 
 const URLS = [
@@ -17,7 +16,6 @@ const URLS = [
 ]
 
 this.addEventListener('install', event => {
-  // @ts-ignore
   event.waitUntil(
     caches
       .open(CACHE_NAME)
@@ -33,7 +31,6 @@ this.addEventListener('install', event => {
 })
 
 this.addEventListener('activate', event => {
-  // @ts-ignore
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
@@ -48,15 +45,12 @@ this.addEventListener('activate', event => {
 })
 
 this.addEventListener('fetch', event => {
-  // @ts-ignore
   event.respondWith(
-    // @ts-ignore
     caches.match(event.request).then(response => {
       if (response) {
         return response
       }
 
-      // @ts-ignore
       const fetchRequest = event.request.clone()
       return fetch(fetchRequest).then(response => {
         if (!response || response.status !== 200 || response.type !== 'basic') {
@@ -65,7 +59,6 @@ this.addEventListener('fetch', event => {
 
         const responseToCache = response.clone()
         caches.open(CACHE_NAME).then(cache => {
-          // @ts-ignore
           cache.put(event.request, responseToCache)
         })
         return response
