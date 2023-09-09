@@ -7,24 +7,37 @@ import {
   LEADERBOARD_ROUTE,
   PROFILE_ROUTE,
 } from '../../utils/consts'
-import { useGoToRoute } from '../../utils/useGoToRoute'
 import Box from '@mui/material/Box'
+import { useGoToRoute } from '../../utils/useGoToRoute'
 
 const MainPage = () => {
   const { goRoute } = useGoToRoute()
 
+  function toggleFullScreen() {
+    if (!document.fullscreenElement) {
+      return document.documentElement.requestFullscreen()
+    } else if (document.exitFullscreen) {
+      return document.exitFullscreen()
+    }
+  }
+
   return (
     <div className={styles.background}>
       <div className={styles.wrapperTopButtons}>
-        <ButtonBlue onClickCallback={() => goRoute(FORUM_ROUTE)}>
-          форум
+        <ButtonBlue onClickCallback={toggleFullScreen}>
+          Полноэкранный режим
         </ButtonBlue>
-        <ButtonBlue onClickCallback={() => goRoute(LEADERBOARD_ROUTE)}>
-          лидерборд
-        </ButtonBlue>
-        <ButtonBlue onClickCallback={() => goRoute(PROFILE_ROUTE)}>
-          профиль
-        </ButtonBlue>
+        <div className={styles.wrapperRightButtons}>
+          <ButtonBlue onClickCallback={() => goRoute(FORUM_ROUTE)}>
+            форум
+          </ButtonBlue>
+          <ButtonBlue onClickCallback={() => goRoute(LEADERBOARD_ROUTE)}>
+            лидерборд
+          </ButtonBlue>
+          <ButtonBlue onClickCallback={() => goRoute(PROFILE_ROUTE)}>
+            профиль
+          </ButtonBlue>
+        </div>
       </div>
 
       <Box
