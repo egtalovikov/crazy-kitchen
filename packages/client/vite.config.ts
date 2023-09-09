@@ -18,10 +18,17 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      disable: false,
+      manifest: {
+        name: 'Crazy Kitchen',
+        short_name: 'CK',
+        description: '',
+        theme_color: '#ffffff',
+        background_color: '#ffffff',
+      },
       workbox: {
         // @ts-ignore
         swSrc: 'sw.ts',
+        swDest: 'dist/service-worker.js',
       },
     }),
   ],
