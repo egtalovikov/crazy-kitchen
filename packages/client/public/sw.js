@@ -15,56 +15,59 @@ const URLS = [
   '/internal-server-error',
 ]
 
-this.addEventListener('install', event => {
-  event.waitUntil(
-    caches
-      .open(CACHE_NAME)
-      .then(cache => {
-        console.log('Opened cache')
-        return cache.addAll(URLS)
-      })
-      .catch(err => {
-        console.log(err)
-        throw err
-      })
-  )
+this.addEventListener('install', async (event) => {
+  try {
+    const cache = await caches.open(CACHE_NAME)
+    console.log('Opened cache')
+    await cache.addAll(URLS)
+  } catch (err) {
+    console.log(err)
+    throw err
+  }
 })
 
-this.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheName !== CACHE_NAME) {
-            return caches.delete(cacheName)
-          }
-        })
-      )
-    })
-  )
-})
-
-this.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request).then(response => {
-      if (response) {
-        return response
-      }
-
-      const fetchRequest = event.request.clone()
-      return fetch(fetchRequest).then(response => {
-        if (!response || response.status !== 200 || response.type !== 'basic') {
-          return response
+this.addEventListener('activate', async (event) => {
+  try {
+    const cacheNames = await caches.keys();
+    await Promise.all(
+      cacheNames.map(async (cacheName) => {
+        if (cacheName !== CACHE_NAME) {
+          await caches.delete(cacheName)
         }
-
-        const responseToCache = response.clone()
-        caches.open(CACHE_NAME).then(cache => {
-          cache.put(event.request, responseToCache)
-        })
-        return response
       })
-    })
-  )
+    )
+  } catch (err) {
+    console.log(err)
+    throw err
+  }
+})
+
+this.addEventListener('fetch', async (event) => {
+  try {
+    const response = await caches.match(event.request);
+    if (response) {
+      return response
+    }
+
+    const fetchRequest = event.request.clone()
+    const fetchedResponse = await fetch(fetchRequest)
+
+    if (!fetchedResponse || fetchedResponse.status !== 200 || fetchedResponse.type !== 'basic') {
+      return fetchedResponse
+    }
+
+    const responseToCache = fetchedResponse.clone()
+
+    const cache = await caches.open(CACHE_NAME)
+
+    await cache.put(event.request, responseToCache)
+
+    return fetchedResponse
+
+  } catch (err) {
+    console.log(err)
+    throw err
+  }
 })
 
 this.addEventListener('install', event => {
