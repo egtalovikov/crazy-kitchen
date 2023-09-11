@@ -61,7 +61,8 @@ export const privateRoutes = [
   {
     path: TOPIC_ROUTE,
     Component: Topic,
-
+  },
+  {
     path: START_ROUTE,
     Component: StartPage,
   },

@@ -9,7 +9,6 @@ export const TOPIC_ROUTE = '/topic'
 export const TOPIC_ROUTE_CREATE = '/topic-create'
 export const START_ROUTE = '/'
 export const MAIN_ROUTE = '/main'
-
 export const NOT_FOUND_ROUTE = '/not-found'
 export const INTERNAL_SERVER_ERROR_ROUTE = '/internal-server-error'
 
