@@ -3,17 +3,12 @@ import ProtectedRoute from '../ProtectedRoute'
 import { privateRoutes, publicRoutes } from '../../routes'
 import LoadingScreen from '../../pages/LoadingScreen'
 import useAuthorizationStatus from '../../hooks/useAuthorizationStatus'
-import MainPage from '../../pages/MainPage'
 
 const AppRouter = () => {
-  const { isUnknown, isAuthorized } = useAuthorizationStatus()
+  const { isUnknown } = useAuthorizationStatus()
 
   if (isUnknown) {
     return <LoadingScreen />
-  }
-
-  if (isAuthorized) {
-    return <MainPage />
   }
 
   return (

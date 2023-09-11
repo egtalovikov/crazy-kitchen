@@ -74,7 +74,6 @@ export const privateRoutes = [
     path: FORUM_ROUTE,
     Component: Forum,
   },
-
   {
     path: NOT_FOUND_ROUTE,
     Component: ErrorPage,
