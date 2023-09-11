@@ -1,5 +1,4 @@
 import { useSelector } from 'react-redux'
-// import { AuthState } from '../../store/types'
 import { authorizedStatusSelector } from '../../store/modules/auth/auth.selector'
 
 interface AuthorizationStatusProps {
