@@ -1,5 +1,6 @@
 import Game from './pages/Game'
 import {
+  END_GAME_ROUTE,
   FORUM_ROUTE,
   GAME_ROUTE,
   INTERNAL_SERVER_ERROR_ROUTE,
@@ -9,6 +10,7 @@ import {
   NOT_FOUND_ROUTE,
   PROFILE_ROUTE,
   REGISTRATION_ROUTE,
+  START_ROUTE,
   TOPIC_ROUTE,
   TOPIC_ROUTE_CREATE,
 } from './utils/consts'
@@ -17,22 +19,12 @@ import Leaderboard from './pages/Leaderboard'
 import TopicCreate from './pages/TopicCreate'
 import Topic from './pages/Topic/index'
 import Forum from './pages/Forum/index'
-import MainPage from './pages/MainPage'
-import NotFound from './pages/NotFound'
-import InternalServerError from './pages/InternalServerError'
 import SignIn from './pages/SignIn'
 import SignUp from './pages/SignUp'
-
-export const authRoutes = [
-  {
-    path: PROFILE_ROUTE,
-    Component: Profile,
-  },
-  {
-    path: GAME_ROUTE,
-    Component: Game,
-  },
-]
+import { EndGame } from './pages/EndGame'
+import MainPage from './pages/MainPage'
+import StartPage from './pages/StartPage'
+import ErrorPage from './pages/ErrorPage/ErrorPage'
 
 export const publicRoutes = [
   {
@@ -42,6 +34,21 @@ export const publicRoutes = [
   {
     path: REGISTRATION_ROUTE,
     Component: SignUp,
+  },
+  {
+    path: END_GAME_ROUTE,
+    Component: EndGame,
+  },
+]
+
+export const privateRoutes = [
+  {
+    path: PROFILE_ROUTE,
+    Component: Profile,
+  },
+  {
+    path: GAME_ROUTE,
+    Component: Game,
   },
   {
     path: MAIN_ROUTE,
@@ -54,6 +61,9 @@ export const publicRoutes = [
   {
     path: TOPIC_ROUTE,
     Component: Topic,
+
+    path: START_ROUTE,
+    Component: StartPage,
   },
   {
     path: TOPIC_ROUTE_CREATE,
@@ -66,10 +76,10 @@ export const publicRoutes = [
 
   {
     path: NOT_FOUND_ROUTE,
-    Component: NotFound,
+    Component: ErrorPage,
   },
   {
     path: INTERNAL_SERVER_ERROR_ROUTE,
-    Component: InternalServerError,
+    Component: ErrorPage,
   },
 ]

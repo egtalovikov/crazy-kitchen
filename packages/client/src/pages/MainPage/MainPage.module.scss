@@ -1,0 +1,45 @@
+@import '../../stylus/style-constants.module';
+
+.background {
+  @include background();
+  background-image: url('../../assets/mainBackground.png');
+}
+
+.description {
+  width: 600px;
+  border-radius: 30px;
+  background: #5bc7f2;
+  border: 2px solid white;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+  padding: 40px;
+  &Text {
+    @include whiteFs24()
+  }
+  &_title {
+    @include whiteFs38()
+  }
+}
+
+.wrapperTopButtons {
+  display: flex;
+  flex-direction: row;
+  padding-left: 24px;
+  padding-right: 24px;
+  top: 12px;
+  justify-content: space-between;
+  position: absolute;
+  width: 100%;
+}
+
+.wrapperRightButtons {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-self: end;
+  margin-right: 24px;
+  top: 12px;
+}
+
+.wrapperBottomButton {
+  margin-top: 24px;
+}
