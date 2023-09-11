@@ -12,11 +12,13 @@ import {
   REGISTRATION_ROUTE,
   START_ROUTE,
   TOPIC_ROUTE,
+  TOPIC_ROUTE_CREATE,
 } from './utils/consts'
 import Profile from './pages/Profile'
 import Leaderboard from './pages/Leaderboard'
-import Forum from './pages/Forum'
-import Topic from './pages/Topic'
+import TopicCreate from './pages/TopicCreate'
+import Topic from './pages/Topic/index'
+import Forum from './pages/Forum/index'
 import SignIn from './pages/SignIn'
 import SignUp from './pages/SignUp'
 import { EndGame } from './pages/EndGame'
@@ -57,17 +59,22 @@ export const privateRoutes = [
     Component: Leaderboard,
   },
   {
+    path: TOPIC_ROUTE,
+    Component: Topic,
+  },
+  {
     path: START_ROUTE,
     Component: StartPage,
+  },
+  {
+    path: TOPIC_ROUTE_CREATE,
+    Component: TopicCreate,
   },
   {
     path: FORUM_ROUTE,
     Component: Forum,
   },
-  {
-    path: TOPIC_ROUTE + '/:id',
-    Component: Topic,
-  },
+
   {
     path: NOT_FOUND_ROUTE,
     Component: ErrorPage,

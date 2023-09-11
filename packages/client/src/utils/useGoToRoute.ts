@@ -7,5 +7,6 @@ export const useGoToRoute = () => {
   const goRoute = useCallback((route: string) => {
     navigate(route)
   }, [])
+
   return { goRoute }
 }
