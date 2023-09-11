@@ -25,8 +25,8 @@ export const useSignUp = () => {
   const goToSignUp = () => {
     navigate(LOGIN_ROUTE)
   }
-
-  const onSubmitHandler: SubmitHandler<LoginInputs> = async values => {
+  const onSubmitHandler: SubmitHandler<LoginInputs> = async (values, event) => {
+    event?.preventDefault()
     console.log(values)
 
     try {
