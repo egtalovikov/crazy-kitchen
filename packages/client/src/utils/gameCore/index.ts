@@ -26,3 +26,9 @@ export const compareOrder = (cookedBurger: string[]) => {
     return 'Упс, кажется вы где-то ошиблись'
   }
 }
+
+export const createClient = () => {
+  return {
+    order: setOrder(),
+  }
+}
