@@ -9,7 +9,9 @@ const StartPage = () => {
 
   return (
     <div className={styles.background}>
-      <ButtonBlue onClickCallback={() => goRoute(MAIN_ROUTE)}>start</ButtonBlue>
+      <ButtonBlue onClickCallback={() => goRoute(MAIN_ROUTE)}>
+        Вперед
+      </ButtonBlue>
     </div>
   )
 }
