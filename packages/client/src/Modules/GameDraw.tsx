@@ -15,6 +15,20 @@ class GameCanvas extends Component {
   public context: CanvasRenderingContext2D | null = null
   public orderImage: string
 
+  public componentX = 0
+  public componentY = 0
+  public isDragging = false
+  public draggedElement: any = null
+  //стартовые позиции для определения какой именно ингредиенти тащим, а затем текущие позиции
+  public initialPositions = {
+    personPosition: { coordinateX: 1000, coordinateY: 450, icon: personImage },
+    cheesePosition: { coordinateX: 1225, coordinateY: 500, icon: cheeseImage },
+    tomatoPosition: { coordinateX: 1000, coordinateY: 350, icon: tomato },
+    // Другие компоненты...
+  }
+
+  public canvas: HTMLCanvasElement | null = null
+
   constructor(props: GameCanvasProps) {
     super(props)
     this.canvasRef = React.createRef()
@@ -22,18 +36,25 @@ class GameCanvas extends Component {
   }
 
   componentDidMount() {
-    const canvas = this.canvasRef.current
+    this.canvas = this.canvasRef.current
 
-    if (canvas) {
-      this.context = canvas.getContext('2d') ? canvas.getContext('2d') : null
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
+    if (this.canvas) {
+      this.context = this.canvas.getContext('2d')
+        ? this.canvas.getContext('2d')
+        : null
+      this.canvas.width = window.innerWidth
+      this.canvas.height = window.innerHeight
     } else {
       return
     }
 
     //пока вызываю тут, потом нужно будет сделать из gameLoop вызов
     this.draw(this.context)
+
+    this.canvas.addEventListener('mousedown', this.startDragging.bind(this))
+    this.canvas.addEventListener('mousemove', this.dragComponent.bind(this))
+    this.canvas.addEventListener('mouseup', this.stopDragging.bind(this))
+    this.canvas.addEventListener('mouseleave', this.stopDragging.bind(this))
 
     // Основной игровой цикл
     const gameLoop = () => {
@@ -45,7 +66,69 @@ class GameCanvas extends Component {
     //gameLoop();
   }
 
-  //чтобы определить размер экрана и задать холсту размер
+  componentWillUnmount() {
+    if (this.canvas) {
+      this.canvas.removeEventListener(
+        'mousedown',
+        this.startDragging.bind(this)
+      )
+      this.canvas.removeEventListener(
+        'mousemove',
+        this.dragComponent.bind(this)
+      )
+      this.canvas.removeEventListener('mouseup', this.stopDragging.bind(this))
+      this.canvas.removeEventListener(
+        'mouseleave',
+        this.stopDragging.bind(this)
+      )
+    }
+  }
+
+  public startDragging = (event: MouseEvent) => {
+    const { clientX, clientY } = event
+    if (this.context) {
+      //тут по начальным координатам можно определить что перетаскиваем
+      this.componentX = clientX
+      this.componentY = clientY
+      this.isDragging = true
+    }
+    // Универсальная проверка для всех компонентов
+    for (const componentName in this.initialPositions) {
+      // @ts-ignore
+      const component = this.initialPositions[componentName as string]
+      //не знаю какой точно нужен разбег чтобы учесть габариты фигур
+      if (
+        clientX >= component.coordinateX - 100 &&
+        clientX <= component.coordinateX + 100 &&
+        clientY >= component.coordinateY - 100 &&
+        clientY <= component.coordinateY + 100
+      ) {
+        this.draggedElement = componentName
+      }
+    }
+  }
+
+  public dragComponent = (event: MouseEvent) => {
+    if (this.isDragging && this.context) {
+      const { offsetX, offsetY } = event
+      const dx = offsetX - this.componentX
+      const dy = offsetY - this.componentY
+      this.componentX = offsetX
+      this.componentY = offsetY
+      console.log('dragComponent', this.componentX, this.componentY)
+      // Очищаем холст
+      if (this.context && this.canvas) {
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height)
+      }
+      // Рисуем фон и компонент с новыми координатами
+      this.draw(this.context, this.componentX, this.componentY)
+    }
+  }
+
+  public stopDragging() {
+    console.log('stopDragging')
+    this.isDragging = false
+  }
 
   //- Метод update предназначен для обновления состояния игры, например,
   // обработки пользовательского ввода или вычисления физики игровых объектов.
@@ -53,89 +136,76 @@ class GameCanvas extends Component {
     console.log('Обновление состояния игры')
   }
 
-  draw(context: CanvasRenderingContext2D | null) {
+  //если сюда пришли координаты, то это перерисовка, если не пришли - первый рендер
+  draw(context: CanvasRenderingContext2D | null, X?: number, Y?: number) {
     if (!context) {
       //перебросить на страницу ошибки?
       return
     }
-    // Отрисовка игровых объектов
     context.clearRect(0, 0, context.canvas.width, context.canvas.height)
 
     const Img = new Image()
     Img.src = backgroundImage
     Img.onload = () => {
-      //задавать им координаты, размеры в какой момент?
-      //пока вот так
       context.drawImage(Img, 0, 0, context.canvas.width, context.canvas.height)
-
+      //определяем по иконке, если здесь в функции иконка от draggedElement - ставим ей X и Y переданные,
+      //если нет - ставим координаты из initial
       drawImages({
         ctx: context,
         icon: personImage,
-        size: 200,
-        coordinateX: 700,
-        coordinateY: 250,
-      })
-
-      drawImages({
-        ctx: context,
-        icon: this.orderImage,
         size: 100,
-        coordinateX: 670,
-        coordinateY: 280,
+        coordinateX:
+          this.initialPositions[this.draggedElement]?.icon === personImage &&
+          X &&
+          Y
+            ? X
+            : this.initialPositions.personPosition.coordinateX,
+        coordinateY:
+          this.initialPositions[this.draggedElement]?.icon === personImage &&
+          X &&
+          Y
+            ? Y
+            : this.initialPositions.personPosition.coordinateY,
       })
-
       drawImages({
         ctx: context,
         icon: cheeseImage,
         size: 100,
-        coordinateX: 1225,
-        coordinateY: 500,
+        coordinateX:
+          this.initialPositions[this.draggedElement]?.icon === cheeseImage &&
+          X &&
+          Y
+            ? X
+            : this.initialPositions.cheesePosition.coordinateX,
+        coordinateY:
+          this.initialPositions[this.draggedElement]?.icon === cheeseImage &&
+          X &&
+          Y
+            ? Y
+            : this.initialPositions.cheesePosition.coordinateY,
       })
-
-      drawImages({
-        ctx: context,
-        icon: plateImage,
-        size: 200,
-        coordinateX: 700,
-        coordinateY: 700,
-      })
-
-      drawImages({
-        ctx: context,
-        icon: saladImage,
-        size: 100,
-        coordinateX: 1225,
-        coordinateY: 600,
-      })
-
       drawImages({
         ctx: context,
         icon: tomato,
-        size: 150,
-        coordinateX: 1000,
-        coordinateY: 450,
-      })
-
-      drawImages({
-        ctx: context,
-        icon: burgerBread,
-        size: 200,
-        coordinateX: 700,
-        coordinateY: 700,
-      })
-
-      drawImages({
-        ctx: context,
-        icon: cutletImage,
         size: 100,
-        coordinateX: 1050,
-        coordinateY: 620,
+        coordinateX:
+          this.initialPositions[this.draggedElement].icon === tomato && X && Y
+            ? X
+            : this.initialPositions.tomatoPosition.coordinateX,
+        coordinateY:
+          this.initialPositions[this.draggedElement].icon === tomato && X && Y
+            ? Y
+            : this.initialPositions.tomatoPosition.coordinateY,
       })
     }
+    //ПРОБЛЕМКА
+    //когда мы перетащили что-то, а потом хотим перетащить что-либо другое мы должны обновить координаты того,
+    //что перетаскивали в initialPositions, чтобы оно осталось на месте и и мы могли дальше передвигать что-то другое,
+    // а также обнулить draggedElement
   }
 
   render() {
-    return <canvas ref={this.canvasRef} />
+    return <canvas ref={this.canvasRef} id="canvas" />
   }
 }
 
