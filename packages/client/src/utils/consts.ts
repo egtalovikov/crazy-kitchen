@@ -1,5 +1,4 @@
 export const GAME_ROUTE = '/game'
-export const END_GAME_ROUTE = '/end_game'
 export const LOGIN_ROUTE = '/login'
 export const REGISTRATION_ROUTE = '/registration'
 export const PROFILE_ROUTE = '/profile'
