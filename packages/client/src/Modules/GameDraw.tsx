@@ -13,9 +13,12 @@ import tomato from '../assets/ingredients/tomato.png'
 class GameCanvas extends Component {
   public canvasRef: React.RefObject<HTMLCanvasElement>
   public context: CanvasRenderingContext2D | null = null
-  constructor(props: GameCanvasProps) {
-    super(props)
+  public orderImage: string
+
+  constructor(orderImage: string) {
+    super(orderImage)
     this.canvasRef = React.createRef()
+    this.orderImage = orderImage
   }
 
   componentDidMount() {
@@ -67,6 +70,22 @@ class GameCanvas extends Component {
 
       drawImages({
         ctx: context,
+        icon: personImage,
+        size: 200,
+        coordinateX: 700,
+        coordinateY: 250,
+      })
+
+      drawImages({
+        ctx: context,
+        icon: this.orderImage,
+        size: 100,
+        coordinateX: 670,
+        coordinateY: 280,
+      })
+
+      drawImages({
+        ctx: context,
         icon: cheeseImage,
         size: 100,
         coordinateX: 1225,
@@ -107,14 +126,6 @@ class GameCanvas extends Component {
 
       drawImages({
         ctx: context,
-        icon: personImage,
-        size: 200,
-        coordinateX: 700,
-        coordinateY: 250,
-      })
-
-      drawImages({
-        ctx: context,
         icon: cutletImage,
         size: 100,
         coordinateX: 1050,
@@ -132,5 +143,6 @@ export default GameCanvas
 
 export interface GameCanvasProps {
   //написать нужные пропсы сюда id не нужен
-  id: string
+  id?: string
+  orderImage: string
 }

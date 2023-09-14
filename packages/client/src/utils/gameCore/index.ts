@@ -1,20 +1,26 @@
-const INGREDIENTS = ['salad', 'tomato', 'cheese']
-const BURGER = 'burger'
+const BURGERS = [
+  ['burger', 'beef', 'salad', 'tomato', 'cheese'],
+  ['burger', 'salad', 'tomato'],
+  ['burger', 'beef', 'salad', 'cheese'],
+]
 
 // функция отдает нам рандомный ингредиент
 const getRandomIngredient = (max: number) => {
   const randomIndex = Math.floor(Math.random() * max)
 
-  return INGREDIENTS[randomIndex]
+  return randomIndex
 }
 
 // функция заказа
 export const setOrder = () => {
-  const order = [BURGER]
+  const indexOrder = getRandomIngredient(3)
 
-  order.push(getRandomIngredient(3))
-  return order
+  const order = BURGERS[indexOrder]
+
+  return { indexOrder, order }
 }
+
+console.log(setOrder())
 
 // функция соответствия данного заказа и собранного
 export const compareOrder = (cookedBurger: string[]) => {
