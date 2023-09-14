@@ -2,6 +2,12 @@ import React, { useRef, useEffect, useState } from 'react'
 
 const Game: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  const cheeseImage = new Image()
+  cheeseImage.src = 'путь_к_изображению_сыра'
+  const tomatoImage = new Image()
+  tomatoImage.src = 'путь_к_изображению_помидора'
+  const pattyImage = new Image()
+  pattyImage.src = 'путь_к_изображению_котлетки'
 
   // Положение котлетки (x, y).
   let pattyX = 100
@@ -10,6 +16,24 @@ const Game: React.FC = () => {
   // Положение булочки (x, y).
   const bunX = 150
   const bunY = 450
+
+  // Положение сыра (x, y).
+  let cheeseX = 250
+  let cheeseY = 200
+  let isCheeseDragging = false
+  let isCheeseOnBun = false
+
+  // Положение помидорки (x, y).
+  let tomatoX = 350
+  let tomatoY = 200
+  let isTomatoDragging = false
+  let isTomatoOnBun = false
+
+  // Переменные для отслеживания перетаскивания котлетки.
+  let isPattyDragging = false
+  let initialPattyX = 0
+  let initialPattyY = 0
+  let isPattyOnBun = false
 
   // Флаг для отслеживания анимации перемещения котлетки.
   let isAnimating = false
@@ -22,7 +46,7 @@ const Game: React.FC = () => {
 
   const [burgerStats, setBurgerStats] = useState({
     burgersCollected: 0,
-    timeRemaining: 60, // Изначально 60 секунд (1 минута).
+    timeRemaining: 60,
   })
 
   useEffect(() => {
@@ -35,12 +59,13 @@ const Game: React.FC = () => {
     // Функция для рисования котлетки.
     const drawPatty = () => {
       ctx.fillStyle = 'brown' // Цвет котлетки (коричневый).
-      ctx.fillRect(pattyX, pattyY, 100, 50) // Рисуем котлетку. Наверное тут лучше не использовать fillRect строгие координаты.
-
-      // Добавляем текст "Котлетка" на котлетку.
+      ctx.beginPath()
+      ctx.arc(pattyX + 50, pattyY + 25, 25, 0, Math.PI * 2) // Рисуем круглую котлетку.
+      ctx.closePath()
+      ctx.fill()
       ctx.fillStyle = 'white'
-      ctx.font = '12px Arial'
-      ctx.fillText('Котлетка', pattyX + 10, pattyY + 25)
+      ctx.font = '14px Arial'
+      ctx.fillText('Котлетка', pattyX + 20, pattyY + 30)
     }
 
     // Функция для рисования бургера.
@@ -50,114 +75,229 @@ const Game: React.FC = () => {
       ctx.arc(bunX, bunY, 40, 0, 2 * Math.PI) // Рисуем булочку.
       ctx.closePath()
       ctx.fill()
-
-      // Добавляем текст "Булочка" на булочку.
       ctx.fillStyle = 'black'
       ctx.font = '12px Arial'
       ctx.fillText('Булочка', bunX - 20, bunY + 10)
     }
 
+    // Функция для рисования сыра.
+    const drawCheese = () => {
+      ctx.fillStyle = 'orange' // Цвет сыра (оранжевый).
+      ctx.fillRect(cheeseX, cheeseY, 40, 40) // Рисуем сыр.
+      ctx.fillStyle = 'white'
+      ctx.font = '14px Arial'
+      ctx.fillText('Сыр', cheeseX + 5, cheeseY + 20)
+    }
+
+    // Функция для рисования помидорки.
+    const drawTomato = () => {
+      ctx.fillStyle = 'red' // Цвет помидорки (красный).
+      ctx.beginPath()
+      ctx.arc(tomatoX + 20, tomatoY + 20, 20, 0, Math.PI * 2) // Рисуем круглую помидорку.
+      ctx.closePath()
+      ctx.fill()
+      ctx.fillStyle = 'white'
+      ctx.font = '14px Arial'
+      ctx.fillText('Помидорка', tomatoX - 25, tomatoY + 25)
+    }
+
     // Функция для перерисовки игры.
     const drawGame = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height) // Очищаем канвас перед каждой перерисовкой.
-      drawBurger() // Рисуем бургер.
-      drawPatty() // Рисуем котлетку.
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      drawBurger()
+      drawPatty()
+      drawCheese()
+      drawTomato()
+
+      // Рисуем ингредиенты на булочке, если они находятся на ней.
+      if (isCheeseOnBun) {
+        ctx.drawImage(cheeseImage, bunX - 20, bunY - 20, 40, 40)
+      }
+      if (isTomatoOnBun) {
+        ctx.drawImage(tomatoImage, bunX - 20, bunY - 20, 40, 40)
+      }
+      if (isPattyOnBun) {
+        ctx.drawImage(pattyImage, bunX - 30, bunY + 20, 60, 30)
+      }
     }
 
     // Вызываем функцию для отображения игровых объектов.
     drawGame()
 
-    // Обработчик клика на канвасе.
-    canvas.addEventListener('click', event => {
-      if (!isAnimating && !isPattyOnBun) {
-        // Если не идет анимация и котлетка не на булочке, проверяем кликнутую точку.
-        const clickX = event.clientX - canvas.getBoundingClientRect().left
-        const clickY = event.clientY - canvas.getBoundingClientRect().top
+    // Обработчик начала перетаскивания сыра.
+    canvas.addEventListener('mousedown', event => {
+      const clickX = event.clientX - canvas.getBoundingClientRect().left
+      const clickY = event.clientY - canvas.getBoundingClientRect().top
 
-        // Проверяем, был ли клик на котлетке.
-        if (
-          clickX >= pattyX &&
-          clickX <= pattyX + 100 &&
-          clickY >= pattyY &&
-          clickY <= pattyY + 50
-        ) {
-          isAnimating = true
-          animatePatty()
-        }
+      if (
+        clickX >= cheeseX &&
+        clickX <= cheeseX + 40 &&
+        clickY >= cheeseY &&
+        clickY <= cheeseY + 40
+      ) {
+        isCheeseDragging = true
       }
     })
 
-    let isPattyOnBun = false
+    // Обработчик начала перетаскивания помидорки.
+    canvas.addEventListener('mousedown', event => {
+      const clickX = event.clientX - canvas.getBoundingClientRect().left
+      const clickY = event.clientY - canvas.getBoundingClientRect().top
 
+      if (
+        clickX >= tomatoX &&
+        clickX <= tomatoX + 40 &&
+        clickY >= tomatoY &&
+        clickY <= tomatoY + 40
+      ) {
+        isTomatoDragging = true
+      }
+    })
+
+    // Обработчик начала перетаскивания котлетки.
+    canvas.addEventListener('mousedown', event => {
+      const clickX = event.clientX - canvas.getBoundingClientRect().left
+      const clickY = event.clientY - canvas.getBoundingClientRect().top
+
+      if (
+        clickX >= pattyX &&
+        clickX <= pattyX + 100 &&
+        clickY >= pattyY &&
+        clickY <= pattyY + 50
+      ) {
+        isPattyDragging = true
+        initialPattyX = pattyX
+        initialPattyY = pattyY
+      }
+    })
+
+    // Обработчик перемещения мыши.
+    canvas.addEventListener('mousemove', event => {
+      if (isCheeseDragging) {
+        cheeseX = event.clientX - canvas.getBoundingClientRect().left - 20
+        cheeseY = event.clientY - canvas.getBoundingClientRect().top - 20
+        drawGame()
+      }
+
+      if (isTomatoDragging) {
+        tomatoX = event.clientX - canvas.getBoundingClientRect().left - 20
+        tomatoY = event.clientY - canvas.getBoundingClientRect().top - 20
+        drawGame()
+      }
+
+      if (isPattyDragging) {
+        pattyX = event.clientX - canvas.getBoundingClientRect().left - 50
+        pattyY = event.clientY - canvas.getBoundingClientRect().top - 25
+        drawGame()
+      }
+    })
+
+    // Обработчик завершения перетаскивания.
+    canvas.addEventListener('mouseup', () => {
+      if (isCheeseDragging) {
+        if (
+          Math.abs(cheeseX + 20 - bunX) <= 20 &&
+          Math.abs(cheeseY + 20 - bunY) <= 20
+        ) {
+          isCheeseOnBun = true
+          cheeseX = bunX - 20
+          cheeseY = bunY - 20
+        }
+        isCheeseDragging = false
+      }
+
+      if (isTomatoDragging) {
+        if (
+          Math.abs(tomatoX + 20 - bunX) <= 20 &&
+          Math.abs(tomatoY + 20 - bunY) <= 20
+        ) {
+          isTomatoOnBun = true
+          tomatoX = bunX - 20
+          tomatoY = bunY - 20
+        }
+        isTomatoDragging = false
+      }
+
+      if (isPattyDragging) {
+        if (
+          Math.abs(pattyX + 50 - bunX) <= 30 &&
+          Math.abs(pattyY + 25 - bunY) <= 30
+        ) {
+          isPattyOnBun = true
+          pattyX = bunX - 30
+          pattyY = bunY + 20
+        }
+        isPattyDragging = false
+      }
+
+      if (isCheeseOnBun && isTomatoOnBun && isPattyOnBun) {
+        burgerCount++
+        setBurgerStats(prevState => ({
+          ...prevState,
+          burgersCollected: burgerCount,
+        }))
+        cheeseX = 250
+        cheeseY = 200
+        tomatoX = 350
+        tomatoY = 200
+        pattyX = 100
+        pattyY = 20
+        isCheeseOnBun = false
+        isTomatoOnBun = false
+        isPattyOnBun = false
+      }
+
+      drawGame()
+    })
+
+    // Функция для анимации перемещения котлетки на булочку.
     const animatePatty = () => {
-      // Целевая позиция, куда мы будем перемещать котлетку
       const targetX = bunX - 30
       const targetY = bunY + 20
-
-      // Вычисляем изменение координат по X и Y для плавного перемещения
       const deltaX = (targetX - pattyX) / 20
       const deltaY = (targetY - pattyY) / 20
-
-      // Счетчик кадров анимации
       let frameCount = 0
 
-      // Функция анимации котлетки
       const animationFrame = () => {
-        // Если координата X котлетки меньше целевой, двигаем котлетку по X
         if (pattyX < targetX) {
           pattyX += deltaX
         }
-        // Если координата Y котлетки меньше целевой, двигаем котлетку по Y
         if (pattyY < targetY) {
           pattyY += deltaY
         }
 
-        drawGame() // Перерисовываем игру после каждого кадра
+        drawGame()
 
-        // Если координаты котлетки все еще меньше целевых, продолжаем анимацию
         if (pattyX < targetX || pattyY < targetY) {
           requestAnimationFrame(animationFrame)
         } else {
-          // Анимация завершена
-          isAnimating = false // Сбрасываем флаг анимации
-          burgerCount++ // Увеличиваем счетчик бургеров
-          setBurgerStats(prevState => ({
-            ...prevState,
-            burgersCollected: burgerCount,
-          }))
-          isPattyOnBun = true // Устанавливаем флаг, что котлетка на булочке
-          frameCount = 0 // Сбрасываем счетчик кадров
-          pattyX = bunX - 30 // Устанавливаем координату X котлетки на исходное положение.
-          pattyY = bunY + 20 // Устанавливаем координату Y котлетки на исходное положение.
+          isAnimating = false
+          frameCount = 0
+          pattyX = bunX - 30
+          pattyY = bunY + 20
         }
 
-        frameCount++ // Увеличиваем счетчик кадров
+        frameCount++
       }
-      requestAnimationFrame(animationFrame) // Начинаем анимацию
+      requestAnimationFrame(animationFrame)
     }
 
-    // Функция для обновления времени и подсчета бургеров.
+    // Функция для обновления игры (таймер).
     const updateGame = () => {
-      // Увеличиваем время на 1 секунду.
       timeInSeconds += 1
 
-      // Если прошла минута (60 секунд), завершаем игру.
       if (timeInSeconds >= 60) {
-        alert(
-          `Игра окончена! Вы собрали ${burgerStats.burgersCollected} бургеров за минуту.`
-        )
+        alert(`Игра окончена!`)
         clearInterval(gameInterval)
         return
       }
 
-      // Обновляем оставшееся время в стейте.
       setBurgerStats(prevState => ({
         ...prevState,
         timeRemaining: 60 - timeInSeconds,
       }))
     }
 
-    // Запускаем интервал обновления игры каждую секунду.
     const gameInterval = setInterval(updateGame, 1000)
   }, [])
 
