@@ -4,12 +4,11 @@ import backgroundImage from '../assets/mainBackground.png'
 import { drawImages } from '../utils/drawImages'
 import saladImage from '../assets/ingredients/salad.png'
 import plateImage from '../assets/plate.png'
-import topBunImage from '../assets/ingredients/topBun.png'
+import burgerBread from '../assets/ingredients/burgerBread.png'
 import personImage from '../assets/person.png'
 import cutletImage from '../assets/ingredients/cutlet.png'
 import cheeseImage from '../assets/ingredients/cheese.png'
-import bottomBunImage from '../assets/ingredients/bottomBun.png'
-import boardImage from '../assets/board.png'
+import tomato from '../assets/ingredients/tomato.png'
 
 class GameCanvas extends Component {
   public canvasRef: React.RefObject<HTMLCanvasElement>
@@ -64,62 +63,62 @@ class GameCanvas extends Component {
     Img.onload = () => {
       //задавать им координаты, размеры в какой момент?
       //пока вот так
-      context.drawImage(Img, 0, 0)
-      drawImages({
-        ctx: context,
-        icon: bottomBunImage,
-        size: 100,
-        coordinateX: 600,
-        coordinateY: 600,
-      })
-      drawImages({
-        ctx: context,
-        icon: plateImage,
-        size: 100,
-        coordinateX: 400,
-        coordinateY: 400,
-      })
-      drawImages({
-        ctx: context,
-        icon: topBunImage,
-        size: 100,
-        coordinateX: 300,
-        coordinateY: 300,
-      })
-      drawImages({
-        ctx: context,
-        icon: saladImage,
-        size: 100,
-        coordinateX: 500,
-        coordinateY: 500,
-      })
-      drawImages({
-        ctx: context,
-        icon: personImage,
-        size: 100,
-        coordinateX: 200,
-        coordinateY: 200,
-      })
-      drawImages({
-        ctx: context,
-        icon: cutletImage,
-        size: 100,
-        coordinateX: 100,
-        coordinateY: 100,
-      })
+      context.drawImage(Img, 0, 0, context.canvas.width, context.canvas.height)
+
       drawImages({
         ctx: context,
         icon: cheeseImage,
         size: 100,
-        coordinateX: 0,
-        coordinateY: 0,
+        coordinateX: 1225,
+        coordinateY: 500,
       })
+
       drawImages({
         ctx: context,
-        icon: boardImage,
+        icon: plateImage,
+        size: 200,
+        coordinateX: 700,
+        coordinateY: 700,
+      })
+
+      drawImages({
+        ctx: context,
+        icon: saladImage,
         size: 100,
-        coordinateX: 400,
-        coordinateY: 200,
+        coordinateX: 1225,
+        coordinateY: 600,
+      })
+
+      drawImages({
+        ctx: context,
+        icon: tomato,
+        size: 150,
+        coordinateX: 1000,
+        coordinateY: 450,
+      })
+
+      drawImages({
+        ctx: context,
+        icon: burgerBread,
+        size: 200,
+        coordinateX: 700,
+        coordinateY: 700,
+      })
+
+      drawImages({
+        ctx: context,
+        icon: personImage,
+        size: 200,
+        coordinateX: 700,
+        coordinateY: 250,
+      })
+
+      drawImages({
+        ctx: context,
+        icon: cutletImage,
+        size: 100,
+        coordinateX: 1050,
+        coordinateY: 620,
       })
     }
   }

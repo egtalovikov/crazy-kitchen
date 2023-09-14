@@ -1,4 +1,4 @@
-import Game from './pages/Game/Game'
+import { Game } from './pages/Game'
 import {
   END_GAME_ROUTE,
   FORUM_ROUTE,
