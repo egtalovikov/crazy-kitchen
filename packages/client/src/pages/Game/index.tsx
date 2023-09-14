@@ -22,7 +22,8 @@ export const Game = () => {
   }, [indexOrder])
 
   useEffect(() => {
-    new GameCanvas(imgSrcOrder)
+    // @ts-ignore
+    new GameCanvas({})
   }, [])
 
   // @ts-ignore

@@ -15,10 +15,10 @@ class GameCanvas extends Component {
   public context: CanvasRenderingContext2D | null = null
   public orderImage: string
 
-  constructor(orderImage: string) {
-    super(orderImage)
+  constructor(props: GameCanvasProps) {
+    super(props)
     this.canvasRef = React.createRef()
-    this.orderImage = orderImage
+    this.orderImage = props.orderImage
   }
 
   componentDidMount() {
