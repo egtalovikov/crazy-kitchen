@@ -1,6 +1,5 @@
 import { GameWithEngine } from './pages/Game'
 import {
-  END_GAME_ROUTE,
   FORUM_ROUTE,
   GAME_ROUTE,
   INTERNAL_SERVER_ERROR_ROUTE,
@@ -21,7 +20,7 @@ import Topic from './pages/Topic/index'
 import Forum from './pages/Forum/index'
 import SignIn from './pages/SignIn'
 import SignUp from './pages/SignUp'
-import { EndGame } from './pages/EndGame'
+import { EndGame } from './components/EndGame'
 import MainPage from './pages/MainPage'
 import StartPage from './pages/StartPage'
 import ErrorPage from './pages/ErrorPage/ErrorPage'
@@ -34,10 +33,6 @@ export const publicRoutes = [
   {
     path: REGISTRATION_ROUTE,
     Component: SignUp,
-  },
-  {
-    path: END_GAME_ROUTE,
-    Component: EndGame,
   },
 ]
 
