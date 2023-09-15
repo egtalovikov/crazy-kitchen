@@ -28,6 +28,18 @@ export enum GlobalGameState {
   WaitingForStart,
   Loading,
   Started,
-  Finished,
+  Winned,
   Failed,
+}
+
+export enum GameLevelList {
+  Level1,
+  Level2,
+}
+
+export type TLevelParams = {
+  name: string
+  time: number
+  ordersCount: number
+  orders: null // todo set burger params here
 }

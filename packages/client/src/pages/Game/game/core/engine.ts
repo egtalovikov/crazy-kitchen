@@ -135,7 +135,9 @@ class Engine {
 
     if (remainingTime <= 0) {
       clearInterval(this.levelInterval)
-      this.setGameState(GlobalGameState.Finished)
+      //this.setGameState(GlobalGameState.Finished)
+      store.dispatch(setRemainingTime(0))
+      this.setWinFailState()
       return
     }
 
@@ -148,9 +150,21 @@ class Engine {
 
   public startGame = () => {
     this.setGameState(GlobalGameState.Started)
+    this.drawGame()
+    this.startLevel()
   }
 
-  // public isGameOver = ()=>  todo check here
+  public setWinFailState = () => {
+    const gameState = store.getState().game
+
+    if (gameState.score === gameState.level.ordersCount) {
+      // game winned
+      this.setGameState(GlobalGameState.Winned)
+    } else {
+      // game failed
+      this.setGameState(GlobalGameState.Failed)
+    }
+  }
 }
 
 export default Engine

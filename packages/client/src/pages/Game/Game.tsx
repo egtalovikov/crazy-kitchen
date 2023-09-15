@@ -33,40 +33,52 @@ const Game: React.FC = () => {
     console.log(ctx)
 
     // Функция для перерисовки игры.
-    Engine.getInstance(ctx).drawGame()
+    // Engine.getInstance(ctx).drawGame()
+    Engine.getInstance(ctx).startGame()
 
-    // Обработчик начала перетаскивания всех ингредиентов.
-    canvas.addEventListener('mousedown', event => {
-      handleMouseDown(event, canvas)
-    })
-
-    // Обработчик перемещения мыши.
-    canvas.addEventListener('mousemove', event => {
-      handleMouseMove(event, canvas)
-    })
-
-    // Обработчик завершения перетаскивания.
+    // Обработчики перетаскивания ингредиентов.
+    canvas.addEventListener('mousedown', handleMouseDown)
+    canvas.addEventListener('mousemove', handleMouseMove)
     canvas.addEventListener('mouseup', handleMouseUp)
+
+    return () => {
+      canvas.removeEventListener('mousedown', handleMouseDown)
+      canvas.removeEventListener('mousemove', handleMouseMove)
+      canvas.removeEventListener('mouseup', handleMouseUp)
+    }
   }, [])
 
   // todo can we remove engine and canvas from args?
-  const handleMouseDown = (event: MouseEvent, canvas: HTMLCanvasElement) => {
+  const handleMouseDown = (event: MouseEvent) => {
     // todo move in method ?
+    const canvas = canvasRef.current
+    if (!canvas) {
+      return
+    }
     const clickX = event.clientX - canvas.getBoundingClientRect().left
     const clickY = event.clientY - canvas.getBoundingClientRect().top
     Engine.getInstance().checkDragging({ x: clickX, y: clickY })
   }
 
-  const handleMouseMove = (event: MouseEvent, canvas: HTMLCanvasElement) => {
+  const handleMouseMove = (event: MouseEvent) => {
+    const canvas = canvasRef.current
+    if (!canvas) {
+      return
+    }
     const x = event.clientX - canvas.getBoundingClientRect().left - 20
     const y = event.clientY - canvas.getBoundingClientRect().top - 20
     Engine.getInstance().handleDragging({ x, y })
   }
 
-  const handleMouseUp = () => Engine.getInstance().draggingStopped()
+  const handleMouseUp = () => {
+    Engine.getInstance().draggingStopped()
+    console.log('state')
+    console.log(state)
+  }
 
   useEffect(() => {
-    if (state.gameState == GlobalGameState.Finished) {
+    console.log('in state useEffect')
+    if (state.gameState == GlobalGameState.Failed) {
       alert(`Игра окончена!`)
     } else {
       console.log(state.gameState)

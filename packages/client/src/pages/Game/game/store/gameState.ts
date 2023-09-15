@@ -1,6 +1,5 @@
 import BaseObject from '../objects/baseObject'
 import Ingredient from '../objects/ingredient'
-import { LEVEL_LENGTH } from '../parameters/levelParams'
 import ingredientsParams, { gameParams } from '../parameters/objectsParams'
 import { GameObjects, GlobalGameState, Ingredients } from '../types/commonTypes'
 import BaseState from './objectState'
@@ -12,7 +11,6 @@ class GameState {
   public order: BaseObject
   public burgersFinished = 0
   public globalState: GlobalGameState = GlobalGameState.WaitingForStart
-  public remainingTime = LEVEL_LENGTH
 
   constructor() {
     this.ingredients = this.initFood()
@@ -60,15 +58,8 @@ class GameState {
 
   // todo use this
   public resetState = () => {
-    this.remainingTime = LEVEL_LENGTH
     this.resetIngredients()
   }
-
-  public updateRemainingTime = () => {
-    this.remainingTime--
-  }
-
-  public getRemainingTime = () => this.remainingTime
 }
 
 export default new GameState()
