@@ -4,8 +4,9 @@ import { setOrder } from '../../utils/gameCore'
 import totalBurgerImage from '../../assets/ingredients/totalBurger.png'
 import burgerTomatoSaladImage from '../../assets/ingredients/burgerTomatoSalad.png'
 import burgerCheeseSaladImage from '../../assets/ingredients/burgerCheeseSalad.png'
+import Game from './Game'
 
-export const Game = () => {
+const GameDraw = () => {
   const { indexOrder } = setOrder()
 
   const imgSrcOrder = useMemo(() => {
@@ -30,4 +31,8 @@ export const Game = () => {
   return <GameCanvas orderImage={imgSrcOrder} />
 }
 
-export default Game
+export const GameWithEngine = () => {
+  return <Game />
+}
+
+export default GameDraw

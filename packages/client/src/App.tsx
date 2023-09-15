@@ -1,9 +1,10 @@
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 import './App.css'
 import { BrowserRouter } from 'react-router-dom'
 import AppRouter from './components/AppRouter'
 import { store } from './store'
 import { fetchUserData } from './store/modules/auth/auth.reducer'
+import CssBaseline from '@mui/material/CssBaseline'
 
 function App() {
   useEffect(() => {
@@ -23,6 +24,7 @@ function App() {
 
   return (
     <BrowserRouter>
+      <CssBaseline />
       <AppRouter />
     </BrowserRouter>
   )
