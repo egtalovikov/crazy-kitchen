@@ -22,6 +22,7 @@ export default {
     '\\.(css|scss)$': 'identity-obj-proxy',
   },
   transform: {
-    '^.+\\.(png|svg|jpg|jpeg)$': 'jest-transform-stub',
+    // '^.+\\.(png|svg|jpg|jpeg)$': 'jest-transform-stub',
+    '\\.(svg|png)$': '<rootDir>/src/__mocks__/styleMock.cjs',
   },
 }

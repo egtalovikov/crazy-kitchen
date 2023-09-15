@@ -1,4 +1,5 @@
-import saladImage from '@assets/ingredients/salad.png'
+// todo research why alias not working
+/* import saladImage from '@assets/ingredients/salad.png'
 import plateImage from '@assets/plate.png'
 import burgerBread from '@assets/ingredients/burgerBread.png'
 import personImage from '@assets/person.png'
@@ -9,7 +10,21 @@ import totalBurgerImage from '@assets/ingredients/totalBurger.png'
 import burgerTomatoSaladImage from '@assets/ingredients/burgerTomatoSalad.png'
 import burgerCheeseSaladImage from '@assets/ingredients/burgerCheeseSalad.png'
 // import backgroundImage from '@assets/startBackground.png'
+import backgroundImage from '@assets/mainBackground.png'*/
+
+import saladImage from '../../../../assets/ingredients/salad.png'
+import plateImage from '../../../../assets/plate.png'
+import burgerBread from '../../../../assets/ingredients/burgerBread.png'
+import personImage from '../../../../assets/person.png'
+import cutletImage from '../../../../assets/ingredients/cutlet.png'
+import cheeseImage from '../../../../assets/ingredients/cheese.png'
+import tomato from '../../../../assets/ingredients/tomato.png'
+import totalBurgerImage from '../../../../assets/ingredients/totalBurger.png'
+import burgerTomatoSaladImage from '@assets/ingredients/burgerTomatoSalad.png'
+import burgerCheeseSaladImage from '@assets/ingredients/burgerCheeseSalad.png'
+// import backgroundImage from '@assets/startBackground.png'
 import backgroundImage from '@assets/mainBackground.png'
+
 import {
   GameObjects,
   Ingredients,
