@@ -1,4 +1,4 @@
-import { Game } from './pages/Game'
+import { GameWithEngine } from './pages/Game'
 import {
   END_GAME_ROUTE,
   FORUM_ROUTE,
@@ -48,7 +48,7 @@ export const privateRoutes = [
   },
   {
     path: GAME_ROUTE,
-    Component: Game,
+    Component: GameWithEngine,
   },
   {
     path: MAIN_ROUTE,
