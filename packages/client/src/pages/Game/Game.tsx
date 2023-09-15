@@ -5,6 +5,7 @@ import GameParameters from './game/parameters/globalParams'
 import style from './Game.module.scss'
 import { CoreRootState } from '../../store/types'
 import { GlobalGameState } from './game/types/commonTypes'
+import { EndGame } from '../../components/EndGame'
 
 const Game: React.FC = () => {
   console.log('in game')
@@ -15,6 +16,8 @@ const Game: React.FC = () => {
     burgersCollected: 0,
     timeRemaining: 60,
   })
+
+  const [gameOver, setGameOver] = useState(false)
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -78,8 +81,12 @@ const Game: React.FC = () => {
 
   useEffect(() => {
     console.log('in state useEffect')
-    if (state.gameState == GlobalGameState.Failed) {
-      alert(`Игра окончена!`)
+    if (
+      state.gameState == GlobalGameState.Failed ||
+      state.gameState == GlobalGameState.Winned
+    ) {
+      setGameOver(true)
+      console.log('game over')
     } else {
       console.log(state.gameState)
       console.log('game is running')
@@ -91,6 +98,10 @@ const Game: React.FC = () => {
       }))
     }
   }, [state])
+
+  if (gameOver) {
+    return <EndGame />
+  }
   return (
     <div className={style.gameBackground}>
       <canvas

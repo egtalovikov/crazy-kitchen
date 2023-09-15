@@ -131,10 +131,10 @@ class Engine {
 
   private updateTimeCounter = () => {
     const { remainingTime } = store.getState().game
-    console.log('remaining time is ' + remainingTime)
+    // console.log('remaining time is ' + remainingTime)
 
     if (remainingTime <= 0) {
-      clearInterval(this.levelInterval)
+      window.clearInterval(this.levelInterval)
       //this.setGameState(GlobalGameState.Finished)
       store.dispatch(setRemainingTime(0))
       this.setWinFailState()
@@ -156,7 +156,7 @@ class Engine {
 
   public setWinFailState = () => {
     const gameState = store.getState().game
-
+    console.log('set complete state')
     if (gameState.score === gameState.level.ordersCount) {
       // game winned
       this.setGameState(GlobalGameState.Winned)
