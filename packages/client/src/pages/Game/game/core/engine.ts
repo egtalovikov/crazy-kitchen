@@ -6,7 +6,9 @@ import { store } from '../../../../store'
 import {
   setGameState,
   setRemainingTime,
+  setScore,
 } from '../../../../store/modules/game/gameSlice'
+import CollisionHelper from '../utils/collisionHelper'
 
 class Engine {
   private timeInSeconds = 0
@@ -77,40 +79,42 @@ class Engine {
 
   private setIsOnBun = () => {
     const { x: breadX, y: breadY } = gameState.bread.state.coordinates
-
+    console.log(breadX + ' ' + breadY)
+    console.log('in setIsOnBun')
+    console.log(gameState.ingredients[0].getState().isDragging)
     gameState.ingredients.forEach(i => {
+      //if (i.getState().isDragging) { todo bug?
+      //}
       if (i.getState().isDragging) {
         i.setIsDragging(false)
-        const { x: ingredientX, y: ingredientY } = i.getState().coordinates
-        if (
-          Math.abs(ingredientX + 20 - breadX) <= 20 &&
-          Math.abs(ingredientY + 20 - breadY) <= 20
-        ) {
-          i.getState().isOnBun = true
-          i.getState().coordinates.x = breadX - 20
-          i.getState().coordinates.y = breadY - 20
-        }
+      }
+
+      if (
+        CollisionHelper.checkCollision(
+          i.state.coordinates,
+          i.width,
+          i.height,
+          gameState.bread.state.coordinates,
+          gameState.bread.width,
+          gameState.bread.height
+        )
+      ) {
+        i.getState().isOnBun = true
+        i.getState().coordinates.x = breadX
+        i.getState().coordinates.y = breadY
       }
     })
-
-    /* if (isCheeseOnBun) {
-        ctx.drawImage(cheeseImage, bunX - 20, bunY - 20, 40, 40)
-      }
-      if (isTomatoOnBun) {
-        ctx.drawImage(tomatoImage, bunX - 20, bunY - 20, 40, 40)
-      }
-      if (isPattyOnBun) {
-        ctx.drawImage(pattyImage, bunX - 30, bunY + 20, 60, 30)
-      } */
   }
 
   private setBurgerFinished = () => {
     const burgerFinished = gameState.ingredients.every(
       i => i.getState().isOnBun
     )
+    console.log('is burder finished')
+    console.log(burgerFinished)
     if (burgerFinished) {
-      gameState.burgersFinished++ // to game slice
-
+      gameState.burgersFinished++ // todo remove duplicate logic
+      store.dispatch(setScore(gameState.burgersFinished))
       gameState.resetIngredients()
     }
   }
