@@ -42,9 +42,18 @@ class Engine {
     gameState.ingredients.forEach(i => this.painter.drawFrame(i))
   }
 
+  private drawCurrentState = () => {
+    const { game: state } = store.getState()
+    const timeText = `Время: ${state.remainingTime} сек.`
+    this.painter.drawTime(timeText)
+    const scoreText = `Собрано бургеров: ${state.score}`
+    this.painter.drawScore(scoreText)
+  }
+
   public drawGame = () => {
     this.drawBackground()
     this.drawIngredients()
+    this.drawCurrentState()
   }
 
   public ingredientClicked = (point: TPoint, ingredient: Ingredient) => {

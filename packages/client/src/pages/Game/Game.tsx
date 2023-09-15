@@ -100,7 +100,11 @@ const Game: React.FC = () => {
   }, [state])
 
   if (gameOver) {
-    return <EndGame />
+    return (
+      <div className={style.gameBackground}>
+        <EndGame />
+      </div>
+    )
   }
   return (
     <div className={style.gameBackground}>
