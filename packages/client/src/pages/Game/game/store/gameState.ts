@@ -1,6 +1,7 @@
 import BaseObject from '../objects/baseObject'
 import Ingredient from '../objects/ingredient'
-import ingredientsParams, { gameParams } from '../parameters/objects'
+import { LEVEL_LENGTH } from '../parameters/levelParams'
+import ingredientsParams, { gameParams } from '../parameters/objectsParams'
 import { GameObjects, GlobalGameState, Ingredients } from '../types/commonTypes'
 import BaseState from './objectState'
 
@@ -11,6 +12,7 @@ class GameState {
   public order: BaseObject
   public burgersFinished = 0
   public globalState: GlobalGameState = GlobalGameState.WaitingForStart
+  public remainingTime = LEVEL_LENGTH
 
   constructor() {
     this.ingredients = this.initFood()
@@ -22,15 +24,13 @@ class GameState {
   private initBread = () => {
     const params = gameParams[GameObjects.BurgerBread]
     const state = new BaseState(params.startPoint)
-    // todo params width and height
-    return new BaseObject(params.imageSrc, params.size, params.size, state)
+    return new BaseObject(params.imageSrc, params.width, params.height, state)
   }
 
   private initPerson = () => {
     const params = gameParams[GameObjects.Person]
     const state = new BaseState(params.startPoint)
-    // todo params width and height
-    return new BaseObject(params.imageSrc, params.size, params.size, state)
+    return new BaseObject(params.imageSrc, params.width, params.height, state)
   }
 
   private initFood = () => {
@@ -47,7 +47,7 @@ class GameState {
     const params = gameParams[GameObjects.Order]
     const state = new BaseState(params.startPoint)
     // todo params width and height
-    return new BaseObject(params.imageSrc, params.size, params.size, state)
+    return new BaseObject(params.imageSrc, params.width, params.height, state)
   }
 
   public resetIngredients = () => {
@@ -57,6 +57,18 @@ class GameState {
       i.getState().isOnBun = false
     })
   }
+
+  // todo use this
+  public resetState = () => {
+    this.remainingTime = LEVEL_LENGTH
+    this.resetIngredients()
+  }
+
+  public updateRemainingTime = () => {
+    this.remainingTime--
+  }
+
+  public getRemainingTime = () => this.remainingTime
 }
 
 export default new GameState()

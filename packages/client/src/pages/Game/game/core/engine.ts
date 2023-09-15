@@ -1,21 +1,33 @@
-import BaseObject from '../objects/baseObject'
 import Ingredient from '../objects/ingredient'
 import Painter from './painter'
 import gameState from '../store/gameState'
+import { GlobalGameState, TPoint } from '../types/commonTypes'
+import { store } from '../../../../store'
 import {
-  GameObjects,
-  GlobalGameState,
-  Ingredients,
-  TPoint,
-} from '../types/commonTypes'
+  setGameState,
+  setRemainingTime,
+} from '../../../../store/modules/game/gameSlice'
 
 class Engine {
   private timeInSeconds = 0
+  private levelInterval = -1
+  private LEVEL_LENGTH = 60
+  private static instance?: Engine
 
   private painter: Painter
 
   constructor(ctx: CanvasRenderingContext2D) {
     this.painter = new Painter(ctx)
+  }
+
+  public static getInstance = (ctx?: CanvasRenderingContext2D): Engine => {
+    if (!Engine.instance && ctx) {
+      Engine.instance = new Engine(ctx)
+    }
+    if (Engine.instance) {
+      return Engine.instance
+    }
+    throw Error('no context provided')
   }
 
   private drawBackground = () => {
@@ -106,9 +118,90 @@ class Engine {
     this.setBurgerFinished()
   }
 
-  public isGameRunning = () => {
-    return gameState.globalState === GlobalGameState.Started
+  private setGameState = (state: GlobalGameState) => {
+    store.dispatch(setGameState(state))
   }
+
+  private updateTimeCounter = () => {
+    const { remainingTime } = store.getState().game
+    console.log('remaining time is ' + remainingTime)
+
+    if (remainingTime <= 0) {
+      clearInterval(this.levelInterval)
+      this.setGameState(GlobalGameState.Finished)
+      return
+    }
+
+    store.dispatch(setRemainingTime(remainingTime - 1))
+  }
+
+  public startLevel = () => {
+    this.levelInterval = window.setInterval(this.updateTimeCounter, 1000)
+  }
+
+  public startGame = () => {
+    this.setGameState(GlobalGameState.Started)
+  }
+
+  // public isGameOver = ()=>  todo check here
 }
 
 export default Engine
+
+// todo check all logic is preserved
+
+// Флаг для отслеживания анимации перемещения котлетки.
+// let isAnimating = false
+
+// Переменная для отображения времени (в секундах).
+// let timeInSeconds = 0
+
+// Функция для анимации перемещения котлетки на булочку.
+/* const animatePatty = () => {
+      const targetX = bunX - 30
+      const targetY = bunY + 20
+      const deltaX = (targetX - pattyX) / 20
+      const deltaY = (targetY - pattyY) / 20
+      let frameCount = 0
+
+      const animationFrame = () => {
+        if (pattyX < targetX) {
+          pattyX += deltaX
+        }
+        if (pattyY < targetY) {
+          pattyY += deltaY
+        }
+
+        drawGame()
+
+        if (pattyX < targetX || pattyY < targetY) {
+          requestAnimationFrame(animationFrame)
+        } else {
+          isAnimating = false
+          frameCount = 0
+          pattyX = bunX - 30
+          pattyY = bunY + 20
+        }
+
+        frameCount++
+      }
+      requestAnimationFrame(animationFrame)
+    } */
+
+// Функция для обновления игры (таймер).
+/* const updateGame = () => {
+      timeInSeconds += 1
+
+      if (timeInSeconds >= 60) {
+        alert(`Игра окончена!`)
+        clearInterval(gameInterval)
+        return
+      }
+
+      setBurgerStats(prevState => ({
+        ...prevState,
+        timeRemaining: 60 - timeInSeconds,
+      }))
+    } */
+
+// const gameInterval = setInterval(updateGame, 1000)

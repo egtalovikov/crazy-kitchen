@@ -1,4 +1,4 @@
-import ingredientsParams from '../parameters/objects'
+import ingredientsParams from '../parameters/objectsParams'
 import { IngredientState } from '../store/objectState'
 import { Ingredients, TPoint } from '../types/commonTypes'
 import BaseObject from './baseObject'
@@ -9,7 +9,7 @@ class Ingredient extends BaseObject {
   constructor(type: Ingredients) {
     const params = ingredientsParams[type]
     const state = new IngredientState(params.startPoint)
-    super(params.imageSrc, params.size, params.size, state)
+    super(params.imageSrc, params.width, params.height, state)
     this.type = type
   }
 

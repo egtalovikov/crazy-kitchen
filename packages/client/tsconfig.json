@@ -20,6 +20,8 @@
   "references": [{ "path": "./tsconfig.node.json" }],
   "paths": {
     "@/*": ["./src/*"],
-    "@assets/*": ["./src/assets/*"]
+    "@assets/*": ["./src/assets/*"],
+    "@store/*": ["./src/store/*"],
+    "@pages/*": ["./src/pages/*"]
   }
 }

@@ -4,7 +4,8 @@ export type TPoint = {
 }
 
 export type TGameObjectParameter = {
-  size: number
+  width: number
+  height: number
   imageSrc: string
   startPoint: TPoint
 }

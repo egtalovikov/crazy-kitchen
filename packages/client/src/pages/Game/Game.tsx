@@ -1,19 +1,15 @@
 import React, { useRef, useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import Engine from './game/core/engine'
-import Ingredient from './game/objects/ingredient'
 import GameParameters from './game/parameters/globalParams'
 import style from './Game.module.scss'
-import gameState from './game/store/gameState'
+import { CoreRootState } from '../../store/types'
+import { GlobalGameState } from './game/types/commonTypes'
 
 const Game: React.FC = () => {
   console.log('in game')
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
-
-  // Флаг для отслеживания анимации перемещения котлетки.
-  // let isAnimating = false
-
-  // Переменная для отображения времени (в секундах).
-  // let timeInSeconds = 0
+  const state = useSelector((rootState: CoreRootState) => rootState.game)
 
   const [burgerStats, setBurgerStats] = useState({
     burgersCollected: 0,
@@ -22,99 +18,66 @@ const Game: React.FC = () => {
 
   useEffect(() => {
     const canvas = canvasRef.current
-    if (!canvas) return
+    if (!canvas) {
+      console.log('no canvas')
+      return
+    }
 
     const ctx = canvas.getContext('2d')
-    if (!ctx) return
+    if (!ctx) {
+      console.log('no context')
+      return
+    }
 
-    const engine = new Engine(ctx)
+    console.log('in use effect')
+    console.log(ctx)
 
     // Функция для перерисовки игры.
-    engine.drawGame()
-
-    const handleMouseDown = (event: MouseEvent) => {
-      // todo move in method ?
-      const clickX = event.clientX - canvas.getBoundingClientRect().left
-      const clickY = event.clientY - canvas.getBoundingClientRect().top
-
-      engine.checkDragging({ x: clickX, y: clickY })
-    }
-
-    const handleMouseMove = (event: MouseEvent) => {
-      const x = event.clientX - canvas.getBoundingClientRect().left - 20
-      const y = event.clientY - canvas.getBoundingClientRect().top - 20
-
-      engine.handleDragging({ x, y })
-    }
-
-    const handleMouseUp = () => {
-      engine.draggingStopped()
-      setBurgerStats(prevState => ({
-        ...prevState,
-        burgersCollected: gameState.burgersFinished,
-      }))
-    }
+    Engine.getInstance(ctx).drawGame()
 
     // Обработчик начала перетаскивания всех ингредиентов.
-    canvas.addEventListener('mousedown', handleMouseDown) // todo do we need to remove it?
+    /* canvas.addEventListener('mousedown', event => {
+      handleMouseDown(event, canvas)
+    })
 
     // Обработчик перемещения мыши.
-    canvas.addEventListener('mousemove', handleMouseMove)
+    canvas.addEventListener('mousemove', event => {
+      handleMouseMove(event, canvas)
+    })
 
     // Обработчик завершения перетаскивания.
-    canvas.addEventListener('mouseup', handleMouseUp)
-
-    // Функция для анимации перемещения котлетки на булочку.
-    /* const animatePatty = () => {
-      const targetX = bunX - 30
-      const targetY = bunY + 20
-      const deltaX = (targetX - pattyX) / 20
-      const deltaY = (targetY - pattyY) / 20
-      let frameCount = 0
-
-      const animationFrame = () => {
-        if (pattyX < targetX) {
-          pattyX += deltaX
-        }
-        if (pattyY < targetY) {
-          pattyY += deltaY
-        }
-
-        drawGame()
-
-        if (pattyX < targetX || pattyY < targetY) {
-          requestAnimationFrame(animationFrame)
-        } else {
-          isAnimating = false
-          frameCount = 0
-          pattyX = bunX - 30
-          pattyY = bunY + 20
-        }
-
-        frameCount++
-      }
-      requestAnimationFrame(animationFrame)
-    } */
-
-    // Функция для обновления игры (таймер).
-    /* const updateGame = () => {
-      timeInSeconds += 1
-
-      if (timeInSeconds >= 60) {
-        alert(`Игра окончена!`)
-        clearInterval(gameInterval)
-        return
-      }
-
-      setBurgerStats(prevState => ({
-        ...prevState,
-        timeRemaining: 60 - timeInSeconds,
-      }))
-    } */
-
-    // const gameInterval = setInterval(updateGame, 1000)
+    canvas.addEventListener('mouseup', handleMouseUp) */
   }, [])
 
+  // todo can we remove engine and canvas from args?
+  const handleMouseDown = (event: MouseEvent, canvas: HTMLCanvasElement) => {
+    // todo move in method ?
+    const clickX = event.clientX - canvas.getBoundingClientRect().left
+    const clickY = event.clientY - canvas.getBoundingClientRect().top
+    Engine.getInstance().checkDragging({ x: clickX, y: clickY })
+  }
+
+  const handleMouseMove = (event: MouseEvent, canvas: HTMLCanvasElement) => {
+    const x = event.clientX - canvas.getBoundingClientRect().left - 20
+    const y = event.clientY - canvas.getBoundingClientRect().top - 20
+    Engine.getInstance().handleDragging({ x, y })
+  }
+
+  const handleMouseUp = () => Engine.getInstance().draggingStopped()
+
+  useEffect(() => {
+    if (state.gameState == GlobalGameState.Finished) {
+      alert(`Игра окончена!`)
+    } else {
+      console.log(state.gameState)
+      console.log('game is running')
+      // todo do we need it?
+      setBurgerStats(prevState => ({
+        ...prevState,
+        timeRemaining: state.remainingTime,
+      }))
+    }
+  }, [state])
   return (
     <div className={style.gameBackground}>
       <canvas
