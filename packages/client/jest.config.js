@@ -21,4 +21,8 @@ export default {
     '^__mocks__/(.*)': '<rootDir>/src/__mocks__/$1',
     '\\.(css|scss)$': 'identity-obj-proxy',
   },
+  transform: {
+    // '^.+\\.(png|svg|jpg|jpeg)$': 'jest-transform-stub',
+    '\\.(svg|png)$': '<rootDir>/src/__mocks__/styleMock.cjs',
+  },
 }

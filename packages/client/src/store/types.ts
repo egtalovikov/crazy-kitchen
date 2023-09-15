@@ -1,4 +1,6 @@
+import { GlobalGameState } from '../pages/Game/game/types/commonTypes'
 import { store } from './index'
+import { TLevelParams } from '../pages/Game/game/types/commonTypes'
 
 export type AppDispatch = typeof store.dispatch
 
@@ -15,6 +17,15 @@ export interface AuthState {
   authorizedStatus: string
 }
 
+// todo one style
+export type TGameState = {
+  gameState: GlobalGameState
+  score: number
+  remainingTime: number
+  level: TLevelParams
+}
+
 export interface CoreRootState {
   authReducer: AuthState
+  game: TGameState
 }
