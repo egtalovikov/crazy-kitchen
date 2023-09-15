@@ -11,7 +11,6 @@ import {
 class Engine {
   private timeInSeconds = 0
   private levelInterval = -1
-  private LEVEL_LENGTH = 60
   private static instance?: Engine
 
   private painter: Painter
@@ -62,15 +61,18 @@ class Engine {
     gameState.ingredients.forEach(i => {
       this.ingredientClicked(point, i)
     })
+
+    console.log('new state')
+    console.log(gameState)
   }
 
   public handleDragging = (point: TPoint) => {
     gameState.ingredients.forEach(i => {
       if (i.getState().isDragging) {
         i.setCoordinates(point)
-        this.drawGame()
       }
     })
+    this.drawGame()
   }
 
   private setIsOnBun = () => {
@@ -107,7 +109,7 @@ class Engine {
       i => i.getState().isOnBun
     )
     if (burgerFinished) {
-      gameState.burgersFinished++
+      gameState.burgersFinished++ // to game slice
 
       gameState.resetIngredients()
     }
@@ -116,6 +118,7 @@ class Engine {
   public draggingStopped = () => {
     this.setIsOnBun()
     this.setBurgerFinished()
+    this.drawGame()
   }
 
   private setGameState = (state: GlobalGameState) => {

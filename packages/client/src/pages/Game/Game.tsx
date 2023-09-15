@@ -36,7 +36,7 @@ const Game: React.FC = () => {
     Engine.getInstance(ctx).drawGame()
 
     // Обработчик начала перетаскивания всех ингредиентов.
-    /* canvas.addEventListener('mousedown', event => {
+    canvas.addEventListener('mousedown', event => {
       handleMouseDown(event, canvas)
     })
 
@@ -46,7 +46,7 @@ const Game: React.FC = () => {
     })
 
     // Обработчик завершения перетаскивания.
-    canvas.addEventListener('mouseup', handleMouseUp) */
+    canvas.addEventListener('mouseup', handleMouseUp)
   }, [])
 
   // todo can we remove engine and canvas from args?
