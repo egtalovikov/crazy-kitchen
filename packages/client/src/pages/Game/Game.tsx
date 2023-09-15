@@ -32,6 +32,10 @@ const Game: React.FC = () => {
       return
     }
 
+    //
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight
+
     console.log('in use effect')
     console.log(ctx)
 
@@ -98,7 +102,8 @@ const Game: React.FC = () => {
       }))
     }
   }, [state])
-
+  /*width={GameParameters.WIDTH}
+        height={GameParameters.HEIGHT}></canvas>*/
   if (gameOver) {
     return (
       <div className={style.gameBackground}>
@@ -108,10 +113,8 @@ const Game: React.FC = () => {
   }
   return (
     <div className={style.gameBackground}>
-      <canvas
-        ref={canvasRef}
-        width={GameParameters.WIDTH}
-        height={GameParameters.HEIGHT}></canvas>
+      <canvas ref={canvasRef}></canvas>
+
       <div className="stats">
         <p>Время: {burgerStats.timeRemaining} сек.</p>
         <p>Собрано бургеров: {burgerStats.burgersCollected}</p>

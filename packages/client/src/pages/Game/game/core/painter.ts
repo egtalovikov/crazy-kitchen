@@ -24,12 +24,13 @@ class Painter {
       object.width,
       object.height
     )
-    this.context.strokeRect(
+    // temp for collision counting
+    /*this.context.strokeRect(
       coordinates.x,
       coordinates.y,
       object.width,
       object.height
-    )
+    )*/
   }
 
   public drawTime = (text: string) => {
@@ -42,7 +43,12 @@ class Painter {
   }
 
   public clearCanvas = () => {
-    this.context.clearRect(0, 0, GameParameters.WIDTH, GameParameters.HEIGHT)
+    this.context.clearRect(
+      0,
+      0,
+      this.context.canvas.clientWidth,
+      this.context.canvas.clientHeight
+    )
   }
 }
 

@@ -11,10 +11,9 @@ import {
 import CollisionHelper from '../utils/collisionHelper'
 
 class Engine {
-  private timeInSeconds = 0
   private levelInterval = -1
+  private isIntervalRunning = false
   private static instance?: Engine
-
   private painter: Painter
 
   constructor(ctx: CanvasRenderingContext2D) {
@@ -78,12 +77,15 @@ class Engine {
   }
 
   public handleDragging = (point: TPoint) => {
-    gameState.ingredients.forEach(i => {
-      if (i.getState().isDragging) {
-        i.setCoordinates(point)
-      }
-    })
-    this.drawGame()
+    const isDragging = gameState.ingredients.some(i => i.getState().isDragging)
+    if (isDragging) {
+      gameState.ingredients.forEach(i => {
+        if (i.getState().isDragging) {
+          i.setCoordinates(point)
+        }
+      })
+      this.drawGame()
+    }
   }
 
   private setIsOnBun = () => {
@@ -109,8 +111,8 @@ class Engine {
         )
       ) {
         i.getState().isOnBun = true
-        i.getState().coordinates.x = breadX
-        i.getState().coordinates.y = breadY
+        i.getState().coordinates.x = breadX + 50 // todo
+        i.getState().coordinates.y = breadY + 50 // temp fix, know that it is a magic number, need more time to refactor this
       }
     })
   }
@@ -140,9 +142,11 @@ class Engine {
 
   private updateTimeCounter = () => {
     const { remainingTime } = store.getState().game
-    // console.log('remaining time is ' + remainingTime)
+    console.log('remaining time is ' + remainingTime)
 
     if (remainingTime <= 0) {
+      console.log('levelInterval before clear')
+      console.log(this.levelInterval)
       window.clearInterval(this.levelInterval)
       //this.setGameState(GlobalGameState.Finished)
       store.dispatch(setRemainingTime(0))
@@ -154,7 +158,14 @@ class Engine {
   }
 
   public startLevel = () => {
-    this.levelInterval = window.setInterval(this.updateTimeCounter, 1000)
+    // temp fix, something (vite?) make double calls => 2 intervals were called
+    // need to research why all calles are doubled
+    if (!this.isIntervalRunning) {
+      this.levelInterval = window.setInterval(this.updateTimeCounter, 1000)
+      this.isIntervalRunning = true
+      console.log('levelInterval')
+      console.log(this.levelInterval)
+    }
   }
 
   public startGame = () => {

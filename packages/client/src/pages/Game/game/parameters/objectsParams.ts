@@ -21,25 +21,25 @@ const ingredientsParams: Record<Ingredients, TGameObjectParameter> = {
     width: 100,
     height: 100,
     imageSrc: cheeseImage,
-    startPoint: { x: 1225, y: 500 },
+    startPoint: { x: 1335, y: 650 },
   },
   [Ingredients.Salad]: {
     width: 100,
     height: 100,
     imageSrc: saladImage,
-    startPoint: { x: 1225, y: 600 },
+    startPoint: { x: 1335, y: 750 },
   },
   [Ingredients.Cutlet]: {
     width: 100,
     height: 100,
     imageSrc: cutletImage,
-    startPoint: { x: 1050, y: 620 },
+    startPoint: { x: 1200, y: 750 },
   },
   [Ingredients.Tomato]: {
-    width: 150,
-    height: 150,
+    width: 120,
+    height: 120,
     imageSrc: tomato,
-    startPoint: { x: 1000, y: 450 },
+    startPoint: { x: 1200, y: 650 },
   },
 }
 
@@ -50,7 +50,7 @@ export const gameParams: Record<GameObjects, TGameObjectParameter> = {
     width: 200,
     height: 200,
     imageSrc: burgerBread,
-    startPoint: { x: 100, y: 500 },
+    startPoint: { x: 800, y: 730 },
   },
   [GameObjects.Plate]: {
     width: 200,
@@ -62,12 +62,12 @@ export const gameParams: Record<GameObjects, TGameObjectParameter> = {
     width: 200,
     height: 200,
     imageSrc: personImage,
-    startPoint: { x: 300, y: 500 },
+    startPoint: { x: 800, y: 375 }, // todo fix
   },
   [GameObjects.Order]: {
     width: 200,
     height: 200,
     imageSrc: totalBurgerImage,
-    startPoint: { x: 500, y: 500 },
+    startPoint: { x: 730, y: 325 },
   },
 }
