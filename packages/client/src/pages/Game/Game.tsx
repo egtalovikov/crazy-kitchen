@@ -74,6 +74,7 @@ const Game: React.FC = () => {
       // todo do we need it?
       setBurgerStats(prevState => ({
         ...prevState,
+        burgersCollected: state.score,
         timeRemaining: state.remainingTime,
       }))
     }

@@ -17,6 +17,12 @@ class Painter {
       object.width,
       object.height
     )
+    this.context.strokeRect(
+      coordinates.x,
+      coordinates.y,
+      object.width,
+      object.height
+    )
   }
 
   public clearCanvas = () => {

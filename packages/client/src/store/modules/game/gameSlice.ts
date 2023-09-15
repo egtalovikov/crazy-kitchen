@@ -6,7 +6,7 @@ import { LEVEL_LENGTH } from '../../../pages/Game/game/parameters/levelParams'
 
 const initialState: TGameState = {
   gameState: GlobalGameState.WaitingForStart,
-  score: 0,
+  score: 0, // now will be equal to finished burger's number
   remainingTime: LEVEL_LENGTH,
 }
 
@@ -20,8 +20,11 @@ const gameSlice = createSlice({
     setRemainingTime: (state, action) => {
       state.remainingTime = action.payload
     },
+    setScore: (state, action) => {
+      state.score = action.payload
+    },
   },
 })
 
-export const { setGameState, setRemainingTime } = gameSlice.actions
+export const { setGameState, setRemainingTime, setScore } = gameSlice.actions
 export const gameReducer = gameSlice.reducer
