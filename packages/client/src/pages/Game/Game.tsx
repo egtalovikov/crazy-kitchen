@@ -51,7 +51,7 @@ const Game: React.FC = () => {
 
     const canvas = canvasRef.current
     if (!canvas) {
-      console.log('no canvas')
+      console.log('canvas not found')
       return
     }
     canvas.width = window.innerWidth

@@ -1,6 +1,6 @@
 import BaseObject from '../objects/baseObject'
 import Ingredient from '../objects/ingredient'
-import ingredientsParams, { gameParams } from '../parameters/objectsParams'
+import { ingredientsParams, gameParams } from '../parameters/objectsParams'
 import { GameObjects, GlobalGameState, Ingredients } from '../types/commonTypes'
 import BaseState from './objectState'
 

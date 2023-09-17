@@ -2,18 +2,18 @@ import Ingredient from '../objects/ingredient'
 import Painter from './painter'
 import gameState from '../store/gameState'
 import { GlobalGameState, TPoint } from '../types/commonTypes'
-import { store } from '../../../../store'
+import { store } from '@store/index'
 import {
   setGameState,
   setRemainingTime,
   setScore,
-} from '../../../../store/modules/game/gameSlice'
+} from '@store/modules/game/gameSlice'
 import CollisionHelper from '../utils/collisionHelper'
 
 class Engine {
   private levelInterval = -1
-  private isIntervalRunning = false
-  //private static instance?: Engine
+  // todo do we need this or reset is solving the problem?
+  private isIntervalRunning = () => this.levelInterval !== -1
   private painter: Painter
   private contextDelegate: () => CanvasRenderingContext2D
 
@@ -25,18 +25,6 @@ class Engine {
   get context() {
     return this.contextDelegate()
   }
-
-  /* public static getInstance = (ctx?: CanvasRenderingContext2D): Engine => {
-    if (!Engine.instance && ctx) {
-      Engine.instance = new Engine(ctx)
-    }
-    if (Engine.instance) {
-      return Engine.instance
-    }
-    throw Error('no context provided')
-  } */
-
-  /*  */
   private drawImmovableObjects = () => {
     this.painter.clearCanvas()
     this.painter.drawMultipleObjects([
@@ -139,6 +127,18 @@ class Engine {
     }
   }
 
+  private setGameOver = () => {
+    const gameState = store.getState().game
+    console.log('set complete state')
+    if (gameState.score === gameState.level.ordersCount) {
+      // game winned
+      this.setGameState(GlobalGameState.Winned)
+    } else {
+      // game failed
+      this.setGameState(GlobalGameState.Failed)
+    }
+  }
+
   public draggingStopped = () => {
     this.setIsOnBun()
     this.setBurgerFinished()
@@ -154,43 +154,27 @@ class Engine {
     console.log('remaining time is ' + remainingTime)
 
     if (remainingTime <= 0) {
-      console.log('levelInterval before clear')
-      console.log(this.levelInterval)
       window.clearInterval(this.levelInterval)
-      this.setWinFailState()
+      this.setGameOver()
       return
     }
 
     store.dispatch(setRemainingTime(remainingTime - 1))
   }
 
-  public startLevel = () => {
-    // temp fix, something (vite?) make double calls => 2 intervals were called
-    // need to research why all calles are doubled
-    if (!this.isIntervalRunning) {
-      this.levelInterval = window.setInterval(this.updateTimeCounter, 1000)
-      this.isIntervalRunning = true
-      console.log('levelInterval')
-      console.log(this.levelInterval)
-    }
+  private resetGame = () => {
+    window.clearInterval(this.levelInterval)
+  }
+
+  private startLevel = () => {
+    this.setGameState(GlobalGameState.Started)
+    this.drawGame()
+    this.levelInterval = window.setInterval(this.updateTimeCounter, 1000)
   }
 
   public startGame = () => {
-    this.setGameState(GlobalGameState.Started)
-    this.drawGame()
+    this.resetGame()
     this.startLevel()
-  }
-
-  public setWinFailState = () => {
-    const gameState = store.getState().game
-    console.log('set complete state')
-    if (gameState.score === gameState.level.ordersCount) {
-      // game winned
-      this.setGameState(GlobalGameState.Winned)
-    } else {
-      // game failed
-      this.setGameState(GlobalGameState.Failed)
-    }
   }
 
   public isGameOver = () => {
@@ -204,61 +188,3 @@ class Engine {
 }
 
 export default Engine
-
-// todo check all logic is preserved
-
-// Флаг для отслеживания анимации перемещения котлетки.
-// let isAnimating = false
-
-// Переменная для отображения времени (в секундах).
-// let timeInSeconds = 0
-
-// Функция для анимации перемещения котлетки на булочку.
-/* const animatePatty = () => {
-      const targetX = bunX - 30
-      const targetY = bunY + 20
-      const deltaX = (targetX - pattyX) / 20
-      const deltaY = (targetY - pattyY) / 20
-      let frameCount = 0
-
-      const animationFrame = () => {
-        if (pattyX < targetX) {
-          pattyX += deltaX
-        }
-        if (pattyY < targetY) {
-          pattyY += deltaY
-        }
-
-        drawGame()
-
-        if (pattyX < targetX || pattyY < targetY) {
-          requestAnimationFrame(animationFrame)
-        } else {
-          isAnimating = false
-          frameCount = 0
-          pattyX = bunX - 30
-          pattyY = bunY + 20
-        }
-
-        frameCount++
-      }
-      requestAnimationFrame(animationFrame)
-    } */
-
-// Функция для обновления игры (таймер).
-/* const updateGame = () => {
-      timeInSeconds += 1
-
-      if (timeInSeconds >= 60) {
-        alert(`Игра окончена!`)
-        clearInterval(gameInterval)
-        return
-      }
-
-      setBurgerStats(prevState => ({
-        ...prevState,
-        timeRemaining: 60 - timeInSeconds,
-      }))
-    } */
-
-// const gameInterval = setInterval(updateGame, 1000)

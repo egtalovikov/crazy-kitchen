@@ -1,4 +1,4 @@
-import ingredientsParams from '../parameters/objectsParams'
+import { ingredientsParams } from '../parameters/objectsParams'
 import { IngredientState } from '../store/objectState'
 import { Ingredients, TPoint } from '../types/commonTypes'
 import BaseObject from './baseObject'
