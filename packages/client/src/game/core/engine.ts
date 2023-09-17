@@ -1,7 +1,7 @@
 import Ingredient from '../objects/ingredient'
 import Painter from './painter'
 import gameState from '../store/gameState'
-import { GameLevelList, GlobalGameState, TPoint } from '../types/commonTypes'
+import { GlobalGameState, Ingredients, TPoint } from '../types/commonTypes'
 import { store } from '@store/index'
 import {
   setGameState,
@@ -9,7 +9,7 @@ import {
   setScore,
 } from '@store/modules/game/gameSlice'
 import CollisionHelper from '../helpers/collisionHelper'
-import GameLevels from '../parameters/levelParams'
+import OrderHelper from '../helpers/orderHelper'
 
 class Engine {
   private levelInterval = -1
@@ -17,8 +17,6 @@ class Engine {
   private painter: Painter
 
   private contextDelegate: () => CanvasRenderingContext2D
-
-  private currentLevel = GameLevels[GameLevelList.Level1]
 
   constructor(contextDelegate: () => CanvasRenderingContext2D) {
     this.painter = new Painter(contextDelegate)
@@ -41,12 +39,21 @@ class Engine {
     this.painter.drawMultipleObjects(gameState.ingredients)
   }
 
+  /* todo move all this level state logic (remaining time, current order) somewhere ? */
   private drawLevelState = () => {
     const { game: state } = store.getState()
     const timeText = `Время: ${state.remainingTime} сек.`
     this.painter.drawTime(timeText)
     const scoreText = `Собрано бургеров: ${state.score}`
     this.painter.drawScore(scoreText)
+
+    const currentOrder = state.level.orders[state.orderIndex]
+    const ingredientsText = `Нужно добавить: 
+    ${currentOrder[Ingredients.Tomato]} помидоров,
+    ${currentOrder[Ingredients.Cheese]} кусочков сыра,    
+    ${currentOrder[Ingredients.Cutlet]} котлет,
+    ${currentOrder[Ingredients.Salad]} листов салата`
+    this.painter.drawIngredients(ingredientsText)
   }
 
   public drawGame = () => {
@@ -60,6 +67,8 @@ class Engine {
   public ingredientClicked = (point: TPoint, ingredient: Ingredient) => {
     if (CollisionHelper.checkIfPointIsOnObject(point, ingredient)) {
       ingredient.setIsDragging(true)
+      // Подумать, часть ингридиентов могут лежать не на месте и не на булке, что делать с ними
+      gameState.addIngredient(ingredient.type)
     }
   }
 
@@ -102,12 +111,15 @@ class Engine {
   /* drag&drop logic end */
 
   private setBurgerFinished = () => {
-    // temp check if every ingredient is on bun, later compare with current order (from level params)
-    const burgerFinished = gameState.ingredients.every(
-      i => i.getState().isOnBun
-    )
+    const { level: currentLevel, orderIndex } = store.getState().game
 
-    console.log('is burder finished')
+    // todo check index
+    const currentOrder = currentLevel.orders[orderIndex]
+
+    const burgerFinished = OrderHelper.burgerFinished(
+      currentOrder,
+      gameState.ingredients
+    )
     console.log(burgerFinished)
 
     if (burgerFinished) {
@@ -115,7 +127,7 @@ class Engine {
       // todo make more complicated logic to calc score
       store.dispatch(setScore(newScore))
       gameState.resetIngredients()
-      if (newScore === this.currentLevel.ordersCount) {
+      if (newScore === currentLevel.ordersCount) {
         this.setGameState(GlobalGameState.Winned)
       }
     }
@@ -139,7 +151,7 @@ class Engine {
 
   private updateTimeCounter = () => {
     const { remainingTime } = store.getState().game
-    console.log('remaining time is ' + remainingTime)
+    // console.log('remaining time is ' + remainingTime)
 
     if (remainingTime <= 0) {
       window.clearInterval(this.levelInterval)

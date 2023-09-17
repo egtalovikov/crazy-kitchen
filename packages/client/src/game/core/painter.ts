@@ -45,6 +45,10 @@ class Painter {
     this.drawText(text, { x: 50, y: 100 })
   }
 
+  public drawIngredients = (text: string) => {
+    this.drawText(text, { x: 50, y: 200 })
+  }
+
   public clearCanvas = () => {
     const canvas = this.context.canvas
     this.context.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight)

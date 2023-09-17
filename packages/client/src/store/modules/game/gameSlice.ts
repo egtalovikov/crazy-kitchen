@@ -12,6 +12,7 @@ const initialState: TGameState = {
   score: 0, // now will be equal to finished burger's number
   remainingTime: firstLevel.time,
   level: firstLevel,
+  orderIndex: 0,
 }
 
 const gameSlice = createSlice({

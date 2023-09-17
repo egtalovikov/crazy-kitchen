@@ -23,6 +23,7 @@ export type TGameState = {
   score: number
   remainingTime: number
   level: TLevelParams
+  orderIndex: number
 }
 
 export interface CoreRootState {

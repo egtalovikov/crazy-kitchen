@@ -1,6 +1,6 @@
 import BaseObject from '../objects/baseObject'
 import Ingredient from '../objects/ingredient'
-import { ingredientsParams, gameParams } from '../parameters/objectsParams'
+import { gameParams } from '../parameters/objectsParams'
 import { GameObjects, Ingredients } from '../types/commonTypes'
 import BaseState from './objectState'
 
@@ -47,11 +47,17 @@ class GameState {
   }
 
   public resetIngredients = () => {
-    this.ingredients.forEach(i => {
+    /* this.ingredients.forEach(i => {
       const coords = ingredientsParams[i.type].startPoint
       i.getState().coordinates = coords // todo ref or value
       i.getState().isOnBun = false
-    })
+    }) */
+    this.ingredients = this.initFood()
+  }
+
+  // not sure it is the best way - may be has default number of ingredients + list + objects?
+  public addIngredient = (type: Ingredients) => {
+    this.ingredients.push(new Ingredient(type))
   }
 
   // todo use this
