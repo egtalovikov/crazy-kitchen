@@ -25,7 +25,6 @@ const gameSlice = createSlice({
       state.remainingTime = action.payload
     },
     setScore: (state, action) => {
-      // todo make more complicated logic to calc score
       state.score = action.payload
     },
   },

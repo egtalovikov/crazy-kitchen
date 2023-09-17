@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { FC } from 'react'
 import styles from './EndGame.module.scss'
 import { useGoToRoute } from '@/utils/useGoToRoute'
 import Typography from '@mui/material/Typography'
@@ -9,15 +9,22 @@ import { useSelector } from 'react-redux'
 import { CoreRootState } from '@/store/types'
 import Engine from '@/game/core/engine'
 
-export const EndGame = () => {
+type TEndGameProps = {
+  engine?: Engine
+}
+
+export const EndGame: FC<TEndGameProps> = ({ engine }) => {
   const { goRoute } = useGoToRoute()
   const { score } = useSelector((rootState: CoreRootState) => rootState.game)
-  const gameOverMessage = Engine.isGameWinned() ? 'Вы выиграли' : 'Вы проиграли'
+  const gameOverMessage = engine?.isGameWinned()
+    ? 'Вы выиграли'
+    : 'Вы проиграли'
 
   const startGameOver = () => {
-    // Engine.getInstance().startGame()
-    // goRoute(GAME_ROUTE)
+    console.log('startGameOver')
+    engine?.startGame()
   }
+
   return (
     <div className={`${styles.wrapper} ${styles.opened}`}>
       <div className={styles.container}>

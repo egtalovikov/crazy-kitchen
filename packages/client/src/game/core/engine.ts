@@ -112,6 +112,7 @@ class Engine {
 
     if (burgerFinished) {
       const newScore = store.getState().game.score + 1
+      // todo make more complicated logic to calc score
       store.dispatch(setScore(newScore))
       gameState.resetIngredients()
       if (newScore === this.currentLevel.ordersCount) {
@@ -120,14 +121,14 @@ class Engine {
     }
   }
 
+  /* game state logic */
+
   private setGameOver = () => {
     const gameState = store.getState().game
     console.log('set complete state')
     if (gameState.score === gameState.level.ordersCount) {
-      // game winned
       this.setGameState(GlobalGameState.Winned)
     } else {
-      // game failed
       this.setGameState(GlobalGameState.Failed)
     }
   }
@@ -160,7 +161,8 @@ class Engine {
   }
 
   public startGame = () => {
-    this.resetGame()
+    console.log('in start game')
+    this.resetGame() // todo reset state to start method
     this.startLevel()
   }
 
@@ -171,10 +173,8 @@ class Engine {
     )
   }
 
-  public static isGameWinned = () =>
+  public isGameWinned = () =>
     store.getState().game.gameState == GlobalGameState.Winned
-
-  // todo reset state to start method
 }
 
 export default Engine

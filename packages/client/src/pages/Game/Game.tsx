@@ -77,7 +77,7 @@ const Game: React.FC = () => {
   if (gameOver) {
     return (
       <div className={style.endBackground}>
-        <EndGame />
+        <EndGame engine={gameEngineRef.current} />
       </div>
     )
   }
