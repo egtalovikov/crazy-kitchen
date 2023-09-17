@@ -15,7 +15,7 @@ class Painter {
     this.context.fillText(text, point.x, point.y)
   }
 
-  private _drawFrame = (object: BaseObject) => {
+  private drawFrame = (object: BaseObject) => {
     const { coordinates } = object.state
     this.context.drawImage(
       object.image,
@@ -25,16 +25,16 @@ class Painter {
       object.height
     )
     // temp for collision counting
-    /*this.context.strokeRect(
+    this.context.strokeRect(
       coordinates.x,
       coordinates.y,
       object.width,
       object.height
-    )*/
+    )
   }
 
   public drawMultipleObjects = (objects: BaseObject[]) => {
-    objects.forEach(object => this._drawFrame(object))
+    objects.forEach(object => this.drawFrame(object))
   }
 
   public drawTime = (text: string) => {

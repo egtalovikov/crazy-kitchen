@@ -1,6 +1,6 @@
-import { GlobalGameState } from '../pages/Game/game/types/commonTypes'
+import { GlobalGameState } from '../game/types/commonTypes'
 import { store } from './index'
-import { TLevelParams } from '../pages/Game/game/types/commonTypes'
+import { TLevelParams } from '../game/types/commonTypes'
 
 export type AppDispatch = typeof store.dispatch
 

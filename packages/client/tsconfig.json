@@ -19,7 +19,8 @@
       "@/*": ["./src/*"],
       "@assets/*": ["./src/assets/*"],
       "@store/*": ["./src/store/*"],
-      "@pages/*": ["./src/pages/*"]
+      "@pages/*": ["./src/pages/*"],
+      "@components/*": ["./src/components/*"]
     }
   },
   "include": ["src"],

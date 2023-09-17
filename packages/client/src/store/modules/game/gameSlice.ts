@@ -1,10 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
-import {
-  GameLevelList,
-  GlobalGameState,
-} from '../../../pages/Game/game/types/commonTypes'
+import { GameLevelList, GlobalGameState } from '../../../game/types/commonTypes'
 import { TGameState } from '../../types'
-import GameLevels from '../../../pages/Game/game/parameters/levelParams'
+import GameLevels from '../../../game/parameters/levelParams'
 // todo alias not working?
 
 // game starts at first level
@@ -28,6 +25,7 @@ const gameSlice = createSlice({
       state.remainingTime = action.payload
     },
     setScore: (state, action) => {
+      // todo make more complicated logic to calc score
       state.score = action.payload
     },
   },

@@ -14,11 +14,17 @@ class Ingredient extends BaseObject {
   }
 
   public getState = () => this.state as IngredientState
+
   public setIsDragging = (isDragging: boolean) => {
     this.getState().isDragging = isDragging
   }
+
   public setCoordinates = (point: TPoint) => {
     this.getState().coordinates = point
+  }
+
+  public setIsOnBun = () => {
+    this.getState().isOnBun = true
   }
 }
 

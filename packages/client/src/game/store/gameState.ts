@@ -1,7 +1,7 @@
 import BaseObject from '../objects/baseObject'
 import Ingredient from '../objects/ingredient'
 import { ingredientsParams, gameParams } from '../parameters/objectsParams'
-import { GameObjects, GlobalGameState, Ingredients } from '../types/commonTypes'
+import { GameObjects, Ingredients } from '../types/commonTypes'
 import BaseState from './objectState'
 
 class GameState {
@@ -9,8 +9,6 @@ class GameState {
   public person: BaseObject
   public bread: BaseObject
   public order: BaseObject
-  public burgersFinished = 0
-  public globalState: GlobalGameState = GlobalGameState.WaitingForStart
 
   constructor() {
     this.ingredients = this.initFood()
@@ -57,9 +55,7 @@ class GameState {
   }
 
   // todo use this
-  public resetState = () => {
-    this.resetIngredients()
-  }
+  public resetState = () => this.resetIngredients()
 }
 
 export default new GameState()

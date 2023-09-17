@@ -1,21 +1,24 @@
 import Ingredient from '../objects/ingredient'
 import Painter from './painter'
 import gameState from '../store/gameState'
-import { GlobalGameState, TPoint } from '../types/commonTypes'
+import { GameLevelList, GlobalGameState, TPoint } from '../types/commonTypes'
 import { store } from '@store/index'
 import {
   setGameState,
   setRemainingTime,
   setScore,
 } from '@store/modules/game/gameSlice'
-import CollisionHelper from '../utils/collisionHelper'
+import CollisionHelper from '../helpers/collisionHelper'
+import GameLevels from '../parameters/levelParams'
 
 class Engine {
   private levelInterval = -1
-  // todo do we need this or reset is solving the problem?
-  private isIntervalRunning = () => this.levelInterval !== -1
+
   private painter: Painter
+
   private contextDelegate: () => CanvasRenderingContext2D
+
+  private currentLevel = GameLevels[GameLevelList.Level1]
 
   constructor(contextDelegate: () => CanvasRenderingContext2D) {
     this.painter = new Painter(contextDelegate)
@@ -52,25 +55,16 @@ class Engine {
     this.drawLevelState()
   }
 
+  /* drag&drop logic */
+
   public ingredientClicked = (point: TPoint, ingredient: Ingredient) => {
-    const coordinate = ingredient.getState().coordinates
-    if (
-      point.x >= coordinate.x &&
-      point.x <= coordinate.x + ingredient.width &&
-      point.y >= coordinate.y &&
-      point.y <= coordinate.y + ingredient.height
-    ) {
+    if (CollisionHelper.checkIfPointIsOnObject(point, ingredient)) {
       ingredient.setIsDragging(true)
     }
   }
 
   public checkDragging = (point: TPoint) => {
-    gameState.ingredients.forEach(i => {
-      this.ingredientClicked(point, i)
-    })
-
-    console.log('new state')
-    console.log(gameState)
+    gameState.ingredients.forEach(i => this.ingredientClicked(point, i))
   }
 
   public handleDragging = (point: TPoint) => {
@@ -86,44 +80,43 @@ class Engine {
   }
 
   private setIsOnBun = () => {
-    const { x: breadX, y: breadY } = gameState.bread.state.coordinates
-    console.log(breadX + ' ' + breadY)
-    console.log('in setIsOnBun')
-    console.log(gameState.ingredients[0].getState().isDragging)
-    gameState.ingredients.forEach(i => {
-      //if (i.getState().isDragging) { todo bug?
-      //}
-      if (i.getState().isDragging) {
-        i.setIsDragging(false)
+    gameState.ingredients.forEach(ingredient => {
+      if (ingredient.getState().isDragging) {
+        ingredient.setIsDragging(false)
       }
-
-      if (
-        CollisionHelper.checkCollision(
-          i.state.coordinates,
-          i.width,
-          i.height,
-          gameState.bread.state.coordinates,
-          gameState.bread.width,
-          gameState.bread.height
+      if (CollisionHelper.checkCollision(ingredient, gameState.bread)) {
+        ingredient.setIsOnBun()
+        ingredient.setCoordinates(
+          CollisionHelper.calculateOverlapCenter(gameState.bread, ingredient)
         )
-      ) {
-        i.getState().isOnBun = true
-        i.getState().coordinates.x = breadX + 50 // todo
-        i.getState().coordinates.y = breadY + 50 // temp fix, know that it is a magic number, need more time to refactor this
       }
     })
   }
 
+  public draggingStopped = () => {
+    this.setIsOnBun()
+    this.setBurgerFinished()
+    this.drawGame()
+  }
+
+  /* drag&drop logic end */
+
   private setBurgerFinished = () => {
+    // temp check if every ingredient is on bun, later compare with current order (from level params)
     const burgerFinished = gameState.ingredients.every(
       i => i.getState().isOnBun
     )
+
     console.log('is burder finished')
     console.log(burgerFinished)
+
     if (burgerFinished) {
-      gameState.burgersFinished++ // todo remove duplicate logic
-      store.dispatch(setScore(gameState.burgersFinished))
+      const newScore = store.getState().game.score + 1
+      store.dispatch(setScore(newScore))
       gameState.resetIngredients()
+      if (newScore === this.currentLevel.ordersCount) {
+        this.setGameState(GlobalGameState.Winned)
+      }
     }
   }
 
@@ -137,12 +130,6 @@ class Engine {
       // game failed
       this.setGameState(GlobalGameState.Failed)
     }
-  }
-
-  public draggingStopped = () => {
-    this.setIsOnBun()
-    this.setBurgerFinished()
-    this.drawGame()
   }
 
   private setGameState = (state: GlobalGameState) => {
@@ -183,6 +170,9 @@ class Engine {
       gameState == GlobalGameState.Failed || gameState == GlobalGameState.Winned
     )
   }
+
+  public static isGameWinned = () =>
+    store.getState().game.gameState == GlobalGameState.Winned
 
   // todo reset state to start method
 }
