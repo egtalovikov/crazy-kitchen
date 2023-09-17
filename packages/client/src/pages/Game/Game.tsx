@@ -7,8 +7,6 @@ import { TPoint } from './game/types/commonTypes'
 import { EndGame } from '../../components/EndGame'
 
 const Game: React.FC = () => {
-  console.log('in game')
-
   const state = useSelector((rootState: CoreRootState) => rootState.game)
   const [gameOver, setGameOver] = useState(false)
 
@@ -18,15 +16,16 @@ const Game: React.FC = () => {
     if (context) {
       return context
     } else {
-      throw Error('canvas not found')
+      throw Error('contextDelegate : canvas not found')
     }
   }, [])
+
   const gameEngineRef = useRef<Engine>(new Engine(contextDelegate))
 
   const getClickCoordinates = (event: MouseEvent): TPoint => {
     const canvas = canvasRef.current
     if (!canvas) {
-      throw Error('getClickCoordinates method canvas not found')
+      throw Error('getClickCoordinates : canvas not found')
     } else {
       return {
         x: event.clientX - canvas.getBoundingClientRect().left,
@@ -41,17 +40,12 @@ const Game: React.FC = () => {
   const handleMouseMove = (event: MouseEvent) =>
     gameEngineRef.current?.handleDragging(getClickCoordinates(event))
 
-  const handleMouseUp = () => {
-    gameEngineRef.current?.draggingStopped()
-    console.log('state')
-    console.log(state)
-  }
-  useEffect(() => {
-    console.log('in first use effect')
+  const handleMouseUp = () => gameEngineRef.current?.draggingStopped()
 
+  useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) {
-      console.log('canvas not found')
+      console.log('useEffect : canvas not found')
       return
     }
     canvas.width = window.innerWidth
@@ -71,17 +65,15 @@ const Game: React.FC = () => {
     }
   }, [])
 
+  /* this will repaint remaining time every second */
   useEffect(() => {
-    console.log('in state useEffect')
     if (gameEngineRef.current?.isGameOver()) {
       setGameOver(true)
-      console.log('game over')
     } else {
-      console.log(state.gameState)
-      console.log('game is running')
       gameEngineRef.current?.drawGame()
     }
   }, [state.gameState, state.remainingTime])
+
   if (gameOver) {
     return (
       <div className={style.endBackground}>
@@ -89,6 +81,7 @@ const Game: React.FC = () => {
       </div>
     )
   }
+
   return (
     <div className={style.game}>
       <canvas className={style.game__background} ref={canvasRef}></canvas>
