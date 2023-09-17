@@ -1,47 +1,63 @@
-import React, { useRef, useEffect, useState } from 'react'
+import React, { useRef, useEffect, useState, useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import Engine from './game/core/engine'
-import GameParameters from './game/parameters/globalParams'
 import style from './Game.module.scss'
 import { CoreRootState } from '../../store/types'
-import { GlobalGameState } from './game/types/commonTypes'
+import { TPoint } from './game/types/commonTypes'
 import { EndGame } from '../../components/EndGame'
 
 const Game: React.FC = () => {
   console.log('in game')
-  const canvasRef = useRef<HTMLCanvasElement | null>(null)
+
   const state = useSelector((rootState: CoreRootState) => rootState.game)
-
-  const [burgerStats, setBurgerStats] = useState({
-    burgersCollected: 0,
-    timeRemaining: 60,
-  })
-
   const [gameOver, setGameOver] = useState(false)
 
+  const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  const contextDelegate = useCallback((): CanvasRenderingContext2D => {
+    const context = canvasRef.current?.getContext('2d')
+    if (context) {
+      return context
+    } else {
+      throw Error('canvas not found')
+    }
+  }, [])
+  const gameEngineRef = useRef<Engine>(new Engine(contextDelegate))
+
+  const getClickCoordinates = (event: MouseEvent): TPoint => {
+    const canvas = canvasRef.current
+    if (!canvas) {
+      throw Error('getClickCoordinates method canvas not found')
+    } else {
+      return {
+        x: event.clientX - canvas.getBoundingClientRect().left,
+        y: event.clientY - canvas.getBoundingClientRect().top,
+      }
+    }
+  }
+
+  const handleMouseDown = (event: MouseEvent) =>
+    gameEngineRef.current?.checkDragging(getClickCoordinates(event))
+
+  const handleMouseMove = (event: MouseEvent) =>
+    gameEngineRef.current?.handleDragging(getClickCoordinates(event))
+
+  const handleMouseUp = () => {
+    gameEngineRef.current?.draggingStopped()
+    console.log('state')
+    console.log(state)
+  }
   useEffect(() => {
+    console.log('in first use effect')
+
     const canvas = canvasRef.current
     if (!canvas) {
       console.log('no canvas')
       return
     }
-
-    const ctx = canvas.getContext('2d')
-    if (!ctx) {
-      console.log('no context')
-      return
-    }
-
-    //
     canvas.width = window.innerWidth
     canvas.height = window.innerHeight
 
-    console.log('in use effect')
-    console.log(ctx)
-
-    // Функция для перерисовки игры.
-    // Engine.getInstance(ctx).drawGame()
-    Engine.getInstance(ctx).startGame()
+    gameEngineRef.current?.startGame()
 
     // Обработчики перетаскивания ингредиентов.
     canvas.addEventListener('mousedown', handleMouseDown)
@@ -55,70 +71,27 @@ const Game: React.FC = () => {
     }
   }, [])
 
-  // todo can we remove engine and canvas from args?
-  const handleMouseDown = (event: MouseEvent) => {
-    // todo move in method ?
-    const canvas = canvasRef.current
-    if (!canvas) {
-      return
-    }
-    const clickX = event.clientX - canvas.getBoundingClientRect().left
-    const clickY = event.clientY - canvas.getBoundingClientRect().top
-    Engine.getInstance().checkDragging({ x: clickX, y: clickY })
-  }
-
-  const handleMouseMove = (event: MouseEvent) => {
-    const canvas = canvasRef.current
-    if (!canvas) {
-      return
-    }
-    const x = event.clientX - canvas.getBoundingClientRect().left - 20
-    const y = event.clientY - canvas.getBoundingClientRect().top - 20
-    Engine.getInstance().handleDragging({ x, y })
-  }
-
-  const handleMouseUp = () => {
-    Engine.getInstance().draggingStopped()
-    console.log('state')
-    console.log(state)
-  }
-
   useEffect(() => {
     console.log('in state useEffect')
-    if (
-      state.gameState == GlobalGameState.Failed ||
-      state.gameState == GlobalGameState.Winned
-    ) {
+    if (gameEngineRef.current?.isGameOver()) {
       setGameOver(true)
       console.log('game over')
     } else {
       console.log(state.gameState)
       console.log('game is running')
-      // todo do we need it?
-      setBurgerStats(prevState => ({
-        ...prevState,
-        burgersCollected: state.score,
-        timeRemaining: state.remainingTime,
-      }))
+      gameEngineRef.current?.drawGame()
     }
-  }, [state])
-  /*width={GameParameters.WIDTH}
-        height={GameParameters.HEIGHT}></canvas>*/
+  }, [state.gameState, state.remainingTime])
   if (gameOver) {
     return (
-      <div className={style.gameBackground}>
+      <div className={style.endBackground}>
         <EndGame />
       </div>
     )
   }
   return (
-    <div className={style.gameBackground}>
-      <canvas ref={canvasRef}></canvas>
-
-      <div className="stats">
-        <p>Время: {burgerStats.timeRemaining} сек.</p>
-        <p>Собрано бургеров: {burgerStats.burgersCollected}</p>
-      </div>
+    <div className={style.game}>
+      <canvas className={style.game__background} ref={canvasRef}></canvas>
     </div>
   )
 }

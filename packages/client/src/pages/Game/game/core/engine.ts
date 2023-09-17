@@ -13,14 +13,20 @@ import CollisionHelper from '../utils/collisionHelper'
 class Engine {
   private levelInterval = -1
   private isIntervalRunning = false
-  private static instance?: Engine
+  //private static instance?: Engine
   private painter: Painter
+  private contextDelegate: () => CanvasRenderingContext2D
 
-  constructor(ctx: CanvasRenderingContext2D) {
-    this.painter = new Painter(ctx)
+  constructor(contextDelegate: () => CanvasRenderingContext2D) {
+    this.painter = new Painter(contextDelegate)
+    this.contextDelegate = contextDelegate
   }
 
-  public static getInstance = (ctx?: CanvasRenderingContext2D): Engine => {
+  get context() {
+    return this.contextDelegate()
+  }
+
+  /* public static getInstance = (ctx?: CanvasRenderingContext2D): Engine => {
     if (!Engine.instance && ctx) {
       Engine.instance = new Engine(ctx)
     }
@@ -28,20 +34,23 @@ class Engine {
       return Engine.instance
     }
     throw Error('no context provided')
-  }
+  } */
 
-  private drawBackground = () => {
+  /*  */
+  private drawImmovableObjects = () => {
     this.painter.clearCanvas()
-    this.painter.drawFrame(gameState.bread)
-    this.painter.drawFrame(gameState.person)
-    this.painter.drawFrame(gameState.order)
+    this.painter.drawMultipleObjects([
+      gameState.bread,
+      gameState.person,
+      gameState.order,
+    ])
   }
 
   private drawIngredients = () => {
-    gameState.ingredients.forEach(i => this.painter.drawFrame(i))
+    this.painter.drawMultipleObjects(gameState.ingredients)
   }
 
-  private drawCurrentState = () => {
+  private drawLevelState = () => {
     const { game: state } = store.getState()
     const timeText = `Время: ${state.remainingTime} сек.`
     this.painter.drawTime(timeText)
@@ -50,9 +59,9 @@ class Engine {
   }
 
   public drawGame = () => {
-    this.drawBackground()
+    this.drawImmovableObjects()
     this.drawIngredients()
-    this.drawCurrentState()
+    this.drawLevelState()
   }
 
   public ingredientClicked = (point: TPoint, ingredient: Ingredient) => {
@@ -81,7 +90,7 @@ class Engine {
     if (isDragging) {
       gameState.ingredients.forEach(i => {
         if (i.getState().isDragging) {
-          i.setCoordinates(point)
+          i.setCoordinates({ x: point.x - 20, y: point.y - 20 }) // todo setCoordinates will remove % of width
         }
       })
       this.drawGame()
@@ -148,8 +157,6 @@ class Engine {
       console.log('levelInterval before clear')
       console.log(this.levelInterval)
       window.clearInterval(this.levelInterval)
-      //this.setGameState(GlobalGameState.Finished)
-      store.dispatch(setRemainingTime(0))
       this.setWinFailState()
       return
     }
@@ -185,6 +192,15 @@ class Engine {
       this.setGameState(GlobalGameState.Failed)
     }
   }
+
+  public isGameOver = () => {
+    const { gameState } = store.getState().game
+    return (
+      gameState == GlobalGameState.Failed || gameState == GlobalGameState.Winned
+    )
+  }
+
+  // todo reset state to start method
 }
 
 export default Engine

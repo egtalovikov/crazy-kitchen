@@ -1,12 +1,12 @@
 import BaseObject from '../objects/baseObject'
-import GameParameters from '../parameters/globalParams'
 import { TPoint } from '../types/commonTypes'
 
 class Painter {
-  private context: CanvasRenderingContext2D
+  constructor(private _contextDelegate: () => CanvasRenderingContext2D) {}
 
-  constructor(ctx: CanvasRenderingContext2D) {
-    this.context = ctx
+  // getter to access context (to reduce amount of changes in present code)
+  get context() {
+    return this._contextDelegate()
   }
 
   private drawText = (text: string, point: TPoint) => {
@@ -15,7 +15,7 @@ class Painter {
     this.context.fillText(text, point.x, point.y)
   }
 
-  public drawFrame = (object: BaseObject) => {
+  private _drawFrame = (object: BaseObject) => {
     const { coordinates } = object.state
     this.context.drawImage(
       object.image,
@@ -33,9 +33,12 @@ class Painter {
     )*/
   }
 
+  public drawMultipleObjects = (objects: BaseObject[]) => {
+    objects.forEach(object => this._drawFrame(object))
+  }
+
   public drawTime = (text: string) => {
-    // todo move to params
-    this.drawText(text, { x: 50, y: 50 })
+    this.drawText(text, { x: 50, y: 50 }) // todo move to params
   }
 
   public drawScore = (text: string) => {
@@ -43,12 +46,8 @@ class Painter {
   }
 
   public clearCanvas = () => {
-    this.context.clearRect(
-      0,
-      0,
-      this.context.canvas.clientWidth,
-      this.context.canvas.clientHeight
-    )
+    const canvas = this.context.canvas
+    this.context.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight)
   }
 }
 

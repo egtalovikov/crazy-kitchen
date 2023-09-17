@@ -7,14 +7,14 @@ import Button from '@mui/material/Button'
 import { GAME_ROUTE, MAIN_ROUTE } from '../../utils/consts'
 import { useSelector } from 'react-redux'
 import { CoreRootState } from '../../store/types'
-import Engine from '../../pages/Game/game/core/engine'
+// import Engine from '../../pages/Game/game/core/engine'
 
 export const EndGame = () => {
   const { goRoute } = useGoToRoute()
   const { score } = useSelector((rootState: CoreRootState) => rootState.game)
 
-  const handleGameComplete = () => {
-    Engine.getInstance().startGame()
+  const startGameOver = () => {
+    // Engine.getInstance().startGame()
     goRoute(GAME_ROUTE)
   }
   return (
@@ -32,7 +32,7 @@ export const EndGame = () => {
           className={styles.buttonsContainer}
           alignItems={'center'}
           justifyContent={'center'}>
-          <Button variant={'outlined'} onClick={handleGameComplete}>
+          <Button variant={'outlined'} onClick={startGameOver}>
             Начать заново
           </Button>
           <Button variant={'outlined'} onClick={() => goRoute(MAIN_ROUTE)}>

@@ -41,5 +41,5 @@ export type TLevelParams = {
   name: string
   time: number
   ordersCount: number
-  orders: null // todo set burger params here
+  orders: Record<Ingredients, number>[] // todo set burger params here
 }
