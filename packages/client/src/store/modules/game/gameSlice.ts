@@ -28,8 +28,12 @@ const gameSlice = createSlice({
     setScore: (state, action) => {
       state.score = action.payload
     },
+    setOrderIndex: (state, action) => {
+      state.orderIndex = action.payload
+    },
   },
 })
 
-export const { setGameState, setRemainingTime, setScore } = gameSlice.actions
+export const { setGameState, setRemainingTime, setScore, setOrderIndex } =
+  gameSlice.actions
 export const gameReducer = gameSlice.reducer

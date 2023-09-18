@@ -5,6 +5,7 @@ import { GlobalGameState, Ingredients, TPoint } from '../types/commonTypes'
 import { store } from '@store/index'
 import {
   setGameState,
+  setOrderIndex,
   setRemainingTime,
   setScore,
 } from '@store/modules/game/gameSlice'
@@ -124,11 +125,17 @@ class Engine {
 
     if (burgerFinished) {
       const newScore = store.getState().game.score + 1
+
       // todo make more complicated logic to calc score
       store.dispatch(setScore(newScore))
       gameState.resetIngredients()
       if (newScore === currentLevel.ordersCount) {
         this.setGameState(GlobalGameState.Winned)
+        // todo set index with check?
+        store.dispatch(setOrderIndex(0))
+      } else {
+        const newIndex = store.getState().game.orderIndex + 1
+        store.dispatch(setOrderIndex(newIndex))
       }
     }
   }
