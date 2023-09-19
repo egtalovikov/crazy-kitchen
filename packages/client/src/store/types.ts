@@ -1,6 +1,6 @@
+import { TLevelParams } from '@/game/types/levels'
 import { GlobalGameState } from '../game/types/commonTypes'
 import { store } from './index'
-import { TLevelParams } from '../game/types/commonTypes'
 
 export type AppDispatch = typeof store.dispatch
 
@@ -24,6 +24,7 @@ export type TGameState = {
   remainingTime: number
   level: TLevelParams
   orderIndex: number
+  ordersFinished: number
 }
 
 export interface CoreRootState {

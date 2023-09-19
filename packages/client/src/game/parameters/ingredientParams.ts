@@ -1,0 +1,46 @@
+import cutletImage from '@assets/ingredients/cutlet.png'
+import cheeseImage from '@assets/ingredients/cheese.png'
+import tomatoImage from '@assets/ingredients/tomato.png'
+import saladImage from '@assets/ingredients/salad.png'
+import burgerBread from '@assets/ingredients/burgerBread.png'
+import { Ingredients, TIngredientParameter } from '../types/ingredients'
+
+const ingredientsParams: Record<Ingredients, TIngredientParameter> = {
+  [Ingredients.Cheese]: {
+    width: 100,
+    height: 100,
+    imageSrc: cheeseImage,
+    startPoint: { x: 1335, y: 650 },
+    preparationRequired: false,
+  },
+  [Ingredients.Salad]: {
+    width: 100,
+    height: 100,
+    imageSrc: saladImage,
+    startPoint: { x: 1335, y: 750 },
+    preparationRequired: false,
+  },
+  [Ingredients.Cutlet]: {
+    width: 100,
+    height: 100,
+    imageSrc: cutletImage,
+    startPoint: { x: 1200, y: 750 },
+    preparationRequired: true,
+  },
+  [Ingredients.Tomato]: {
+    width: 120,
+    height: 120,
+    imageSrc: tomatoImage,
+    startPoint: { x: 1200, y: 650 },
+    preparationRequired: false,
+  },
+  [Ingredients.Bread]: {
+    width: 200,
+    height: 200,
+    imageSrc: burgerBread,
+    startPoint: { x: 800, y: 730 },
+    preparationRequired: false,
+  },
+}
+
+export default ingredientsParams

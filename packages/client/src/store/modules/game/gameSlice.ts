@@ -1,7 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { GameLevelList, GlobalGameState } from '../../../game/types/commonTypes'
+import { GlobalGameState } from '@/game/types/commonTypes'
 import { TGameState } from '../../types'
-import GameLevels from '../../../game/parameters/levelParams'
+import GameLevels from '@/game/parameters/levelParams'
+import { GameLevelList } from '@/game/types/levels'
 // todo alias not working?
 
 // game starts at first level
@@ -9,10 +10,11 @@ const firstLevel = GameLevels[GameLevelList.Level1]
 
 const initialState: TGameState = {
   gameState: GlobalGameState.WaitingForStart,
-  score: 0, // now will be equal to finished burger's number
+  score: 0,
   remainingTime: firstLevel.time,
   level: firstLevel,
   orderIndex: 0,
+  ordersFinished: 0,
 }
 
 const gameSlice = createSlice({

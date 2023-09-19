@@ -1,67 +1,45 @@
-import BaseObject from '../objects/baseObject'
+import Client from '../objects/client'
+import CookingZone from '../objects/cookingZone'
 import Ingredient from '../objects/ingredient'
-import { gameParams } from '../parameters/objectsParams'
-import { GameObjects, Ingredients } from '../types/commonTypes'
-import BaseState from './objectState'
+import Order from '../objects/order'
+import { Clients } from '../types/clients'
+import { Ingredients } from '../types/ingredients'
+import { Recipes } from '../types/recipe'
 
 class GameState {
   public ingredients: Ingredient[]
-  public person: BaseObject
-  public bread: BaseObject
-  public order: BaseObject
+  public upcomingOrders: Order[]
+  public clients: Client[]
+  // todo create several zones
+  public cookingZone: CookingZone
 
   constructor() {
-    this.ingredients = this.initFood()
-    this.person = this.initPerson()
-    this.bread = this.initBread()
-    this.order = this.initOrder()
+    this.ingredients = this.initIngredients()
+    this.upcomingOrders = []
+    this.clients = this.initClients()
+    // todo create several zones
+    this.cookingZone = new CookingZone(Recipes.Burger)
   }
 
-  private initBread = () => {
-    const params = gameParams[GameObjects.BurgerBread]
-    const state = new BaseState(params.startPoint)
-    return new BaseObject(params.imageSrc, params.width, params.height, state)
+  private initClients = (): Client[] => {
+    const clients = []
+    clients.push(new Client(Clients.Client1, [Recipes.Burger]))
+    return clients
   }
 
-  private initPerson = () => {
-    const params = gameParams[GameObjects.Person]
-    const state = new BaseState(params.startPoint)
-    return new BaseObject(params.imageSrc, params.width, params.height, state)
-  }
-
-  private initFood = () => {
+  private initIngredients = () => {
     const food: Ingredient[] = []
-    food.push(new Ingredient(Ingredients.Cheese))
-    food.push(new Ingredient(Ingredients.Cutlet))
-    food.push(new Ingredient(Ingredients.Salad))
-    food.push(new Ingredient(Ingredients.Tomato))
-
+    Object.keys(Ingredients).forEach(ingredient => {
+      if (!isNaN(Number(ingredient))) {
+        food.push(new Ingredient(Number(ingredient)))
+      }
+    })
     return food
   }
 
-  private initOrder = () => {
-    const params = gameParams[GameObjects.Order]
-    const state = new BaseState(params.startPoint)
-    // todo params width and height
-    return new BaseObject(params.imageSrc, params.width, params.height, state)
+  public resetState = () => {
+    // todo here we will reset game on start
   }
-
-  public resetIngredients = () => {
-    /* this.ingredients.forEach(i => {
-      const coords = ingredientsParams[i.type].startPoint
-      i.getState().coordinates = coords // todo ref or value
-      i.getState().isOnBun = false
-    }) */
-    this.ingredients = this.initFood()
-  }
-
-  // not sure it is the best way - may be has default number of ingredients + list + objects?
-  public addIngredient = (type: Ingredients) => {
-    this.ingredients.push(new Ingredient(type))
-  }
-
-  // todo use this
-  public resetState = () => this.resetIngredients()
 }
 
 export default new GameState()

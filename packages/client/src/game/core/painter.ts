@@ -4,15 +4,8 @@ import { TPoint } from '../types/commonTypes'
 class Painter {
   constructor(private _contextDelegate: () => CanvasRenderingContext2D) {}
 
-  // getter to access context (to reduce amount of changes in present code)
   get context() {
     return this._contextDelegate()
-  }
-
-  private drawText = (text: string, point: TPoint) => {
-    this.context.font = 'bold 48px serif'
-    this.context.fillStyle = '#fff'
-    this.context.fillText(text, point.x, point.y)
   }
 
   private drawFrame = (object: BaseObject) => {
@@ -33,20 +26,22 @@ class Painter {
     )
   }
 
-  public drawMultipleObjects = (objects: BaseObject[]) => {
+  public drawText = (text: string, point: TPoint) => {
+    this.context.font = '400 24px Roboto Condensed' // todo can we store it at one place?
+    this.context.fillStyle = '#fff'
+    this.context.fillText(text, point.x, point.y)
+  }
+
+  // todo build error fix
+  /* public drawRect = (point: TPoint, width: number, height: number) => {
+    this.context.fillStyle = '#5bc7f2'
+    this.context.beginPath()
+    this.context.roundRect(point.x, point.y, width, height, 5)
+    this.context.fill()
+  } */
+
+  public drawObjects = (objects: BaseObject[]) => {
     objects.forEach(object => this.drawFrame(object))
-  }
-
-  public drawTime = (text: string) => {
-    this.drawText(text, { x: 50, y: 50 }) // todo move to params
-  }
-
-  public drawScore = (text: string) => {
-    this.drawText(text, { x: 50, y: 100 })
-  }
-
-  public drawIngredients = (text: string) => {
-    this.drawText(text, { x: 50, y: 200 })
   }
 
   public clearCanvas = () => {

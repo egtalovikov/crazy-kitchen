@@ -1,11 +1,11 @@
-import { GameLevelList, Ingredients, TLevelParams } from '../types/commonTypes'
+import { GameLevelList, TLevelParams } from '../types/levels'
 
 const GameLevels: Record<GameLevelList, TLevelParams> = {
   [GameLevelList.Level1]: {
     name: 'Новичок',
     time: 60,
     ordersCount: 3,
-    orders: [
+    /* orders: [
       {
         [Ingredients.Cheese]: 2,
         [Ingredients.Cutlet]: 1,
@@ -24,13 +24,13 @@ const GameLevels: Record<GameLevelList, TLevelParams> = {
         [Ingredients.Salad]: 0,
         [Ingredients.Tomato]: 2,
       },
-    ],
+    ],*/
   },
   [GameLevelList.Level2]: {
     name: 'Бывалый',
     time: 60,
     ordersCount: 3,
-    orders: [
+    /* orders: [
       {
         [Ingredients.Cheese]: 2,
         [Ingredients.Cutlet]: 1,
@@ -49,7 +49,7 @@ const GameLevels: Record<GameLevelList, TLevelParams> = {
         [Ingredients.Salad]: 1,
         [Ingredients.Tomato]: 0,
       },
-    ],
+    ],*/
   },
 }
 

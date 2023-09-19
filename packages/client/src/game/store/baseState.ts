@@ -9,12 +9,3 @@ class BaseState {
 }
 
 export default BaseState
-
-export class IngredientState extends BaseState {
-  public isDragging = false
-  public isOnBun = false
-
-  constructor(coordinates: TPoint) {
-    super(coordinates)
-  }
-}

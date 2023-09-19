@@ -35,12 +35,12 @@ const Game: React.FC = () => {
   }
 
   const handleMouseDown = (event: MouseEvent) =>
-    gameEngineRef.current?.checkDragging(getClickCoordinates(event))
+    gameEngineRef.current?.handleDruggingStart(getClickCoordinates(event))
 
   const handleMouseMove = (event: MouseEvent) =>
-    gameEngineRef.current?.handleDragging(getClickCoordinates(event))
+    gameEngineRef.current?.handleDraggingMove(getClickCoordinates(event))
 
-  const handleMouseUp = () => gameEngineRef.current?.draggingStopped()
+  const handleMouseUp = () => gameEngineRef.current?.handleDraggingStop()
 
   useEffect(() => {
     const canvas = canvasRef.current

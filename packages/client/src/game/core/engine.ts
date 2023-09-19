@@ -1,16 +1,11 @@
 import Ingredient from '../objects/ingredient'
 import Painter from './painter'
 import gameState from '../store/gameState'
-import { GlobalGameState, Ingredients, TPoint } from '../types/commonTypes'
+import { GlobalGameState, TPoint } from '../types/commonTypes'
 import { store } from '@store/index'
-import {
-  setGameState,
-  setOrderIndex,
-  setRemainingTime,
-  setScore,
-} from '@store/modules/game/gameSlice'
+import { setGameState, setRemainingTime } from '@store/modules/game/gameSlice'
 import CollisionHelper from '../helpers/collisionHelper'
-import OrderHelper from '../helpers/orderHelper'
+import DrawStateHelper from '../helpers/drawStateHelper'
 
 class Engine {
   private levelInterval = -1
@@ -27,109 +22,112 @@ class Engine {
   get context() {
     return this.contextDelegate()
   }
-  private drawImmovableObjects = () => {
+
+  /* drawing logic, todo refactor to make multiple levels and differents types of orders */
+  private drawClients = () => {
     this.painter.clearCanvas()
-    this.painter.drawMultipleObjects([
-      gameState.bread,
-      gameState.person,
-      gameState.order,
-    ])
+    this.painter.drawObjects(gameState.clients)
+    // todo every client order position should be calculated
+    this.painter.drawObjects(gameState.clients[0].orders)
   }
 
-  private drawIngredients = () => {
-    this.painter.drawMultipleObjects(gameState.ingredients)
-  }
+  private drawCookingZones = () =>
+    this.painter.drawObjects([gameState.cookingZone.plate])
 
-  /* todo move all this level state logic (remaining time, current order) somewhere ? */
-  private drawLevelState = () => {
-    const { game: state } = store.getState()
-    const timeText = `Время: ${state.remainingTime} сек.`
-    this.painter.drawTime(timeText)
-    const scoreText = `Собрано бургеров: ${state.score}`
-    this.painter.drawScore(scoreText)
-
-    const currentOrder = state.level.orders[state.orderIndex]
-    const ingredientsText = `Нужно добавить: 
-    ${currentOrder[Ingredients.Tomato]} помидоров,
-    ${currentOrder[Ingredients.Cheese]} кусочков сыра,    
-    ${currentOrder[Ingredients.Cutlet]} котлет,
-    ${currentOrder[Ingredients.Salad]} листов салата`
-    this.painter.drawIngredients(ingredientsText)
-  }
+  private drawIngredients = () =>
+    this.painter.drawObjects(gameState.ingredients)
 
   public drawGame = () => {
-    this.drawImmovableObjects()
+    this.drawClients()
+    this.drawCookingZones()
     this.drawIngredients()
-    this.drawLevelState()
+    DrawStateHelper.drawLevelState(this.painter, store.getState().game)
   }
 
   /* drag&drop logic */
 
-  public ingredientClicked = (point: TPoint, ingredient: Ingredient) => {
+  public setIsDragging = (point: TPoint, ingredient: Ingredient) => {
     if (CollisionHelper.checkIfPointIsOnObject(point, ingredient)) {
       ingredient.setIsDragging(true)
-      // Подумать, часть ингридиентов могут лежать не на месте и не на булке, что делать с ними
-      gameState.addIngredient(ingredient.type)
     }
   }
 
-  public checkDragging = (point: TPoint) => {
-    gameState.ingredients.forEach(i => this.ingredientClicked(point, i))
+  private placeIngredient = () => {
+    gameState.ingredients.forEach(ingredient => {
+      if (ingredient.getState().isDragging) {
+        ingredient.setIsDragging(false)
+      }
+
+      const { cookingZone: cZone } = gameState
+
+      // todo iterate all cooking zones and detect zone
+      if (CollisionHelper.checkCollision(ingredient, cZone.plate)) {
+        cZone.upcomingOrder.addIngredient(ingredient.type)
+
+        // todo set new cooking zone view here
+
+        // no animation, ingredient is painted here
+        ingredient.setCoordinates(ingredient.basePoint)
+      } else {
+        // todo ingredient will move back to its place, need animation here
+        ingredient.setCoordinates(ingredient.basePoint)
+      }
+    })
   }
 
-  public handleDragging = (point: TPoint) => {
+  public handleDruggingStart = (point: TPoint) => {
+    gameState.ingredients.forEach(i => this.setIsDragging(point, i))
+  }
+
+  public handleDraggingMove = (point: TPoint) => {
     const isDragging = gameState.ingredients.some(i => i.getState().isDragging)
     if (isDragging) {
       gameState.ingredients.forEach(i => {
         if (i.getState().isDragging) {
-          i.setCoordinates({ x: point.x - 20, y: point.y - 20 }) // todo setCoordinates will remove % of width
+          // todo replate 20 amgic number with % of object width
+          i.setCoordinates({ x: point.x - 20, y: point.y - 20 })
         }
       })
       this.drawGame()
     }
   }
 
-  private setIsOnBun = () => {
-    gameState.ingredients.forEach(ingredient => {
-      if (ingredient.getState().isDragging) {
-        ingredient.setIsDragging(false)
-      }
-      if (CollisionHelper.checkCollision(ingredient, gameState.bread)) {
-        ingredient.setIsOnBun()
-        ingredient.setCoordinates(
-          CollisionHelper.calculateOverlapCenter(gameState.bread, ingredient)
-        )
-      }
-    })
-  }
-
-  public draggingStopped = () => {
-    this.setIsOnBun()
-    this.setBurgerFinished()
+  public handleDraggingStop = () => {
+    this.placeIngredient()
+    // todo form order on plate in gameState upcoming orders
+    // this.setOrderFinished()
     this.drawGame()
   }
 
   /* drag&drop logic end */
 
-  private setBurgerFinished = () => {
-    const { level: currentLevel, orderIndex } = store.getState().game
+  /* orders logic */
 
-    // todo check index
-    const currentOrder = currentLevel.orders[orderIndex]
+  /* private getCurrentOrder = () => {
+    const { level, orderIndex } = store.getState().game
+    if (orderIndex >= level.orders.length) {
+      throw Error('order index is out of orders array')
+    }
+    return level.orders[orderIndex]
+  }
 
-    const burgerFinished = OrderHelper.burgerFinished(
-      currentOrder,
-      gameState.ingredients
-    )
-    console.log(burgerFinished)
+  private isLevelFinished = (): boolean => {
+    const { level, ordersFinished } = store.getState().game
+    return ordersFinished === level.ordersCount
+  }
 
-    if (burgerFinished) {
-      const newScore = store.getState().game.score + 1
+  private setOrderScore = (currentOrder: Record<Ingredients, number>) => {
+    const newScore =
+      store.getState().game.score + OrderHelper.orderScore(currentOrder)
+    store.dispatch(setScore(newScore))
+  }
 
-      // todo make more complicated logic to calc score
-      store.dispatch(setScore(newScore))
+  private setOrderFinished = () => {
+    const currentOrder = this.getCurrentOrder()
+    if (OrderHelper.isOrderFinished(currentOrder, gameState.ingredients)) {
+      this.setOrderScore(currentOrder)
       gameState.resetIngredients()
-      if (newScore === currentLevel.ordersCount) {
+      if (this.isLevelFinished()) {
         this.setGameState(GlobalGameState.Winned)
         // todo set index with check?
         store.dispatch(setOrderIndex(0))
@@ -138,22 +136,21 @@ class Engine {
         store.dispatch(setOrderIndex(newIndex))
       }
     }
-  }
+  } */
 
   /* game state logic */
 
-  private setGameOver = () => {
-    const gameState = store.getState().game
-    console.log('set complete state')
-    if (gameState.score === gameState.level.ordersCount) {
-      this.setGameState(GlobalGameState.Winned)
-    } else {
-      this.setGameState(GlobalGameState.Failed)
-    }
-  }
-
   private setGameState = (state: GlobalGameState) => {
     store.dispatch(setGameState(state))
+  }
+
+  private setGameOver = () => {
+    const { game } = store.getState()
+    const state =
+      game.score === game.level.ordersCount
+        ? GlobalGameState.Winned
+        : GlobalGameState.Failed
+    this.setGameState(state)
   }
 
   private updateTimeCounter = () => {
@@ -169,9 +166,7 @@ class Engine {
     store.dispatch(setRemainingTime(remainingTime - 1))
   }
 
-  private resetGame = () => {
-    window.clearInterval(this.levelInterval)
-  }
+  private resetGame = () => window.clearInterval(this.levelInterval)
 
   private startLevel = () => {
     this.setGameState(GlobalGameState.Started)
@@ -181,9 +176,11 @@ class Engine {
 
   public startGame = () => {
     console.log('in start game')
-    this.resetGame() // todo reset state to start method
+    this.resetGame()
     this.startLevel()
   }
+
+  /* game over methods */
 
   public isGameOver = () => {
     const { gameState } = store.getState().game
