@@ -1,4 +1,4 @@
-import plateImage from '@assets/plate.png'
+import plateImage from '@assets/ingredients/test/plate.png'
 
 const plateParameters = {
   width: 200,

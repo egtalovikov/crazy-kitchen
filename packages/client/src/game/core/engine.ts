@@ -6,6 +6,7 @@ import { store } from '@store/index'
 import { setGameState, setRemainingTime } from '@store/modules/game/gameSlice'
 import CollisionHelper from '../helpers/collisionHelper'
 import DrawStateHelper from '../helpers/drawStateHelper'
+import CookingZone from '../objects/zone/cookingZone'
 
 class Engine {
   private levelInterval = -1
@@ -28,67 +29,115 @@ class Engine {
   public drawGame = () => {
     this.painter.clearCanvas()
 
-    this.painter.drawObjects(gameState.clients)
-    // todo every client order position should be calculated
-    this.painter.drawObjects(gameState.clients[0].orders)
+    /* draw clients and orders */
+    gameState.clients.forEach(client => {
+      this.painter.drawObjects([client])
+      // TODO: every client order position should be calculated
+      this.painter.drawObjects(client.orders)
+    })
 
-    // TODO: create several zones later
-    this.painter.drawObjects(gameState.cookingZone.getObjectsToDraw())
+    /* draw cooking zones */
+    gameState.cookingZones.forEach(zone => {
+      this.painter.drawZone(zone) // remove
+      /* draw dragged orders */
+      this.painter.drawObjects(zone.getObjectsToDraw())
+    })
 
-    this.painter.drawObjects(gameState.ingredients)
+    // temp for testing
+    gameState.ingredientZones.forEach(zone => {
+      this.painter.drawZone(zone)
+    })
+
+    /* draw dragged ingredients */
+    // this.painter.drawObjects(gameState.ingredients)
+    this.painter.drawObjects(gameState.draggedObjects)
 
     DrawStateHelper.drawLevelState(this.painter, store.getState().game)
   }
 
   /* drag&drop logic */
 
-  public setIsDragging = (point: TPoint, ingredient: Ingredient) => {
-    if (CollisionHelper.checkIfPointInZone(point, ingredient)) {
-      ingredient.setIsDragging(true)
-    }
+  private checkIngredientFitsZone = (
+    ingredient: Ingredient,
+    cZone: CookingZone
+  ) => {
+    const intersects = CollisionHelper.checkCollision(ingredient, cZone.plate)
+    const fitsZone = cZone.ingredientFits(ingredient.type)
+    return intersects && fitsZone
+  }
+
+  private setZoneHovered = (ingredient: Ingredient, cZone: CookingZone) => {
+    const intersects = CollisionHelper.checkCollision(ingredient, cZone.plate)
+    cZone.setHovered(intersects, ingredient.type)
   }
 
   private placeIngredient = () => {
-    gameState.ingredients.forEach(ingredient => {
+    //gameState.ingredients.forEach(ingredient => {
+    gameState.draggedObjects.forEach(ingredient => {
       if (ingredient.getState().isDragging) {
         ingredient.setIsDragging(false)
       }
 
-      const { cookingZone: cZone } = gameState
+      gameState.cookingZones.forEach(zone => {
+        // todo iterate all cooking zones and detect zone
+        if (CollisionHelper.checkCollision(ingredient, zone.plate)) {
+          // TODO: decide will we use cZone coords or plate coords?
+          zone.addIngredient(ingredient.type)
 
-      // todo iterate all cooking zones and detect zone
-      if (CollisionHelper.checkCollision(ingredient, cZone.plate)) {
-        // TODO: decide will we use cZone coords or plate coords?
-        cZone.upcomingOrder.addIngredient(
-          ingredient.type,
-          cZone.plate.coordinates
-        )
+          if (zone.getIsHovered()) {
+            zone.setIsHovered(false)
+          }
+          // todo set new cooking zone view here
 
-        // todo set new cooking zone view here
-
-        // no animation, ingredient is painted here
-        ingredient.setCoordinates(ingredient.basePoint)
-      } else {
-        // todo ingredient will move back to its place, need animation here
-        ingredient.setCoordinates(ingredient.basePoint)
-      }
+          // no animation, ingredient is painted here
+          ingredient.setCoordinates(ingredient.basePoint)
+        } else {
+          // todo ingredient will move back to its place, need animation here
+          ingredient.setCoordinates(ingredient.basePoint)
+        }
+      })
     })
   }
 
   public handleDruggingStart = (point: TPoint) => {
-    gameState.ingredients.forEach(i => this.setIsDragging(point, i))
+    /* gameState.ingredients.forEach(i => {
+      if (CollisionHelper.checkIfPointInZone(point, i)) {
+        i.setIsDragging(true)
+      }
+    }) */
+
+    // TODO: handle cooking zone drag
+    gameState.ingredientZones.forEach(zone => {
+      if (CollisionHelper.checkIfPointInZone2(point, zone)) {
+        zone.isClicked()
+      }
+    })
+    /* if (CollisionHelper.checkIfPointInZone(point, cZone)) {
+      CookingZone.setIsDragging(true)
+    } */
   }
 
   public handleDraggingMove = (point: TPoint) => {
-    const isDragging = gameState.ingredients.some(i => i.getState().isDragging)
-    if (isDragging) {
-      gameState.ingredients.forEach(i => {
-        if (i.getState().isDragging) {
-          // todo replate 20 amgic number with % of object width
-          i.setCoordinates({ x: point.x - 20, y: point.y - 20 })
-        }
-      })
+    // const ingredient = gameState.ingredients.find(i => i.getState().isDragging)
+    const ingredient = gameState.draggedObjects.find(
+      i => i.getState().isDragging
+    )
+
+    if (ingredient) {
+      ingredient.setCoordinates({ x: point.x - 20, y: point.y - 20 })
+      gameState.cookingZones.forEach(zone =>
+        this.setZoneHovered(ingredient, zone)
+      )
+
       this.drawGame()
+    } else {
+      // TODO: isDragging - can we make common for zone and ingredient? common state parent?
+      // also coordinates is set when dragging - common interface?
+      const zone = gameState.cookingZones.find(z => z.isDragging)
+      if (zone) {
+        zone.coordinates = { x: point.x - 20, y: point.y - 20 }
+        // this.setOrderHovered(zone, order)
+      }
     }
   }
 

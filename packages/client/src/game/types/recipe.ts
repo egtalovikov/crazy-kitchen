@@ -11,11 +11,11 @@ export type TRecipeParameters = TObjectParameter & {
 
 export type TRecipe = Record<Ingredients, number>
 
-// todo is the best place here?
-export const emptyOrder = {
+// todo remove
+/* export const emptyOrder = {
   [Ingredients.Bread]: 0,
   [Ingredients.Cheese]: 0,
   [Ingredients.Cutlet]: 0,
   [Ingredients.Salad]: 0,
   [Ingredients.Tomato]: 0,
-}
+} */

@@ -1,4 +1,5 @@
 import BaseObject from '../objects/base/baseObject'
+import BaseZone from '../objects/base/baseZone'
 import { TPoint } from '../types/commonTypes'
 
 class CollisionHelper {
@@ -15,6 +16,16 @@ class CollisionHelper {
 
   // todo better name?
   public static checkIfPointInZone = (point: TPoint, object: BaseObject) => {
+    const coordinates = object.coordinates
+    return (
+      point.x >= coordinates.x &&
+      point.x <= coordinates.x + object.width &&
+      point.y >= coordinates.y &&
+      point.y <= coordinates.y + object.height
+    )
+  }
+
+  public static checkIfPointInZone2 = (point: TPoint, object: BaseZone) => {
     const coordinates = object.coordinates
     return (
       point.x >= coordinates.x &&

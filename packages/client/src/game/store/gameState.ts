@@ -1,24 +1,27 @@
 import Client from '../objects/client'
-import CookingZone from '../objects/cookingZone'
+import CookingZone from '../objects/zone/cookingZone'
 import Ingredient from '../objects/ingredient'
-import Order from '../objects/order'
 import { Clients } from '../types/clients'
 import { Ingredients } from '../types/ingredients'
 import { Recipes } from '../types/recipe'
+import IngredientZone from '../objects/zone/ingredientZone'
 
 class GameState {
-  public ingredients: Ingredient[]
-  public upcomingOrders: Order[]
+  // public ingredients: Ingredient[]
+  // public upcomingOrders: Order[]
   public clients: Client[]
-  // todo create several zones
-  public cookingZone: CookingZone
+  public cookingZones: CookingZone[]
+  public ingredientZones: IngredientZone[]
+
+  public draggedObjects: Ingredient[] = []
 
   constructor() {
-    this.ingredients = this.initIngredients()
-    this.upcomingOrders = []
+    // this.ingredients = this.initIngredients()
+    //this.upcomingOrders = []
     this.clients = this.initClients()
-    // todo create several zones
-    this.cookingZone = new CookingZone(Recipes.Burger)
+    // TODO: create several zones
+    this.cookingZones = [new CookingZone(Recipes.Burger)]
+    this.ingredientZones = this.initIngredientsZone()
   }
 
   private initClients = (): Client[] => {
@@ -35,6 +38,12 @@ class GameState {
       }
     })
     return food
+  }
+
+  private initIngredientsZone = (): IngredientZone[] => {
+    const zones = []
+    zones.push(new IngredientZone(Ingredients.Tomato))
+    return zones
   }
 
   public resetState = () => {

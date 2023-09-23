@@ -1,4 +1,5 @@
 import BaseObject from '../objects/base/baseObject'
+import BaseZone from '../objects/base/baseZone'
 import { TPoint } from '../types/commonTypes'
 
 class Painter {
@@ -22,6 +23,16 @@ class Painter {
       object.coordinates.y,
       object.width,
       object.height
+    )
+  }
+
+  // temp method to draw zone boundaries
+  public drawZone = (zone: BaseZone) => {
+    this.context.strokeRect(
+      zone.coordinates.x,
+      zone.coordinates.y,
+      zone.width,
+      zone.height
     )
   }
 
