@@ -1,10 +1,10 @@
-import BaseObject from '../objects/baseObject'
+import BaseObject from '../objects/base/baseObject'
 import { TPoint } from '../types/commonTypes'
 
 class CollisionHelper {
   public static checkCollision = (object1: BaseObject, object2: BaseObject) => {
-    const point1 = object1.state.coordinates
-    const point2 = object2.state.coordinates
+    const point1 = object1.coordinates
+    const point2 = object2.coordinates
     return (
       point1.x < point2.x + object2.width &&
       point1.x + object1.width > point2.x &&
@@ -14,11 +14,8 @@ class CollisionHelper {
   }
 
   // todo better name?
-  public static checkIfPointIsOnObject = (
-    point: TPoint,
-    object: BaseObject
-  ) => {
-    const coordinates = object.state.coordinates
+  public static checkIfPointInZone = (point: TPoint, object: BaseObject) => {
+    const coordinates = object.coordinates
     return (
       point.x >= coordinates.x &&
       point.x <= coordinates.x + object.width &&
@@ -33,11 +30,11 @@ class CollisionHelper {
     childObject: BaseObject
   ): TPoint => {
     const x =
-      parentObject.state.coordinates.x +
+      parentObject.coordinates.x +
       parentObject.width / 2 -
       childObject.width / 2
     const y =
-      parentObject.state.coordinates.y +
+      parentObject.coordinates.y +
       parentObject.height / 2 -
       childObject.height / 2
     return { x, y }

@@ -2,17 +2,23 @@ import ingredientsParams from '../parameters/ingredientParams'
 import { IngredientState } from '../store/ingredient'
 import { TPoint } from '../types/commonTypes'
 import { Ingredients } from '../types/ingredients'
-import BaseObject from './baseObject'
+import BaseObject from './base/baseObject'
 
 class Ingredient extends BaseObject {
   public type: Ingredients
   public basePoint: TPoint
   public preparationRequired: boolean // todo better name
+  public state = new IngredientState()
 
   constructor(type: Ingredients) {
     const params = ingredientsParams[type]
-    const state = new IngredientState(params.startPoint)
-    super(params.imageSrc, params.width, params.height, state)
+    super(
+      params.imageSrc,
+      params.width,
+      params.height,
+      params.frameWidth,
+      params.startPoint
+    )
     this.type = type
     this.basePoint = params.startPoint
     this.preparationRequired = params.preparationRequired
@@ -25,7 +31,7 @@ class Ingredient extends BaseObject {
   }
 
   public setCoordinates = (point: TPoint) => {
-    this.getState().coordinates = point
+    this.coordinates = point
   }
 
   public setIsInOrder = () => {

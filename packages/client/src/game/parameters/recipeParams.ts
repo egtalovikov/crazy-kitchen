@@ -1,6 +1,7 @@
 import { Ingredients } from '../types/ingredients'
 import { Recipes, TRecipeParameters } from '../types/recipe'
 import totalBurgerImage from '@assets/ingredients/totalBurger.png'
+// import test from '@assets/ingredients/test/test.png'
 
 /* import plateImage from '@assets/plate.png'
 
@@ -17,7 +18,10 @@ const recipeParameters: Record<Recipes, TRecipeParameters> = {
   [Recipes.Burger]: {
     width: 200,
     height: 200,
+    //imageSrc: totalBurgerImage,
+    // todo create full sprite
     imageSrc: totalBurgerImage,
+    frameWidth: 100,
     recipe: {
       [Ingredients.Cheese]: 1,
       [Ingredients.Cutlet]: 1,

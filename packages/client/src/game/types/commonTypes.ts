@@ -7,6 +7,7 @@ export type TObjectParameter = {
   width: number
   height: number
   imageSrc: string
+  frameWidth: number
 }
 
 export enum GlobalGameState {

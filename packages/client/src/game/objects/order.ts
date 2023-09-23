@@ -1,8 +1,8 @@
 import recipeParameters from '../parameters/recipeParams'
-import OrderState from '../store/order'
+
 import { TPoint } from '../types/commonTypes'
 import { Recipes, TRecipe } from '../types/recipe'
-import BaseObject from './baseObject'
+import BaseObject from './base/baseObject'
 
 class Order extends BaseObject {
   public recipe: TRecipe
@@ -10,8 +10,13 @@ class Order extends BaseObject {
 
   constructor(type: Recipes, point: TPoint) {
     const params = recipeParameters[type]
-    const state = new OrderState(point)
-    super(params.imageSrc, params.width, params.height, state)
+    super(
+      params.imageSrc,
+      params.width,
+      params.height,
+      params.frameWidth,
+      point
+    )
     this.type = type
     this.recipe = params.recipe
   }

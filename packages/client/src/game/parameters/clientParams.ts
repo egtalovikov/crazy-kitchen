@@ -6,11 +6,13 @@ const clientsParameters: Record<Clients, TClientParameter> = {
     width: 100,
     height: 100,
     imageSrc: personImage,
+    frameWidth: 100,
   },
   [Clients.Client2]: {
     width: 100,
     height: 100,
     imageSrc: personImage,
+    frameWidth: 100,
   },
 }
 

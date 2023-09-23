@@ -4,6 +4,7 @@ const plateParameters = {
   width: 200,
   height: 200,
   imageSrc: plateImage,
+  frameWidth: 100,
   startPoint: { x: 200, y: 500 },
 }
 

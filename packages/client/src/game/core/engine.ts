@@ -24,30 +24,26 @@ class Engine {
   }
 
   /* drawing logic, todo refactor to make multiple levels and differents types of orders */
-  private drawClients = () => {
+
+  public drawGame = () => {
     this.painter.clearCanvas()
+
     this.painter.drawObjects(gameState.clients)
     // todo every client order position should be calculated
     this.painter.drawObjects(gameState.clients[0].orders)
-  }
 
-  private drawCookingZones = () =>
-    this.painter.drawObjects([gameState.cookingZone.plate])
+    // TODO: create several zones later
+    this.painter.drawObjects(gameState.cookingZone.getObjectsToDraw())
 
-  private drawIngredients = () =>
     this.painter.drawObjects(gameState.ingredients)
 
-  public drawGame = () => {
-    this.drawClients()
-    this.drawCookingZones()
-    this.drawIngredients()
     DrawStateHelper.drawLevelState(this.painter, store.getState().game)
   }
 
   /* drag&drop logic */
 
   public setIsDragging = (point: TPoint, ingredient: Ingredient) => {
-    if (CollisionHelper.checkIfPointIsOnObject(point, ingredient)) {
+    if (CollisionHelper.checkIfPointInZone(point, ingredient)) {
       ingredient.setIsDragging(true)
     }
   }
@@ -62,7 +58,11 @@ class Engine {
 
       // todo iterate all cooking zones and detect zone
       if (CollisionHelper.checkCollision(ingredient, cZone.plate)) {
-        cZone.upcomingOrder.addIngredient(ingredient.type)
+        // TODO: decide will we use cZone coords or plate coords?
+        cZone.upcomingOrder.addIngredient(
+          ingredient.type,
+          cZone.plate.coordinates
+        )
 
         // todo set new cooking zone view here
 
@@ -94,49 +94,8 @@ class Engine {
 
   public handleDraggingStop = () => {
     this.placeIngredient()
-    // todo form order on plate in gameState upcoming orders
-    // this.setOrderFinished()
     this.drawGame()
   }
-
-  /* drag&drop logic end */
-
-  /* orders logic */
-
-  /* private getCurrentOrder = () => {
-    const { level, orderIndex } = store.getState().game
-    if (orderIndex >= level.orders.length) {
-      throw Error('order index is out of orders array')
-    }
-    return level.orders[orderIndex]
-  }
-
-  private isLevelFinished = (): boolean => {
-    const { level, ordersFinished } = store.getState().game
-    return ordersFinished === level.ordersCount
-  }
-
-  private setOrderScore = (currentOrder: Record<Ingredients, number>) => {
-    const newScore =
-      store.getState().game.score + OrderHelper.orderScore(currentOrder)
-    store.dispatch(setScore(newScore))
-  }
-
-  private setOrderFinished = () => {
-    const currentOrder = this.getCurrentOrder()
-    if (OrderHelper.isOrderFinished(currentOrder, gameState.ingredients)) {
-      this.setOrderScore(currentOrder)
-      gameState.resetIngredients()
-      if (this.isLevelFinished()) {
-        this.setGameState(GlobalGameState.Winned)
-        // todo set index with check?
-        store.dispatch(setOrderIndex(0))
-      } else {
-        const newIndex = store.getState().game.orderIndex + 1
-        store.dispatch(setOrderIndex(newIndex))
-      }
-    }
-  } */
 
   /* game state logic */
 
@@ -153,25 +112,39 @@ class Engine {
     this.setGameState(state)
   }
 
-  private updateTimeCounter = () => {
+  private pause = () => {
+    window.clearInterval(this.levelInterval)
+  }
+
+  private continue = () => {
+    this.levelInterval = window.setInterval(this.mainLoop, 1000)
+  }
+
+  private mainLoop = () => {
+    // TODO: add client update logic for clients to go and order
     const { remainingTime } = store.getState().game
-    // console.log('remaining time is ' + remainingTime)
 
     if (remainingTime <= 0) {
-      window.clearInterval(this.levelInterval)
+      this.pause()
       this.setGameOver()
       return
     }
 
     store.dispatch(setRemainingTime(remainingTime - 1))
+    this.drawGame()
   }
 
-  private resetGame = () => window.clearInterval(this.levelInterval)
+  private resetGame = () => {
+    window.clearInterval(this.levelInterval)
+    this.levelInterval = -1
+    this.setGameState(GlobalGameState.Started)
+    // this reset time
+  }
 
   private startLevel = () => {
     this.setGameState(GlobalGameState.Started)
     this.drawGame()
-    this.levelInterval = window.setInterval(this.updateTimeCounter, 1000)
+    this.continue()
   }
 
   public startGame = () => {

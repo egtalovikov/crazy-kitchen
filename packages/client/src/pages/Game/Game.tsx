@@ -69,10 +69,8 @@ const Game: React.FC = () => {
   useEffect(() => {
     if (gameEngineRef.current?.isGameOver()) {
       setGameOver(true)
-    } else {
-      gameEngineRef.current?.drawGame()
     }
-  }, [state.gameState, state.remainingTime])
+  }, [state.gameState])
 
   if (gameOver) {
     return (
