@@ -1,26 +1,20 @@
-import Client from '../objects/client'
-import CookingZone from '../objects/zone/cookingZone'
-import Ingredient from '../objects/ingredients/ingredient'
+import Client from '../objects/orders/client'
+import CookingZone from '../objects/zones/cookingZone'
 import { Clients } from '../types/clients'
 import { Ingredients } from '../types/ingredients'
 import { Recipes } from '../types/recipe'
-import IngredientZone from '../objects/zone/ingredientZone'
+import IngredientZone from '../objects/zones/ingredientZone'
+import BaseObject from '../objects/base/baseObject'
 
 class GameState {
-  // public ingredients: Ingredient[]
-  // public upcomingOrders: Order[]
   public clients: Client[]
   public cookingZones: CookingZone[]
   public ingredientZones: IngredientZone[]
-
-  public draggedObjects: Ingredient[] = []
+  public draggedObjects: BaseObject[] = []
 
   constructor() {
-    // this.ingredients = this.initIngredients()
-    //this.upcomingOrders = []
     this.clients = this.initClients()
-    // TODO: create several zones
-    this.cookingZones = [new CookingZone(Recipes.Burger)]
+    this.cookingZones = this.initCookingZones()
     this.ingredientZones = this.initIngredientsZone()
   }
 
@@ -43,8 +37,16 @@ class GameState {
     return zones
   }
 
+  private initCookingZones = () => {
+    // TODO: create several zones
+    return [new CookingZone(Recipes.Burger)]
+  }
+
   public resetState = () => {
-    // todo here we will reset game on start
+    // TODO: check
+    this.clients = this.initClients()
+    this.cookingZones = this.initCookingZones()
+    this.ingredientZones = this.initIngredientsZone()
   }
 }
 

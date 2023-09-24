@@ -43,6 +43,11 @@ class Painter {
     this.context.fillText(text, point.x, point.y)
   }
 
+  // TODO: think what methods are actually needed
+  public drawObject = (object: BaseObject) => {
+    this.drawFrame(object)
+  }
+
   public drawObjects = (objects: BaseObject[]) => {
     objects.forEach(object => this.drawFrame(object))
   }

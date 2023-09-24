@@ -1,70 +1,19 @@
 import Ingredient from '../objects/ingredients/ingredient'
-import Painter from './painter'
 import gameState from '../store/gameState'
 import { GlobalGameState, TPoint } from '../types/commonTypes'
 import { store } from '@store/index'
 import { setGameState, setRemainingTime } from '@store/modules/game/gameSlice'
 import CollisionHelper from '../helpers/collisionHelper'
-import DrawStateHelper from '../helpers/drawStateHelper'
-import CookingZone from '../objects/zone/cookingZone'
+import CookingZone from '../objects/zones/cookingZone'
+import DrawingHelper from '../helpers/drawingHelper'
 
 class Engine {
   private levelInterval = -1
 
-  private painter: Painter
-
-  private contextDelegate: () => CanvasRenderingContext2D
+  private drawingHelper: DrawingHelper
 
   constructor(contextDelegate: () => CanvasRenderingContext2D) {
-    this.painter = new Painter(contextDelegate)
-    this.contextDelegate = contextDelegate
-  }
-
-  get context() {
-    return this.contextDelegate()
-  }
-
-  /* drawing logic, todo refactor to make multiple levels and differents types of orders */
-
-  public drawGame = () => {
-    this.painter.clearCanvas()
-
-    /* draw clients and orders */
-    gameState.clients.forEach(client => {
-      this.painter.drawObjects([client])
-      // TODO: every client order position should be calculated
-      // this.painter.drawObjects(client.orders)
-    })
-
-    /* draw cooking zones */
-    gameState.cookingZones.forEach(zone => {
-      this.painter.drawZone(zone) // remove
-      /* draw dragged orders */
-      //this.painter.drawObjects(zone.getObjectsToDraw())
-      /*zone.getObjectsToDraw().forEach(obj => {
-        if(obj as DishIngredient){
-          this.painter.tempDrawFrame(obj as DishIngredient)
-        }
-      })*/
-      if (!zone.isEmpty) {
-        this.painter.drawObjects([zone.plate])
-        zone.dish.forEach(ingredient => {
-          this.painter.tempDrawFrame(ingredient)
-        })
-        this.painter.tempDrawFrame(zone.topBun)
-      }
-    })
-
-    // temp for testing
-    gameState.ingredientZones.forEach(zone => {
-      this.painter.drawZone(zone)
-    })
-
-    /* draw dragged ingredients */
-    // this.painter.drawObjects(gameState.ingredients)
-    this.painter.drawObjects(gameState.draggedObjects)
-
-    DrawStateHelper.drawLevelState(this.painter, store.getState().game)
+    this.drawingHelper = new DrawingHelper(contextDelegate)
   }
 
   /* drag&drop logic */
@@ -140,7 +89,7 @@ class Engine {
         this.setZoneHovered(ingredient, zone)
       )
 
-      this.drawGame()
+      this.drawingHelper.drawGameFrame()
     } else {
       // TODO: isDragging - can we make common for zone and ingredient? common state parent?
       // also coordinates is set when dragging - common interface?
@@ -154,7 +103,7 @@ class Engine {
 
   public handleDraggingStop = () => {
     this.placeIngredient()
-    this.drawGame()
+    this.drawingHelper.drawGameFrame()
   }
 
   /* game state logic */
@@ -191,19 +140,19 @@ class Engine {
     }
 
     store.dispatch(setRemainingTime(remainingTime - 1))
-    this.drawGame()
+    this.drawingHelper.drawGameFrame()
   }
 
   private resetGame = () => {
     window.clearInterval(this.levelInterval)
     this.levelInterval = -1
     this.setGameState(GlobalGameState.Started)
-    // this reset time
+    // this reset time, score
   }
 
   private startLevel = () => {
     this.setGameState(GlobalGameState.Started)
-    this.drawGame()
+    this.drawingHelper.drawGameFrame()
     this.continue()
   }
 
