@@ -23,7 +23,7 @@ const recipeParameters: Record<Recipes, TRecipeParameters> = {
     imageSrc: totalBurgerImage,
     frameWidth: 100,
     recipe: {
-      [Ingredients.Cheese]: 1,
+      // [Ingredients.Cheese]: 1,
       [Ingredients.Cutlet]: 1,
       [Ingredients.Salad]: 1,
       [Ingredients.Tomato]: 1,

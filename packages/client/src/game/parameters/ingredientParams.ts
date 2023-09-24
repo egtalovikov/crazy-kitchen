@@ -1,19 +1,19 @@
 import cutletImage from '@assets/ingredients/cutlet.png'
-import cheeseImage from '@assets/ingredients/cheese.png'
+// import cheeseImage from '@assets/ingredients/cheese.png'
 import tomatoImage from '@assets/ingredients/tomato.png'
 import saladImage from '@assets/ingredients/salad.png'
 import burgerBread from '@assets/ingredients/burgerBread.png'
 import { Ingredients, TIngredientParameter } from '../types/ingredients'
 
 const ingredientsParams: Record<Ingredients, TIngredientParameter> = {
-  [Ingredients.Cheese]: {
+  /* [Ingredients.Cheese]: {
     width: 100,
     height: 100,
     imageSrc: cheeseImage,
     frameWidth: 100,
     startPoint: { x: 1335, y: 650 },
     preparationRequired: false,
-  },
+  }, */
   [Ingredients.Salad]: {
     width: 100,
     height: 100,

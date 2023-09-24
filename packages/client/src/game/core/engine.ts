@@ -1,4 +1,4 @@
-import Ingredient from '../objects/ingredient'
+import Ingredient from '../objects/ingredients/ingredient'
 import Painter from './painter'
 import gameState from '../store/gameState'
 import { GlobalGameState, TPoint } from '../types/commonTypes'
@@ -33,14 +33,26 @@ class Engine {
     gameState.clients.forEach(client => {
       this.painter.drawObjects([client])
       // TODO: every client order position should be calculated
-      this.painter.drawObjects(client.orders)
+      // this.painter.drawObjects(client.orders)
     })
 
     /* draw cooking zones */
     gameState.cookingZones.forEach(zone => {
       this.painter.drawZone(zone) // remove
       /* draw dragged orders */
-      this.painter.drawObjects(zone.getObjectsToDraw())
+      //this.painter.drawObjects(zone.getObjectsToDraw())
+      /*zone.getObjectsToDraw().forEach(obj => {
+        if(obj as DishIngredient){
+          this.painter.tempDrawFrame(obj as DishIngredient)
+        }
+      })*/
+      if (!zone.isEmpty) {
+        this.painter.drawObjects([zone.plate])
+        zone.dish.forEach(ingredient => {
+          this.painter.tempDrawFrame(ingredient)
+        })
+        this.painter.tempDrawFrame(zone.topBun)
+      }
     })
 
     // temp for testing
@@ -56,15 +68,6 @@ class Engine {
   }
 
   /* drag&drop logic */
-
-  private checkIngredientFitsZone = (
-    ingredient: Ingredient,
-    cZone: CookingZone
-  ) => {
-    const intersects = CollisionHelper.checkCollision(ingredient, cZone.plate)
-    const fitsZone = cZone.ingredientFits(ingredient.type)
-    return intersects && fitsZone
-  }
 
   private setZoneHovered = (ingredient: Ingredient, cZone: CookingZone) => {
     const intersects = CollisionHelper.checkCollision(ingredient, cZone.plate)
@@ -90,13 +93,18 @@ class Engine {
           // todo set new cooking zone view here
 
           // no animation, ingredient is painted here
-          ingredient.setCoordinates(ingredient.basePoint)
+
+          // ingredient.setCoordinates(ingredient.basePoint)
         } else {
-          // todo ingredient will move back to its place, need animation here
-          ingredient.setCoordinates(ingredient.basePoint)
+          // TODO: animate moving back to ingredient zone
+          // ingredient.setCoordinates(ingredient.basePoint)
+          // rerender with ?
+          ingredient.moveBack()
         }
       })
     })
+    // delete ingredient after placing
+    gameState.draggedObjects = []
   }
 
   public handleDruggingStart = (point: TPoint) => {
@@ -124,7 +132,10 @@ class Engine {
     )
 
     if (ingredient) {
-      ingredient.setCoordinates({ x: point.x - 20, y: point.y - 20 })
+      ingredient.setCoordinates({
+        x: point.x - ingredient.width / 2,
+        y: point.y - ingredient.height / 2,
+      })
       gameState.cookingZones.forEach(zone =>
         this.setZoneHovered(ingredient, zone)
       )

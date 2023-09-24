@@ -1,6 +1,6 @@
 import Client from '../objects/client'
 import CookingZone from '../objects/zone/cookingZone'
-import Ingredient from '../objects/ingredient'
+import Ingredient from '../objects/ingredients/ingredient'
 import { Clients } from '../types/clients'
 import { Ingredients } from '../types/ingredients'
 import { Recipes } from '../types/recipe'
@@ -30,19 +30,16 @@ class GameState {
     return clients
   }
 
-  private initIngredients = () => {
-    const food: Ingredient[] = []
-    Object.keys(Ingredients).forEach(ingredient => {
-      if (!isNaN(Number(ingredient))) {
-        food.push(new Ingredient(Number(ingredient)))
+  private initIngredientsZone = (): IngredientZone[] => {
+    const zones: IngredientZone[] = []
+    Object.values(Ingredients).forEach(type => {
+      if (!isNaN(Number(type))) {
+        console.log('type')
+        console.log(type)
+        const zone = new IngredientZone(type as unknown as Ingredients)
+        zones.push(zone)
       }
     })
-    return food
-  }
-
-  private initIngredientsZone = (): IngredientZone[] => {
-    const zones = []
-    zones.push(new IngredientZone(Ingredients.Tomato))
     return zones
   }
 

@@ -1,4 +1,4 @@
-import Ingredient from '../objects/ingredient'
+import Ingredient from '../objects/ingredients/ingredient'
 import { Ingredients } from '../types/ingredients'
 
 class OrderHelper {
@@ -8,7 +8,7 @@ class OrderHelper {
   ): boolean => {
     // Подумать как лучше сделать проверку
     const orderIngredients: Record<Ingredients, number> = {
-      [Ingredients.Cheese]: 0,
+      // [Ingredients.Cheese]: 0,
       [Ingredients.Cutlet]: 0,
       [Ingredients.Salad]: 0,
       [Ingredients.Tomato]: 0,
