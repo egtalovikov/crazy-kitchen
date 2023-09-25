@@ -5,14 +5,13 @@ import { Ingredients } from '../types/ingredients'
 import { Recipes } from '../types/recipe'
 import IngredientZone from '../objects/zones/ingredientZone'
 import Ingredient from '../objects/ingredients/ingredient'
+import Dish from '../objects/orders/dish'
 
 class GameState {
   public clients: Client[]
   public cookingZones: CookingZone[]
   public ingredientZones: IngredientZone[]
-  // TODO: can we create base draggable object?
-  public draggedObject: Ingredient | CookingZone | null = null
-  // public draggedOrder: CookingZone | null = null
+  public draggedObject: Ingredient | Dish | null = null
 
   constructor() {
     this.clients = this.initClients()

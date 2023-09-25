@@ -1,150 +1,81 @@
-import plateParameters from '../../parameters/plateParameters'
 import { Recipes, TRecipe } from '../../types/recipe'
-import BaseObject from '../base/baseObject'
 import BaseZone from '../base/baseZone'
 import { Ingredients } from '../../types/ingredients'
 import recipeParameters from '../../parameters/recipeParams'
 import zoneParams from '../../parameters/zoneParameters'
-import DishIngredient from '../ingredients/dishIngredient'
-import BaseSpriteObject from '../base/baseSpriteObject'
-import { topBunParams } from '@/game/parameters/ingredientsOnBurgerParams'
 import CollisionHelper from '@/game/helpers/collisionHelper'
 import Ingredient from '../ingredients/ingredient'
+import gameState from '@/game/store/gameState'
+import Dish from '../orders/dish'
+import BaseSpriteObject from '../base/baseSpriteObject'
 
+// TODO: now is specific for burger, create universal cooking zone and its descendants
 class CookingZone extends BaseZone {
-  // TODO: plate and bun top can we refactor?
-  public topBun: BaseSpriteObject
-  public plate: BaseObject
-  public isEmpty = true // TODO: will be draggable if false
   public recipe: TRecipe // TODO: is record the best solution?
-  // TODO: we do not need ingredient logic here, use BaseObject or it's descendant
-  public dish: DishIngredient[] = [] // TODO: bun top separate logic
-  // TODO: separate all drawable objects so that they can be set to dragged order and revert back
-  public type: Recipes // compare when dragging to client
-
-  private isHovered = false // TODO: check hovered logic
+  private dish: Dish
 
   constructor(type: Recipes) {
     const params = zoneParams
     super(params.width, params.height, params.coordinates)
-    this.plate = this.initPlate()
-    this.topBun = this.initTopBun()
     this.recipe = recipeParameters[type].recipe
-    this.type = type
+    this.dish = new Dish(type, this.coordinates)
   }
 
-  private initPlate = () => {
-    const params = plateParameters
-    return new BaseObject(
-      params.imageSrc,
-      params.width,
-      params.height,
-      this.coordinates
-    )
-  }
-
-  private initTopBun = () => {
-    const params = topBunParams
-    const topBun = new BaseSpriteObject(
-      params.imageSrc,
-      params.width,
-      params.height,
-      this.coordinates,
-      params
-    )
-    return topBun
-  }
-
-  public isDraggable = () => !this.isEmpty
-
-  public getObjectsToDraw = (): BaseObject[] => {
-    //console.log('getObjectsToDraw')
-    const objects = []
-    if (!this.isEmpty) {
-      objects.push(this.plate)
-      objects.concat(this.dish)
+  private ingredientFits = (type: Ingredients): boolean => {
+    // if not in recipe or already in the dish
+    // TODO: is this the best way, may be recipe should not contain all ingredients?
+    if (
+      !this.recipe[type] ||
+      this.dish.ingredients.some(i => i.type === type)
+    ) {
+      return false
     }
-    return objects
-  }
+    // if empty we can put only bread
 
-  public ingredientFits = (type: Ingredients): boolean => {
-    // TODO: refactor this logic
-    if (this.isEmpty && type !== Ingredients.Bread) {
+    if (this.dish.isEmpty() && type !== Ingredients.Bread) {
       return false // we can put only bread on empty zone
     }
-    return !!this.recipe[type] && this.dish.every(i => i.type !== type)
-  }
-
-  private calcHeightGap = (orderNumber: number) => {
-    return 40 - orderNumber * 20
-  }
-
-  public addIngredient = (type: Ingredients) => {
-    // check if is in recipe
-    // TODO: is this the best way, may be recipe should not contain all ingredients?
-    if (this.ingredientFits(type)) {
-      // TODO: set coordinates
-      /* const ingredient = new Ingredient(type)
-      ingredient.setCoordinates(this.coordinates)
-      this.dish.push(ingredient)
-      this.isEmpty = false
-      console.log('zone ingredients')
-      console.log(this.dish)
-      console.log('zone coords')
-      console.log(this.coordinates) */
-
-      const ingredientsNumber = this.dish.length
-      const coords = {
-        x: this.coordinates.x + 15,
-        y: this.coordinates.y + this.calcHeightGap(ingredientsNumber),
-      }
-
-      const ingredient = new DishIngredient(
-        type,
-        coords,
-        this.calcHeightGap(ingredientsNumber)
-      )
-      this.dish.push(ingredient)
-      this.isEmpty = false
-
-      // todo
-      this.topBun.coordinates = {
-        x: this.coordinates.x + 15,
-        y: this.coordinates.y + this.calcHeightGap(ingredientsNumber + 1),
-      }
-    }
-  }
-
-  public getIsHovered = () => this.isHovered
-
-  public setIsHovered = (isHovered: boolean) => {
-    this.isHovered = isHovered
-    // TODO: avoid double calls! remove 20 number
-    if (isHovered) {
-      this.plate.width = this.plate.width + 20
-      this.plate.height = this.plate.height + 20
-    } else {
-      this.plate.width = this.plate.width - 20
-      this.plate.height = this.plate.height - 20
-    }
+    return true
   }
 
   public setHovered = (ingredient: Ingredient) => {
-    const intersects = CollisionHelper.intersects(ingredient, this.plate)
+    const intersects = CollisionHelper.intersects(ingredient, this)
 
     if (
       intersects &&
       this.ingredientFits(ingredient.type) &&
-      !this.getIsHovered()
+      !this.dish.getIsHovered()
     ) {
-      this.setIsHovered(true)
-    } else if (this.getIsHovered() && !intersects) {
-      this.setIsHovered(false)
+      this.dish.setIsHovered(true)
+    } else if (this.dish.getIsHovered() && !intersects) {
+      this.dish.setIsHovered(false)
+    }
+  }
+
+  public addIngredient = (type: Ingredients) => {
+    if (this.ingredientFits(type)) {
+      this.dish.addIngredient(type)
+    }
+    // remove hover
+    if (this.dish.getIsHovered()) {
+      this.dish.setIsHovered(false)
     }
   }
 
   public isClicked = () => {
+    console.log('dish clicked')
     // TODO: start dragging - set all drawable objects to draggedOrder
+    if (!this.dish.isEmpty()) {
+      gameState.draggedObject = this.dish
+    }
+  }
+
+  public isEmpty = (): boolean => {
+    return this.dish.isEmpty()
+  }
+
+  public getObjectToDraw = (): BaseSpriteObject[] => {
+    return this.dish.getObjectsToDraw()
   }
 }
 

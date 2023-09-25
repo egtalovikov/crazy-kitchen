@@ -25,12 +25,10 @@ class DrawingHelper {
   public drawCookingZones = () => {
     gameState.cookingZones.forEach(zone => {
       this.painter.tempDrawZone(zone) // temp for testing, remove
-      if (!zone.isEmpty) {
-        this.painter.drawObject(zone.plate)
-        zone.dish.forEach(ingredient => {
-          this.painter.tempDrawFrame(ingredient)
-        })
-        this.painter.tempDrawFrame(zone.topBun)
+      if (!zone.isEmpty()) {
+        zone
+          .getObjectToDraw()
+          .forEach(object => this.painter.tempDrawFrame(object))
       }
     })
   }
@@ -44,8 +42,14 @@ class DrawingHelper {
 
   public drawDraggedObjects = () => {
     if (gameState.draggedObject) {
-      // TODO: change when cooking zone will be removed here
-      this.painter.drawObject(gameState.draggedObject as Ingredient)
+      if (Array.isArray(gameState.draggedObject)) {
+        gameState.draggedObject.forEach(object =>
+          this.painter.tempDrawFrame(object)
+        )
+      } else {
+        // TODO: change when cooking zone will be removed here
+        this.painter.drawObject(gameState.draggedObject as Ingredient)
+      }
     }
   }
 

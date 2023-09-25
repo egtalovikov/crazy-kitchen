@@ -4,7 +4,7 @@ import { ClientGameState, Clients } from '../../types/clients'
 import { Recipes } from '../../types/recipe'
 import BaseFrameObject from '../base/baseFrameObject'
 import Order from './order'
-import CookingZone from '../zones/cookingZone'
+import Dish from './dish'
 
 class Client extends BaseFrameObject {
   public type: Clients
@@ -34,15 +34,12 @@ class Client extends BaseFrameObject {
     }
   }
 
-  private dishFits = (dish: CookingZone): boolean => {
-    console.log(dish)
-    console.log(this.isHovered)
-    return false
-  }
-  // TODO: replace with dish
-  public setHover = (dish: CookingZone) => {
+  private dishFits = (dish: Dish) => this.orders.some(o => o.type === dish.type)
+
+  public setHover = (dish: Dish) => {
+    console.log('in client hover')
     // TODO: intersection with client and his orders
-    const intersects = CollisionHelper.intersects(dish, this)
+    const intersects = CollisionHelper.intersectsWithArr(this, dish.ingredients)
     const dishFits = this.dishFits(dish)
     if (intersects && dishFits) {
       this.isHovered = true

@@ -3,7 +3,10 @@ import BaseZone from '../objects/base/baseZone'
 import { TPoint } from '../types/commonTypes'
 
 class CollisionHelper {
-  public static intersects = (object1: BaseZone, object2: BaseZone) => {
+  public static intersects = (
+    object1: BaseZone,
+    object2: BaseZone
+  ): boolean => {
     const point1 = object1.coordinates
     const point2 = object2.coordinates
     return (
@@ -12,6 +15,13 @@ class CollisionHelper {
       point1.y < point2.y + object2.height &&
       point1.y + object1.height > point2.y
     )
+  }
+
+  public static intersectsWithArr = (
+    object: BaseZone,
+    objects: BaseZone[]
+  ): boolean => {
+    return objects.some(o => CollisionHelper.intersects(object, o))
   }
 
   // todo do we need this?

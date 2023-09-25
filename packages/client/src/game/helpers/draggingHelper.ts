@@ -1,5 +1,5 @@
 import Ingredient from '../objects/ingredients/ingredient'
-import CookingZone from '../objects/zones/cookingZone'
+import Dish from '../objects/orders/dish'
 import gameState from '../store/gameState'
 import { TPoint } from '../types/commonTypes'
 import CollisionHelper from './collisionHelper'
@@ -20,18 +20,24 @@ class DraggingHelper {
     const object = gameState.draggedObject
 
     if (object) {
-      const ingredient = object as Ingredient
-      if (ingredient) {
-        ingredient.setCoordinates({
-          x: point.x - ingredient.width / 2,
-          y: point.y - ingredient.height / 2,
+      const dish = object as Dish
+      if (dish) {
+        dish.ingredients.forEach(ingredient => {
+          ingredient.coordinates = {
+            x: point.x - ingredient.width / 2,
+            y: point.y - ingredient.height / 2 + ingredient.heightIndent,
+          }
         })
-        gameState.cookingZones.forEach(zone => zone.setHovered(ingredient))
+        gameState.clients.forEach(client => client.setHover(dish))
       } else {
-        const order = object as CookingZone
-        order.coordinates = { x: point.x - 20, y: point.y - 20 }
-        // iterate orders and set hovered
-        gameState.clients.forEach(client => client.setHover(order))
+        const ingredient = object as Ingredient
+        if (ingredient) {
+          ingredient.setCoordinates({
+            x: point.x - ingredient.width / 2,
+            y: point.y - ingredient.height / 2,
+          })
+          gameState.cookingZones.forEach(zone => zone.setHovered(ingredient))
+        }
       }
     }
   }
@@ -41,13 +47,8 @@ class DraggingHelper {
     if (object) {
       const ingredient = object as Ingredient
       gameState.cookingZones.forEach(zone => {
-        if (CollisionHelper.intersects(ingredient, zone.plate)) {
-          // TODO: decide will we use cZone coords or plate coords?
+        if (CollisionHelper.intersects(ingredient, zone)) {
           zone.addIngredient(ingredient.type)
-
-          if (zone.getIsHovered()) {
-            zone.setIsHovered(false)
-          }
         } else {
           // TODO: animate moving back to ingredient zone basePoint
           ingredient.moveBack()

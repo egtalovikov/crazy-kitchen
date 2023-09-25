@@ -30,9 +30,9 @@ class Ingredient extends BaseFrameObject {
 
   public getState = () => this.state as IngredientState
 
-  public setIsDragging = (isDragging: boolean) => {
+  /*public setIsDragging = (isDragging: boolean) => {
     this.getState().isDragging = isDragging
-  }
+  }*/
 
   public setCoordinates = (point: TPoint) => {
     this.coordinates = point
