@@ -11,7 +11,8 @@ class GameState {
   public cookingZones: CookingZone[]
   public ingredientZones: IngredientZone[]
   // TODO: can we create base draggable object?
-  public draggedObjects: Ingredient[] = []
+  public draggedObject: Ingredient | CookingZone | null = null
+  // public draggedOrder: CookingZone | null = null
 
   constructor() {
     this.clients = this.initClients()

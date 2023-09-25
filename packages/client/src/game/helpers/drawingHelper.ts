@@ -1,6 +1,7 @@
 import { store } from '@/store'
 import Painter from '../core/painter'
 import gameState from '../store/gameState'
+import Ingredient from '../objects/ingredients/ingredient'
 
 /* drawing logic, todo refactor to make multiple levels and differents types of orders */
 class DrawingHelper {
@@ -23,7 +24,7 @@ class DrawingHelper {
 
   public drawCookingZones = () => {
     gameState.cookingZones.forEach(zone => {
-      this.painter.drawZone(zone) // temp for testing, remove
+      this.painter.tempDrawZone(zone) // temp for testing, remove
       if (!zone.isEmpty) {
         this.painter.drawObject(zone.plate)
         zone.dish.forEach(ingredient => {
@@ -37,12 +38,15 @@ class DrawingHelper {
   // temp for testing, remove
   public drawIngredientZones = () => {
     gameState.ingredientZones.forEach(zone => {
-      this.painter.drawZone(zone)
+      this.painter.tempDrawZone(zone)
     })
   }
 
   public drawDraggedObjects = () => {
-    this.painter.drawObjects(gameState.draggedObjects)
+    if (gameState.draggedObject) {
+      // TODO: change when cooking zone will be removed here
+      this.painter.drawObject(gameState.draggedObject as Ingredient)
+    }
   }
 
   public drawLevelState = () => {

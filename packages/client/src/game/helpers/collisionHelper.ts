@@ -3,7 +3,7 @@ import BaseZone from '../objects/base/baseZone'
 import { TPoint } from '../types/commonTypes'
 
 class CollisionHelper {
-  public static checkCollision = (object1: BaseObject, object2: BaseObject) => {
+  public static intersects = (object1: BaseZone, object2: BaseZone) => {
     const point1 = object1.coordinates
     const point2 = object2.coordinates
     return (
@@ -14,8 +14,8 @@ class CollisionHelper {
     )
   }
 
-  // todo better name?
-  public static checkIfPointInZone = (point: TPoint, object: BaseObject) => {
+  // todo do we need this?
+  /* public static checkIfPointInZone = (point: TPoint, object: BaseObject) => {
     const coordinates = object.coordinates
     return (
       point.x >= coordinates.x &&
@@ -23,9 +23,9 @@ class CollisionHelper {
       point.y >= coordinates.y &&
       point.y <= coordinates.y + object.height
     )
-  }
+  }*/
 
-  public static checkIfPointInZone2 = (point: TPoint, object: BaseZone) => {
+  public static checkIfPointInZone = (point: TPoint, object: BaseZone) => {
     const coordinates = object.coordinates
     return (
       point.x >= coordinates.x &&

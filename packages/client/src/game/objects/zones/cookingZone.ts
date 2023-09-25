@@ -8,6 +8,8 @@ import zoneParams from '../../parameters/zoneParameters'
 import DishIngredient from '../ingredients/dishIngredient'
 import BaseSpriteObject from '../base/baseSpriteObject'
 import { topBunParams } from '@/game/parameters/ingredientsOnBurgerParams'
+import CollisionHelper from '@/game/helpers/collisionHelper'
+import Ingredient from '../ingredients/ingredient'
 
 class CookingZone extends BaseZone {
   // TODO: plate and bun top can we refactor?
@@ -17,11 +19,10 @@ class CookingZone extends BaseZone {
   public recipe: TRecipe // TODO: is record the best solution?
   // TODO: we do not need ingredient logic here, use BaseObject or it's descendant
   public dish: DishIngredient[] = [] // TODO: bun top separate logic
+  // TODO: separate all drawable objects so that they can be set to dragged order and revert back
   public type: Recipes // compare when dragging to client
 
   private isHovered = false // TODO: check hovered logic
-
-  public isDragging = false // TODO: check hovered logic
 
   constructor(type: Recipes) {
     const params = zoneParams
@@ -128,12 +129,22 @@ class CookingZone extends BaseZone {
     }
   }
 
-  public setHovered = (itersects: boolean, type: Ingredients) => {
-    if (itersects && this.ingredientFits(type) && !this.getIsHovered()) {
+  public setHovered = (ingredient: Ingredient) => {
+    const intersects = CollisionHelper.intersects(ingredient, this.plate)
+
+    if (
+      intersects &&
+      this.ingredientFits(ingredient.type) &&
+      !this.getIsHovered()
+    ) {
       this.setIsHovered(true)
-    } else if (this.getIsHovered() && !itersects) {
+    } else if (this.getIsHovered() && !intersects) {
       this.setIsHovered(false)
     }
+  }
+
+  public isClicked = () => {
+    // TODO: start dragging - set all drawable objects to draggedOrder
   }
 }
 
