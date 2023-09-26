@@ -7,6 +7,7 @@ import IngredientZone from '../objects/zones/ingredientZone'
 import Ingredient from '../objects/ingredients/ingredient'
 import Dish from '../objects/orders/dish'
 
+// TODO: move remaining time here, logic revision
 class GameState {
   public clients: Client[]
   public cookingZones: CookingZone[]

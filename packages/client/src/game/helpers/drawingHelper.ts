@@ -2,6 +2,7 @@ import { store } from '@/store'
 import Painter from '../core/painter'
 import gameState from '../store/gameState'
 import Ingredient from '../objects/ingredients/ingredient'
+import Dish from '../objects/orders/dish'
 
 /* drawing logic, todo refactor to make multiple levels and differents types of orders */
 class DrawingHelper {
@@ -42,13 +43,13 @@ class DrawingHelper {
 
   public drawDraggedObjects = () => {
     if (gameState.draggedObject) {
-      if (Array.isArray(gameState.draggedObject)) {
-        gameState.draggedObject.forEach(object =>
-          this.painter.tempDrawFrame(object)
-        )
-      } else {
-        // TODO: change when cooking zone will be removed here
+      if (gameState.draggedObject instanceof Ingredient) {
         this.painter.drawObject(gameState.draggedObject as Ingredient)
+      } else if (gameState.draggedObject instanceof Dish) {
+        const dish = gameState.draggedObject as Dish
+        dish.ingredients.forEach(object => this.painter.tempDrawFrame(object))
+      } else {
+        throw Error('invalid type in drawDraggedObjects')
       }
     }
   }

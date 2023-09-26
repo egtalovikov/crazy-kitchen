@@ -43,7 +43,7 @@ class Engine {
   }
 
   private continue = () => {
-    this.levelInterval = window.setInterval(this.mainLoop, 1000)
+    this.levelInterval = window.setInterval(this.mainLoop, 1000) // 1000) temp for testing
   }
 
   private resetGame = () => {
@@ -64,7 +64,6 @@ class Engine {
   }
 
   public startGame = () => {
-    console.log('in start game')
     this.resetGame()
     this.startLevel()
   }

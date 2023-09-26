@@ -1,9 +1,8 @@
-import BaseObject from '../objects/base/baseObject'
 import BaseZone from '../objects/base/baseZone'
 import { TPoint } from '../types/commonTypes'
 
 class CollisionHelper {
-  public static intersects = (
+  public static objectsIntersect = (
     object1: BaseZone,
     object2: BaseZone
   ): boolean => {
@@ -17,15 +16,14 @@ class CollisionHelper {
     )
   }
 
-  public static intersectsWithArr = (
+  public static intersectsWithObjectsArr = (
     object: BaseZone,
     objects: BaseZone[]
   ): boolean => {
-    return objects.some(o => CollisionHelper.intersects(object, o))
+    return objects.some(o => CollisionHelper.objectsIntersect(object, o))
   }
 
-  // todo do we need this?
-  /* public static checkIfPointInZone = (point: TPoint, object: BaseObject) => {
+  public static intersectsWithPoint = (point: TPoint, object: BaseZone) => {
     const coordinates = object.coordinates
     return (
       point.x >= coordinates.x &&
@@ -33,32 +31,6 @@ class CollisionHelper {
       point.y >= coordinates.y &&
       point.y <= coordinates.y + object.height
     )
-  }*/
-
-  public static checkIfPointInZone = (point: TPoint, object: BaseZone) => {
-    const coordinates = object.coordinates
-    return (
-      point.x >= coordinates.x &&
-      point.x <= coordinates.x + object.width &&
-      point.y >= coordinates.y &&
-      point.y <= coordinates.y + object.height
-    )
-  }
-
-  // todo better name
-  public static calculateOverlapCenter = (
-    parentObject: BaseObject,
-    childObject: BaseObject
-  ): TPoint => {
-    const x =
-      parentObject.coordinates.x +
-      parentObject.width / 2 -
-      childObject.width / 2
-    const y =
-      parentObject.coordinates.y +
-      parentObject.height / 2 -
-      childObject.height / 2
-    return { x, y }
   }
 }
 

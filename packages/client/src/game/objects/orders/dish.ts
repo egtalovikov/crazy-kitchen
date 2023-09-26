@@ -17,12 +17,15 @@ class Dish {
 
   public coordinates: TPoint
 
+  public startPoint: TPoint
+
   public isHovered = false
 
   public type: Recipes
 
   constructor(type: Recipes, point: TPoint) {
     this.coordinates = point
+    this.startPoint = { x: point.x, y: point.y }
     this.plate = this.initPlate()
     this.topBun = this.initTopBun()
     this.type = type
@@ -78,12 +81,12 @@ class Dish {
     }
   }
   public getObjectsToDraw = (): BaseSpriteObject[] => {
-    //console.log('getObjectsToDraw')
     const objects = []
-    if (!this.ingredients.length) {
+    if (!this.isEmpty()) {
+      // todo plate not drawing?
       objects.push(this.plate)
+      this.ingredients.forEach(i => objects.push(i))
       objects.push(this.topBun)
-      objects.concat(this.ingredients)
     }
     return objects
   }
@@ -104,6 +107,25 @@ class Dish {
 
   public isEmpty = (): boolean => {
     return this.ingredients.length === 0
+  }
+
+  public setIngredientCoordinates = (point: TPoint) => {
+    // const ingredientsNumber
+    this.ingredients.forEach(i => {
+      i.coordinates = {
+        x: point.x + 15,
+        y: point.y + i.heightIndent,
+      }
+    })
+    const ingredientsNumber = this.ingredients.length
+    this.topBun.coordinates = {
+      x: point.x + 15,
+      y: point.y + this.calcHeightGap(ingredientsNumber + 1),
+    }
+  }
+
+  public backToCookingZone = () => {
+    this.setIngredientCoordinates(this.startPoint)
   }
 }
 

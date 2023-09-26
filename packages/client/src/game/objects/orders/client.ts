@@ -5,6 +5,7 @@ import { Recipes } from '../../types/recipe'
 import BaseFrameObject from '../base/baseFrameObject'
 import Order from './order'
 import Dish from './dish'
+import gameState from '@/game/store/gameState'
 
 class Client extends BaseFrameObject {
   public type: Clients
@@ -12,6 +13,7 @@ class Client extends BaseFrameObject {
   public gameState = ClientGameState.WaitingForStart
   // TODO: can we make the same for cooking zone and client?
   private isHovered = false
+  public movingInterval = -1
 
   constructor(type: Clients, recipes: Recipes[]) {
     const params = clientsParameters[type]
@@ -39,11 +41,47 @@ class Client extends BaseFrameObject {
   public setHover = (dish: Dish) => {
     console.log('in client hover')
     // TODO: intersection with client and his orders
-    const intersects = CollisionHelper.intersectsWithArr(this, dish.ingredients)
+    const intersects = CollisionHelper.intersectsWithObjectsArr(
+      this,
+      dish.ingredients
+    )
     const dishFits = this.dishFits(dish)
     if (intersects && dishFits) {
       this.isHovered = true
     }
+  }
+
+  public orderFits = (type: Recipes) => {
+    return this.orders.some(order => order.type === type)
+  }
+
+  // TODO: make requestAnimationFrame
+  private moveAway = () => {
+    if (this.coordinates.x + this.width <= 0) {
+      window.clearInterval(this.movingInterval)
+    } else {
+      this.coordinates = {
+        x: this.coordinates.x - 20,
+        y: this.coordinates.y,
+      }
+    }
+  }
+
+  private setOrdersFinished = () => {
+    // this.gameState = ClientGameState.Gone
+    this.movingInterval = window.setInterval(this.moveAway, 300)
+  }
+
+  public addOrder = (dish: Dish) => {
+    const index = this.orders.findIndex(order => order.type !== dish.type)
+    this.orders.splice(index, 1)
+    this.isHovered = false
+    gameState.draggedObject = null
+
+    const zone = gameState.cookingZones[0]
+    zone.dish = new Dish(Recipes.Burger, zone.coordinates)
+    // TODO: check later if all orders are finished
+    this.setOrdersFinished()
   }
 }
 

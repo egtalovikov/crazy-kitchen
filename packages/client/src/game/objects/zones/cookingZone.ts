@@ -7,12 +7,12 @@ import CollisionHelper from '@/game/helpers/collisionHelper'
 import Ingredient from '../ingredients/ingredient'
 import gameState from '@/game/store/gameState'
 import Dish from '../orders/dish'
-import BaseSpriteObject from '../base/baseSpriteObject'
 
 // TODO: now is specific for burger, create universal cooking zone and its descendants
 class CookingZone extends BaseZone {
   public recipe: TRecipe // TODO: is record the best solution?
-  private dish: Dish
+  // private dish: Dish
+  public dish: Dish
 
   constructor(type: Recipes) {
     const params = zoneParams
@@ -39,7 +39,7 @@ class CookingZone extends BaseZone {
   }
 
   public setHovered = (ingredient: Ingredient) => {
-    const intersects = CollisionHelper.intersects(ingredient, this)
+    const intersects = CollisionHelper.objectsIntersect(ingredient, this)
 
     if (
       intersects &&
@@ -53,7 +53,9 @@ class CookingZone extends BaseZone {
   }
 
   public addIngredient = (type: Ingredients) => {
+    console.log('in addIngredient')
     if (this.ingredientFits(type)) {
+      console.log('in addIngredient2')
       this.dish.addIngredient(type)
     }
     // remove hover
@@ -70,13 +72,9 @@ class CookingZone extends BaseZone {
     }
   }
 
-  public isEmpty = (): boolean => {
-    return this.dish.isEmpty()
-  }
+  public isEmpty = (): boolean => this.dish.isEmpty()
 
-  public getObjectToDraw = (): BaseSpriteObject[] => {
-    return this.dish.getObjectsToDraw()
-  }
+  public getObjectToDraw = () => this.dish.getObjectsToDraw()
 }
 
 export default CookingZone

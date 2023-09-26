@@ -2,17 +2,15 @@ import Ingredient from '../objects/ingredients/ingredient'
 import Dish from '../objects/orders/dish'
 import gameState from '../store/gameState'
 import { TPoint } from '../types/commonTypes'
-import CollisionHelper from './collisionHelper'
+import colHelper from './collisionHelper'
 
 class DraggingHelper {
   public static dragStart = (point: TPoint) => {
     gameState.ingredientZones.forEach(
-      zone =>
-        CollisionHelper.checkIfPointInZone(point, zone) && zone.isClicked()
+      zone => colHelper.intersectsWithPoint(point, zone) && zone.isClicked()
     )
     gameState.cookingZones.forEach(
-      zone =>
-        CollisionHelper.checkIfPointInZone(point, zone) && zone.isClicked()
+      zone => colHelper.intersectsWithPoint(point, zone) && zone.isClicked()
     )
   }
 
@@ -20,16 +18,11 @@ class DraggingHelper {
     const object = gameState.draggedObject
 
     if (object) {
-      const dish = object as Dish
-      if (dish) {
-        dish.ingredients.forEach(ingredient => {
-          ingredient.coordinates = {
-            x: point.x - ingredient.width / 2,
-            y: point.y - ingredient.height / 2 + ingredient.heightIndent,
-          }
-        })
+      if (object instanceof Dish) {
+        const dish = object as Dish
+        dish.setIngredientCoordinates(point)
         gameState.clients.forEach(client => client.setHover(dish))
-      } else {
+      } else if (object instanceof Ingredient) {
         const ingredient = object as Ingredient
         if (ingredient) {
           ingredient.setCoordinates({
@@ -38,6 +31,8 @@ class DraggingHelper {
           })
           gameState.cookingZones.forEach(zone => zone.setHovered(ingredient))
         }
+      } else {
+        throw Error('Invalid object in gameState.draggedObject')
       }
     }
   }
@@ -45,15 +40,30 @@ class DraggingHelper {
   public static dragStop = () => {
     const object = gameState.draggedObject
     if (object) {
-      const ingredient = object as Ingredient
-      gameState.cookingZones.forEach(zone => {
-        if (CollisionHelper.intersects(ingredient, zone)) {
-          zone.addIngredient(ingredient.type)
-        } else {
-          // TODO: animate moving back to ingredient zone basePoint
-          ingredient.moveBack()
-        }
-      })
+      if (object instanceof Dish) {
+        const dish = object as Dish
+        gameState.clients.forEach(client => {
+          if (
+            colHelper.intersectsWithObjectsArr(client, dish.ingredients) &&
+            client.orderFits(dish.type)
+          ) {
+            client.addOrder(dish)
+          } else {
+            dish.backToCookingZone()
+            //dish.moveBack()
+          }
+        })
+      } else if (object instanceof Ingredient) {
+        const ingredient = object as Ingredient
+        gameState.cookingZones.forEach(zone => {
+          if (colHelper.objectsIntersect(ingredient, zone)) {
+            zone.addIngredient(ingredient.type)
+          } else {
+            // TODO: animate moving back to ingredient zone basePoint
+            ingredient.moveBack()
+          }
+        })
+      }
 
       // TODO: gameState resoncibility? make method to delete?
       gameState.draggedObject = null
