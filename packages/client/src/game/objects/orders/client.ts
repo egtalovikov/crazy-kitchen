@@ -78,8 +78,10 @@ class Client extends BaseFrameObject {
     this.isHovered = false
     gameState.draggedObject = null
 
-    const zone = gameState.cookingZones[0]
-    zone.dish = new Dish(Recipes.Burger, zone.coordinates)
+    // TODO: dish should know about zone to reset it
+    // zone knows about dish to create it on click
+    const zone = gameState.cookingZones[0] // temp reset, need to create logic to detect zone to reset
+    zone.resetDish()
     // TODO: check later if all orders are finished
     this.setOrdersFinished()
   }

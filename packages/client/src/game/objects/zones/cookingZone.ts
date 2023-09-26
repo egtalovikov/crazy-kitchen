@@ -11,32 +11,26 @@ import Dish from '../orders/dish'
 // TODO: now is specific for burger, create universal cooking zone and its descendants
 class CookingZone extends BaseZone {
   public recipe: TRecipe // TODO: is record the best solution?
-  // private dish: Dish
-  public dish: Dish
+  protected dish: Dish
+  private type: Recipes
+  // public dish: Dish;
 
   constructor(type: Recipes) {
     const params = zoneParams
     super(params.width, params.height, params.coordinates)
     this.recipe = recipeParameters[type].recipe
     this.dish = new Dish(type, this.coordinates)
+    this.type = type
   }
 
-  protected ingredientFits = (type: Ingredients): boolean => {
-    // if not in recipe or already in the dish
-    // TODO: is this the best way, may be recipe should not contain all ingredients?
-    if (
-      !this.recipe[type] ||
-      this.dish.ingredients.some(i => i.type === type)
-    ) {
-      return false
-    }
-    // if empty we can put only bread
+  // TODO: may be recipe should not contain all ingredients?
+  protected ingredientFits = (type: Ingredients): boolean =>
+    !!this.recipe[type] && !this.dish.ingredients.some(i => i.type === type)
 
-    /* if (this.dish.isEmpty() && type !== Ingredients.Bread) {
+  // TODO: move to burger zone
+  /* if (this.dish.isEmpty() && type !== Ingredients.Bread) {
       return false // we can put only bread on empty zone
-    }*/
-    return true
-  }
+  } */
 
   public setHovered = (ingredient: Ingredient) => {
     const intersects = CollisionHelper.objectsIntersect(ingredient, this)
@@ -53,9 +47,7 @@ class CookingZone extends BaseZone {
   }
 
   public addIngredient = (type: Ingredients) => {
-    console.log('in addIngredient')
     if (this.ingredientFits(type)) {
-      console.log('in addIngredient2')
       this.dish.addIngredient(type)
     }
     // remove hover
@@ -65,8 +57,6 @@ class CookingZone extends BaseZone {
   }
 
   public isClicked = () => {
-    console.log('dish clicked')
-    // TODO: start dragging - set all drawable objects to draggedOrder
     if (!this.dish.isEmpty()) {
       gameState.draggedObject = this.dish
     }
@@ -75,6 +65,10 @@ class CookingZone extends BaseZone {
   public isEmpty = (): boolean => this.dish.isEmpty()
 
   public getObjectToDraw = () => this.dish.getObjectsToDraw()
+
+  public resetDish = () => {
+    this.dish = new Dish(this.type, this.coordinates)
+  }
 }
 
 export default CookingZone
