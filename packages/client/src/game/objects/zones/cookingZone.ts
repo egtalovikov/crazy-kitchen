@@ -21,7 +21,7 @@ class CookingZone extends BaseZone {
     this.dish = new Dish(type, this.coordinates)
   }
 
-  private ingredientFits = (type: Ingredients): boolean => {
+  protected ingredientFits = (type: Ingredients): boolean => {
     // if not in recipe or already in the dish
     // TODO: is this the best way, may be recipe should not contain all ingredients?
     if (
@@ -32,9 +32,9 @@ class CookingZone extends BaseZone {
     }
     // if empty we can put only bread
 
-    if (this.dish.isEmpty() && type !== Ingredients.Bread) {
+    /* if (this.dish.isEmpty() && type !== Ingredients.Bread) {
       return false // we can put only bread on empty zone
-    }
+    }*/
     return true
   }
 
