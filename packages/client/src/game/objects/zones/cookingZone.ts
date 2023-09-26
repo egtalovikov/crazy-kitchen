@@ -8,12 +8,10 @@ import Ingredient from '../ingredients/ingredient'
 import gameState from '@/game/store/gameState'
 import Dish from '../orders/dish'
 
-// TODO: now is specific for burger, create universal cooking zone and its descendants
 class CookingZone extends BaseZone {
   public recipe: TRecipe // TODO: is record the best solution?
   protected dish: Dish
   private type: Recipes
-  // public dish: Dish;
 
   constructor(type: Recipes) {
     const params = zoneParams
@@ -24,13 +22,11 @@ class CookingZone extends BaseZone {
   }
 
   // TODO: may be recipe should not contain all ingredients?
-  protected ingredientFits = (type: Ingredients): boolean =>
-    !!this.recipe[type] && !this.dish.ingredients.some(i => i.type === type)
-
-  // TODO: move to burger zone
-  /* if (this.dish.isEmpty() && type !== Ingredients.Bread) {
-      return false // we can put only bread on empty zone
-  } */
+  protected ingredientFits(type: Ingredients) {
+    return (
+      !!this.recipe[type] && !this.dish.ingredients.some(i => i.type === type)
+    )
+  }
 
   public setHovered = (ingredient: Ingredient) => {
     const intersects = CollisionHelper.objectsIntersect(ingredient, this)

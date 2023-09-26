@@ -16,7 +16,6 @@ class IngredientZone extends BaseZone {
   public isClicked = () => {
     const ingredient = new Ingredient(this.type)
     ingredient.coordinates = this.coordinates
-    //ingredient.setIsDragging(true)
     gameState.draggedObject = ingredient
   }
 }

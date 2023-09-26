@@ -50,7 +50,6 @@ class DraggingHelper {
             client.addOrder(dish)
           } else {
             dish.backToCookingZone()
-            //dish.moveBack()
           }
         })
       } else if (object instanceof Ingredient) {

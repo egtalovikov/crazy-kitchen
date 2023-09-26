@@ -7,7 +7,7 @@ class BurgerZone extends CookingZone {
     super(Recipes.Burger)
   }
 
-  public ingredientFits = (type: Ingredients) => {
+  public ingredientFits(type: Ingredients) {
     const parentFitsValue = super.ingredientFits(type)
     return (
       parentFitsValue && !(this.dish.isEmpty() && type !== Ingredients.Bread)
