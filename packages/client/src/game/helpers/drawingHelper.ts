@@ -1,9 +1,10 @@
 import { store } from '@/store'
 import Painter from '../core/painter'
 import gameState from '../store/gameState'
-import Ingredient from '../objects/ingredients/ingredient'
-import Dish from '../objects/orders/dish'
+import { Drawable } from '../types/dragInterfaces'
+import { draggingState } from './draggingHelper'
 
+// TODO: не должен знать о том что он рисует, сделать у всех метод draw и передавать им пейнтер
 /* drawing logic, todo refactor to make multiple levels and differents types of orders */
 class DrawingHelper {
   public painter: Painter
@@ -16,49 +17,13 @@ class DrawingHelper {
     this.painter.clearCanvas()
   }
 
-  public drawClients = () => {
-    gameState.clients.forEach(client => {
-      this.painter.drawObject(client)
-      client.orders.forEach(order => this.painter.drawObject(order.image))
-    })
-  }
-
-  public drawCookingZones = () => {
-    gameState.cookingZones.forEach(zone => {
-      this.painter.tempDrawZone(zone) // temp for testing, remove
-      if (!zone.isEmpty()) {
-        zone
-          .getObjectToDraw()
-          .forEach(object => this.painter.tempDrawFrame(object))
-      }
-    })
-  }
-
-  // temp for testing, remove
-  public drawIngredientZones = () => {
-    gameState.ingredientZones.forEach(zone => {
-      this.painter.tempDrawZone(zone)
-    })
-  }
-
-  public drawDraggedObjects = () => {
-    if (gameState.draggedObject) {
-      if (gameState.draggedObject instanceof Ingredient) {
-        this.painter.drawObject(gameState.draggedObject as Ingredient)
-      } else if (gameState.draggedObject instanceof Dish) {
-        const dish = gameState.draggedObject as Dish
-        dish.ingredients.forEach(object => this.painter.tempDrawFrame(object))
-      } else {
-        throw Error('invalid type in drawDraggedObjects')
-      }
-    }
-  }
-
   public drawLevelState = () => {
-    // TODO: can we calculate this?
+    // TODO: calculate this depending on window size
     const textGap = 50
     let startY = 70
     const x = 50
+
+    // TODO: move it from store?
     const state = store.getState().game
 
     const timeText = `Время: ${state.remainingTime} сек.`
@@ -70,16 +35,29 @@ class DrawingHelper {
   public drawGameFrame = () => {
     this.prepareFrame()
 
-    this.drawClients()
+    gameState.clients.forEach(client => {
+      client.draw(this.painter)
+    })
 
-    this.drawCookingZones()
+    gameState.cookingZones.forEach(zone => {
+      zone.draw(this.painter)
+    })
 
     // temp for testing, remove
-    this.drawIngredientZones()
+    this.tempDrawIngredientZones()
 
-    this.drawDraggedObjects()
+    // TODO: что делать тут?
+    //;(gameState.draggedObject as unknown as Drawable)?.draw(this.painter)
+    ;(draggingState.object as unknown as Drawable)?.draw(this.painter)
 
     this.drawLevelState()
+  }
+
+  // temp for testing, remove
+  public tempDrawIngredientZones = () => {
+    gameState.ingredientZones.forEach(zone => {
+      this.painter.tempDrawZone(zone)
+    })
   }
 }
 

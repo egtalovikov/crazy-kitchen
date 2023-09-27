@@ -3,15 +3,12 @@ import ingredientsOnBurgerParams from '@/game/parameters/ingredientsOnBurgerPara
 import { TPoint } from '@/game/types/commonTypes'
 import BaseSpriteObject from '../base/baseSpriteObject'
 
-// Igredient that is in cooking zone, should be painted with indent
 class DishIngredient extends BaseSpriteObject {
   public type: Ingredients
-  public heightIndent: number
-  constructor(type: Ingredients, point: TPoint, gap: number) {
+  constructor(type: Ingredients, point: TPoint) {
     const params = ingredientsOnBurgerParams[type]
     super(params.imageSrc, params.width, params.height, point, params)
     this.type = type
-    this.heightIndent = gap
   }
 }
 

@@ -1,76 +1,89 @@
-import Ingredient from '../objects/ingredients/ingredient'
-import Dish from '../objects/orders/dish'
 import gameState from '../store/gameState'
 import { TPoint } from '../types/commonTypes'
 import colHelper from './collisionHelper'
+import BaseZone from '../objects/base/baseZone'
+import { DragSource, Draggable, Hoverable } from '../types/dragInterfaces'
+
+//TODO: хелпер не должен знать про реализацию обьектов,
+// оставить в нем добавление в стейт draggable обьекта, утановку координат и возврат в нужную зону
+// либо удаление на успешный драг!
+
+type DraggingState = {
+  source: DragSource | null
+  object: Draggable | null
+  targets: Hoverable[] | null
+}
+
+export const draggingState: DraggingState = {
+  source: null,
+  object: null,
+  targets: null,
+}
 
 class DraggingHelper {
   public static dragStart = (point: TPoint) => {
-    gameState.ingredientZones.forEach(
-      zone => colHelper.intersectsWithPoint(point, zone) && zone.isClicked()
-    )
-    gameState.cookingZones.forEach(
-      zone => colHelper.intersectsWithPoint(point, zone) && zone.isClicked()
-    )
+    // TODO: как убрать тут зависимость от реализации и сделать одним блоком?
+    gameState.ingredientZones.forEach(zone => {
+      if (colHelper.intersectsWithPoint(point, zone)) {
+        const object = zone.getDraggable()
+        object.setCoordinates(point)
+        draggingState.object = object
+        draggingState.source = zone
+        draggingState.targets = object.getTargets()
+      }
+    })
+
+    gameState.cookingZones.forEach(zone => {
+      if (colHelper.intersectsWithPoint(point, zone)) {
+        const object = zone.getDraggable()
+        if (object) {
+          object.setCoordinates(point)
+          draggingState.object = object
+          draggingState.source = zone
+          draggingState.targets = object.getTargets()
+        }
+      }
+    })
   }
 
   public static drag = (point: TPoint) => {
-    const object = gameState.draggedObject
-
+    const object = draggingState.object
     if (object) {
-      if (object instanceof Dish) {
-        const dish = object as Dish
-        dish.setIngredientCoordinates(point)
-        gameState.clients.forEach(client => client.setHover(dish))
-      } else if (object instanceof Ingredient) {
-        const ingredient = object as Ingredient
-        if (ingredient) {
-          ingredient.setCoordinates({
-            x: point.x - ingredient.width / 2,
-            y: point.y - ingredient.height / 2,
-          })
-          gameState.cookingZones.forEach(zone => zone.setHovered(ingredient))
-        }
-      } else {
-        throw Error('Invalid object in gameState.draggedObject')
-      }
+      object?.setCoordinates(point)
+      draggingState.targets?.forEach(target => {
+        // TODO: приведение типа, можно ли упростить?
+        // сделать не implements ?
+        const targetZone = target as unknown as BaseZone
+        const intersects = colHelper.intersectsWithPoint(point, targetZone)
+        target.setHover(intersects, object)
+      })
     }
   }
 
   public static dragStop = () => {
-    const object = gameState.draggedObject
+    const object = draggingState.object
+    console.log('in drag stop')
     if (object) {
-      if (object instanceof Dish) {
-        const dish = object as Dish
-        gameState.clients.forEach(client => {
-          if (
-            colHelper.intersectsWithObjectsArr(client, dish.ingredients) &&
-            client.orderFits(dish.type)
-          ) {
-            client.addOrder(dish)
-          } else {
-            dish.backToCookingZone()
-          }
-        })
-      } else if (object instanceof Ingredient) {
-        const ingredient = object as Ingredient
-        gameState.cookingZones.forEach(zone => {
-          if (colHelper.objectsIntersect(ingredient, zone)) {
-            zone.addIngredient(ingredient.type)
-          } else {
-            // TODO: animate moving back to ingredient zone basePoint
-            ingredient.moveBack()
-          }
-        })
-      }
+      console.log(draggingState.targets)
+      draggingState.targets?.forEach(target => {
+        const intersects = true // object.intersects(target)
+        if (intersects && target.objectFits(object)) {
+          console.log('in drag stop2')
+          target.addObject(object)
+          draggingState.source?.reset()
+        } else {
+          object.revertToSource()
+        }
+      })
 
-      // TODO: gameState resoncibility? make method to delete?
-      gameState.draggedObject = null
+      draggingState.object = null
+      draggingState.source = null
+      draggingState.targets = null
     }
   }
 
   public static shouldDrag = (): boolean => {
-    return !!gameState.draggedObject
+    return !!draggingState.object
   }
 }
 

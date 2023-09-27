@@ -6,16 +6,12 @@ export enum Recipes {
 }
 
 export type TRecipeParameters = TObjectParameter & {
-  recipe: Record<Ingredients, number>
+  recipe: TRecipe
 }
 
-export type TRecipe = Record<Ingredients, number>
+export type TRecipeParam = {
+  quantity: number
+  index: number
+}
 
-// todo remove
-/* export const emptyOrder = {
-  [Ingredients.Bread]: 0,
-  [Ingredients.Cheese]: 0,
-  [Ingredients.Cutlet]: 0,
-  [Ingredients.Salad]: 0,
-  [Ingredients.Tomato]: 0,
-} */
+export type TRecipe = Record<Ingredients, TRecipeParam>

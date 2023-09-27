@@ -24,10 +24,22 @@ const recipeParameters: Record<Recipes, TRecipeParameters> = {
     frameWidth: 100,
     recipe: {
       // [Ingredients.Cheese]: 1,
-      [Ingredients.Cutlet]: 1,
-      [Ingredients.Salad]: 1,
-      [Ingredients.Tomato]: 1,
-      [Ingredients.Bread]: 1,
+      [Ingredients.Cutlet]: {
+        quantity: 1,
+        index: 1,
+      },
+      [Ingredients.Salad]: {
+        quantity: 1,
+        index: 2,
+      },
+      [Ingredients.Tomato]: {
+        quantity: 1,
+        index: 3,
+      },
+      [Ingredients.Bread]: {
+        quantity: 1,
+        index: 0,
+      },
     },
   },
 }

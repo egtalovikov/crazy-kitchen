@@ -1,10 +1,10 @@
-import gameState from '@/game/store/gameState'
 import BaseZone from '../base/baseZone'
 import Ingredient from '../ingredients/ingredient'
 import { Ingredients } from '@/game/types/ingredients'
 import { ingredientZoneParams } from '@/game/parameters/zoneParameters'
+import { DragSource, Draggable } from '@/game/types/dragInterfaces'
 
-class IngredientZone extends BaseZone {
+class IngredientZone extends BaseZone implements DragSource {
   private type: Ingredients
 
   constructor(type: Ingredients) {
@@ -13,10 +13,14 @@ class IngredientZone extends BaseZone {
     this.type = type
   }
 
-  public isClicked = () => {
-    const ingredient = new Ingredient(this.type)
-    ingredient.coordinates = this.coordinates
-    gameState.draggedObject = ingredient
+  public getDraggable(): Draggable {
+    return new Ingredient(this.type)
+  }
+
+  public reset() {
+    // TODO: что делать если он тут не нужен?
+
+    console.log('in ingredient zone reset')
   }
 }
 

@@ -4,16 +4,12 @@ import { Clients } from '../types/clients'
 import { Ingredients } from '../types/ingredients'
 import { Recipes } from '../types/recipe'
 import IngredientZone from '../objects/zones/ingredientZone'
-import Ingredient from '../objects/ingredients/ingredient'
-import Dish from '../objects/orders/dish'
-import BurgerZone from '../objects/zones/burgerZone'
 
 // TODO: move remaining time here, logic revision
 class GameState {
   public clients: Client[]
   public cookingZones: CookingZone[]
   public ingredientZones: IngredientZone[]
-  public draggedObject: Ingredient | Dish | null = null
 
   constructor() {
     this.clients = this.initClients()
@@ -42,8 +38,7 @@ class GameState {
 
   private initCookingZones = () => {
     // TODO: create several zones
-    //return [new CookingZone(Recipes.Burger)]
-    return [new BurgerZone()]
+    return [new CookingZone(Recipes.Burger)]
   }
 
   public resetState = () => {
