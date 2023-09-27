@@ -12,8 +12,11 @@ class Burger extends ComposedDish {
 
   public plate: BaseSpriteObject
 
-  constructor(type: Recipes, point: TPoint) {
-    super(type, point)
+  // how to override properly?
+  public ingredients: BurgerIngredient[] = []
+
+  constructor(point: TPoint) {
+    super(Recipes.Burger, point)
     this.plate = this.initPlate()
     this.topBun = this.initTopBun()
   }
@@ -51,17 +54,20 @@ class Burger extends ComposedDish {
   }
 
   public addIngredient = (type: Ingredients) => {
+    console.log('in burger add ingredient')
     this.ingredients.push(new BurgerIngredient(type, this.coordinates, 0))
 
     // TODO: на каждое добавление ингредиента проверять порядок хлеб -котлета - салат - помидор
     // переставлять если нужно
 
     // сортируем массив по индексам элементов, самый маленький индекс должен быть первым потом по возрастанию добавляем отступы
+    // TODO: check if sorting works as expected
     this.ingredients
       .sort((a, b) => {
         return this.recipe[a.type].index - this.recipe[b.type].index
       })
       .forEach((ingredient, i) => {
+        ingredient.setIndent(this.calcHeightGap(i))
         ingredient.coordinates = {
           x: this.coordinates.x + 15,
           y: this.coordinates.y + this.calcHeightGap(i),

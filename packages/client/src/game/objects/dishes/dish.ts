@@ -35,6 +35,7 @@ class Dish implements Drawable, Draggable, Hoverable {
   }
 
   public addIngredient = (type: Ingredients) => {
+    console.log('in dish add ingredient')
     const ingredient = new DishIngredient(type, {
       x: this.coordinates.x,
       y: this.coordinates.y,

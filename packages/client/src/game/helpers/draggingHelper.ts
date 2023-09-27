@@ -69,6 +69,7 @@ class DraggingHelper {
         const intersects = true // object.intersects(target)
         if (intersects && target.objectFits(object)) {
           console.log('in drag stop2')
+          console.log(object)
           target.addObject(object)
           draggingState.source?.reset()
         } else {

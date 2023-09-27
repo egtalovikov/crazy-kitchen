@@ -39,16 +39,16 @@ class Client extends BaseFrameObject implements Drawable, Hoverable {
   private dishFits = (dish: Dish) => this.orders.some(o => o.type === dish.type)
 
   public setHover = (intersects: boolean, dish: Dish) => {
-    console.log('in client hover')
+    //console.log('in client hover')
     const dishFits = this.dishFits(dish)
     if (intersects && dishFits) {
+      console.log('in client hover true')
       this.isHovered = true
+    } else if (this.isHovered && !intersects) {
+      console.log('in client hover false')
+      this.isHovered = false
     }
   }
-
-  /* public orderFits = (type: Recipes) => {
-    return this.orders.some(order => order.type === type)
-  } */
 
   // TODO: make requestAnimationFrame
   private moveAway = () => {
@@ -62,6 +62,12 @@ class Client extends BaseFrameObject implements Drawable, Hoverable {
     }
   }
 
+  private setOrdersFinished = () => {
+    if (!this.orders.length) {
+      this.movingInterval = window.setInterval(this.moveAway, 300)
+    }
+  }
+
   public draw(painter: Painter): void {
     painter.drawObject(this)
     this.orders.forEach(order => painter.drawObject(order.image))
@@ -70,19 +76,30 @@ class Client extends BaseFrameObject implements Drawable, Hoverable {
   public addObject(object: Draggable): void {
     // TODO: cast remove!
     const dish = object as unknown as Dish
+    console.log('in add order to client')
+    console.log(this.orders)
 
     const index = this.orders.findIndex(order => order.type !== dish.type)
     this.orders.splice(index, 1)
+    console.log(this.orders)
 
     // todo do it here or in draggingHelper ?
 
     this.isHovered = false
+
+    this.setOrdersFinished()
   }
 
   public objectFits(object: Draggable): boolean {
     // TODO: cast remove!
     const dish = object as unknown as Dish
-    return this.orders.some(order => order.type === dish.type)
+    const hasDishType = this.orders.some(order => order.type === dish.type)
+    // TODO: сравнить совпадения всех ингредиентов!
+    if (hasDishType) {
+      console.log('here we need to add comparision')
+    }
+
+    return hasDishType
   }
 }
 

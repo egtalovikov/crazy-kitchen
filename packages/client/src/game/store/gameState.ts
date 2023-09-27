@@ -4,6 +4,7 @@ import { Clients } from '../types/clients'
 import { Ingredients } from '../types/ingredients'
 import { Recipes } from '../types/recipe'
 import IngredientZone from '../objects/zones/ingredientZone'
+import BurgerZone from '../objects/zones/burgerZone'
 
 // TODO: move remaining time here, logic revision
 class GameState {
@@ -38,7 +39,8 @@ class GameState {
 
   private initCookingZones = () => {
     // TODO: create several zones
-    return [new CookingZone(Recipes.Burger)]
+    //return [new CookingZone(Recipes.Burger)]
+    return [new BurgerZone()]
   }
 
   public resetState = () => {
