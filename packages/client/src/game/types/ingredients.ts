@@ -1,5 +1,6 @@
 import { TObjectParameter, TPoint } from './commonTypes'
 
+// TODO: rename with BurgerIngredients???
 export enum Ingredients {
   // Cheese, // 0
   Salad, // 1

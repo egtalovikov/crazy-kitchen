@@ -1,19 +1,8 @@
 import { Ingredients } from '../types/ingredients'
 import { Recipes, TRecipeParameters } from '../types/recipe'
 import totalBurgerImage from '@assets/ingredients/totalBurger.png'
-// import test from '@assets/ingredients/test/test.png'
 
-/* import plateImage from '@assets/plate.png'
-
-import totalBurgerImage from '@assets/ingredients/totalBurger.png'
-import { GameObjects } from '../types/enums'
-import { TObjectParameter } from '../types/commonTypes'
-import { TIngredientParameter } from '../types/ingredients'
-// import burgerTomatoSaladImage from '@assets/ingredients/burgerTomatoSalad.png'
-// import burgerCheeseSaladImage from '@assets/ingredients/burgerCheeseSalad.png'
-// import backgroundImage from '@assets/startBackground.png'
-// import backgroundImage from '@assets/mainBackground.png' */
-
+// TODO: store burger ingredients in recipe
 const recipeParameters: Record<Recipes, TRecipeParameters> = {
   [Recipes.Burger]: {
     width: 200,

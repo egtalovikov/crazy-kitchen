@@ -6,6 +6,7 @@ import Order from './order'
 import Dish from '../dishes/dish'
 import { Draggable, Drawable, Hoverable } from '@/game/types/dragInterfaces'
 import Painter from '@/game/core/painter'
+import RecipeHelper from '@/game/helpers/recipeHelper'
 
 class Client extends BaseFrameObject implements Drawable, Hoverable {
   public type: Clients
@@ -79,7 +80,16 @@ class Client extends BaseFrameObject implements Drawable, Hoverable {
     console.log('in add order to client')
     console.log(this.orders)
 
-    const index = this.orders.findIndex(order => order.type !== dish.type)
+    // TODO: не будет работать с разными блюдами одного типа
+    // либо для каждого вида бургера свой тип и динамически менять тип
+    // либо сверять ингредиенты
+    const orders = this.findOrderOfType(dish)
+    console.log('orders')
+    console.log(orders)
+    const index = this.orders.findIndex(order => order == orders[0])
+    console.log('index')
+    console.log(index)
+    //const index = this.orders.findIndex(order => order.type !== dish.type)
     this.orders.splice(index, 1)
     console.log(this.orders)
 
@@ -90,16 +100,26 @@ class Client extends BaseFrameObject implements Drawable, Hoverable {
     this.setOrdersFinished()
   }
 
+  private findOrderOfType = (dish: Dish) => {
+    return this.orders.filter(order => {
+      if (order.type === dish.type) {
+        return RecipeHelper.ingredientsFitsRecipe(
+          order.recipe,
+          dish.ingredients
+        )
+      } else {
+        return false
+      }
+    })
+  }
+
   public objectFits(object: Draggable): boolean {
     // TODO: cast remove!
     const dish = object as unknown as Dish
     const hasDishType = this.orders.some(order => order.type === dish.type)
-    // TODO: сравнить совпадения всех ингредиентов!
-    if (hasDishType) {
-      console.log('here we need to add comparision')
-    }
-
-    return hasDishType
+    console.log('hasDishType')
+    console.log(hasDishType)
+    return hasDishType && !!this.findOrderOfType(dish).length
   }
 }
 
