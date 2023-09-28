@@ -14,7 +14,7 @@ class RecipeHelper {
     return true
   } */
 
-  // TODO: сейчас 1 рецепт на несколько видов бургеров, насколько это хорошо?
+  // TODO: now its 1 recipe for different types of burgers, is it ok?
   public static ingredientsFitsRecipe(
     recipe: TRecipe,
     ingredients: DishIngredient[]

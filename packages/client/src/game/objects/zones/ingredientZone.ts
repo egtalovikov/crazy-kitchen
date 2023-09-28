@@ -18,7 +18,7 @@ class IngredientZone extends BaseZone implements DragSource {
   }
 
   public reset() {
-    // TODO: что делать если он тут не нужен?
+    // TODO: что делать если он тут не нужен а в интерфейсе есть?
 
     console.log('in ingredient zone reset')
   }

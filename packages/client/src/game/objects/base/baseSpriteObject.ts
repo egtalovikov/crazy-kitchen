@@ -15,9 +15,8 @@ class BaseSpriteObject extends BaseObject {
     width: number,
     height: number,
     point: TPoint,
-    params: any
+    params: any // todo remove any
   ) {
-    // todo any
     super(imageSrc, width, height, point)
     this.spriteX = params.spriteX
     this.spriteY = params.spriteY

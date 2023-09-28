@@ -15,6 +15,7 @@ class Engine {
 
   private mainLoop = () => {
     // TODO: add client update logic for clients to go and order
+    // add requestAnimationFrame
     const { remainingTime } = store.getState().game
 
     if (remainingTime <= 0) {

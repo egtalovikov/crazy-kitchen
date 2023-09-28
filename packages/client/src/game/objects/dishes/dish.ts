@@ -9,11 +9,11 @@ import gameState from '@/game/store/gameState'
 import Ingredient from '../ingredients/ingredient'
 import recipeParameters from '@/game/parameters/recipeParams'
 import CollisionHelper from '@/game/helpers/collisionHelper'
-import BaseZone from '../base/baseZone'
+import Client from '../orders/client'
 
 // this object should have functionality of drag dish to client
 
-// TODO подумать как отделить общий Dish для напитков и бургеров
+// TODO: how we can split logic for drinks and burgers
 class Dish implements Drawable, Draggable, Hoverable {
   public ingredients: DishIngredient[] = []
 
@@ -73,7 +73,7 @@ class Dish implements Drawable, Draggable, Hoverable {
     this.setIngredientCoordinates(this.startPoint)
   }
 
-  public getTargets(): Hoverable[] {
+  public getTargets(): Client[] {
     return gameState.clients
   }
 
@@ -81,15 +81,11 @@ class Dish implements Drawable, Draggable, Hoverable {
     return !!this.recipe[type] && !this.ingredients.some(i => i.type === type)
   }
 
-  public intersects(target: Hoverable): boolean {
-    return CollisionHelper.intersectsWithObjectsArr(
-      target as unknown as BaseZone,
-      this.ingredients
-    )
+  public intersects(client: Client): boolean {
+    return CollisionHelper.intersectsWithObjectsArr(client, this.ingredients)
   }
 
-  public setHover(intersects: boolean, object: Draggable): void {
-    const ingredient = object as unknown as Ingredient
+  public setHover(intersects: boolean, ingredient: Ingredient): void {
     if (intersects && this.ingredientFits(ingredient.type) && !this.isHovered) {
       this.isHovered = true
     } else if (this.isHovered && !intersects) {
@@ -97,13 +93,11 @@ class Dish implements Drawable, Draggable, Hoverable {
     }
   }
 
-  public objectFits(object: Draggable): boolean {
-    const ingredient = object as unknown as Ingredient
+  public objectFits(ingredient: Ingredient): boolean {
     return this.ingredientFits(ingredient.type)
   }
 
-  public addObject(object: Draggable): void {
-    const ingredient = object as unknown as Ingredient
+  public addObject(ingredient: Ingredient): void {
     this.addIngredient(ingredient.type)
   }
 }

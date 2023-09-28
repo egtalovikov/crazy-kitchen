@@ -1,4 +1,4 @@
-import { Draggable, Drawable, Hoverable } from '@/game/types/dragInterfaces'
+import { Draggable, Drawable } from '@/game/types/dragInterfaces'
 import ingredientsParams from '../../parameters/ingredientParams'
 import { ingredientZoneParams } from '../../parameters/zoneParameters'
 import { IngredientState } from '../../store/ingredient'
@@ -8,7 +8,7 @@ import BaseFrameObject from '../base/baseFrameObject'
 import Painter from '@/game/core/painter'
 import gameState from '@/game/store/gameState'
 import CollisionHelper from '@/game/helpers/collisionHelper'
-import BaseZone from '../base/baseZone'
+import Dish from '../dishes/dish'
 
 // Ingredient from ingredient zone, can be cooked, can be dragged and revert to its basePoint
 // can be burnt
@@ -75,16 +75,18 @@ class Ingredient extends BaseFrameObject implements Drawable, Draggable {
   }
   public revertToSource(): void {
     this.interval = window.setInterval(this.moving, 100)
-    // TODO: полет назад на зону и исчезание ингредиента
+    // TODO: fly back to its zone and delete
   }
 
-  public getTargets(): Hoverable[] {
+  public getTargets(): Dish[] {
     const dishes = gameState.cookingZones.map(zone => zone.getDish())
     return dishes
   }
 
-  public intersects(target: Hoverable): boolean {
-    return CollisionHelper.objectsIntersect(this, target as unknown as BaseZone)
+  public intersects(dish: Dish): boolean {
+    // temp solution to check intersection, is it ok?
+    const zone = gameState.cookingZones.find(zone => zone.getDish() == dish)
+    return CollisionHelper.objectsIntersect(this, zone!)
   }
 }
 

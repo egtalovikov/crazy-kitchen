@@ -4,8 +4,6 @@ import gameState from '../store/gameState'
 import { Drawable } from '../types/dragInterfaces'
 import { draggingState } from './draggingHelper'
 
-// TODO: не должен знать о том что он рисует, сделать у всех метод draw и передавать им пейнтер
-/* drawing logic, todo refactor to make multiple levels and differents types of orders */
 class DrawingHelper {
   public painter: Painter
 
@@ -23,7 +21,7 @@ class DrawingHelper {
     let startY = 70
     const x = 50
 
-    // TODO: move it from store?
+    // TODO: move it from store to gameState
     const state = store.getState().game
 
     const timeText = `Время: ${state.remainingTime} сек.`
@@ -46,8 +44,7 @@ class DrawingHelper {
     // temp for testing, remove
     this.tempDrawIngredientZones()
 
-    // TODO: что делать тут?
-    //;(gameState.draggedObject as unknown as Drawable)?.draw(this.painter)
+    // TODO: cast? is draggingState is ok here?
     ;(draggingState.object as unknown as Drawable)?.draw(this.painter)
 
     this.drawLevelState()

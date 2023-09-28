@@ -4,7 +4,7 @@ import { Recipes } from '../../types/recipe'
 import BaseFrameObject from '../base/baseFrameObject'
 import Order from './order'
 import Dish from '../dishes/dish'
-import { Draggable, Drawable, Hoverable } from '@/game/types/dragInterfaces'
+import { Drawable, Hoverable } from '@/game/types/dragInterfaces'
 import Painter from '@/game/core/painter'
 import RecipeHelper from '@/game/helpers/recipeHelper'
 
@@ -40,7 +40,6 @@ class Client extends BaseFrameObject implements Drawable, Hoverable {
   private dishFits = (dish: Dish) => this.orders.some(o => o.type === dish.type)
 
   public setHover = (intersects: boolean, dish: Dish) => {
-    //console.log('in client hover')
     const dishFits = this.dishFits(dish)
     if (intersects && dishFits) {
       console.log('in client hover true')
@@ -51,7 +50,7 @@ class Client extends BaseFrameObject implements Drawable, Hoverable {
     }
   }
 
-  // TODO: make requestAnimationFrame
+  // TODO: make requestAnimationFrame in main loop!
   private moveAway = () => {
     if (this.coordinates.x + this.width <= 0) {
       window.clearInterval(this.movingInterval)
@@ -74,29 +73,17 @@ class Client extends BaseFrameObject implements Drawable, Hoverable {
     this.orders.forEach(order => painter.drawObject(order.image))
   }
 
-  public addObject(object: Draggable): void {
-    // TODO: cast remove!
-    const dish = object as unknown as Dish
-    console.log('in add order to client')
-    console.log(this.orders)
-
+  public addObject(dish: Dish): void {
     // TODO: не будет работать с разными блюдами одного типа
     // либо для каждого вида бургера свой тип и динамически менять тип
     // либо сверять ингредиенты
     const orders = this.findOrderOfType(dish)
-    console.log('orders')
-    console.log(orders)
     const index = this.orders.findIndex(order => order == orders[0])
-    console.log('index')
-    console.log(index)
     //const index = this.orders.findIndex(order => order.type !== dish.type)
     this.orders.splice(index, 1)
-    console.log(this.orders)
 
     // todo do it here or in draggingHelper ?
-
     this.isHovered = false
-
     this.setOrdersFinished()
   }
 
@@ -113,12 +100,8 @@ class Client extends BaseFrameObject implements Drawable, Hoverable {
     })
   }
 
-  public objectFits(object: Draggable): boolean {
-    // TODO: cast remove!
-    const dish = object as unknown as Dish
+  public objectFits(dish: Dish): boolean {
     const hasDishType = this.orders.some(order => order.type === dish.type)
-    console.log('hasDishType')
-    console.log(hasDishType)
     return hasDishType && !!this.findOrderOfType(dish).length
   }
 }
