@@ -6,6 +6,7 @@ import { topBunParams } from '@/game/parameters/ingredientsOnBurgerParams'
 import { Ingredients } from '@/game/types/ingredients'
 import ComposedDish from './composedDish'
 import BurgerIngredient from '../ingredients/burgerIngredient'
+import Ingredient from '../ingredients/ingredient'
 
 class Burger extends ComposedDish {
   public topBun: BaseSpriteObject
@@ -50,18 +51,13 @@ class Burger extends ComposedDish {
 
   public ingredientFits(type: Ingredients) {
     const parentFitsValue = super.ingredientFits(type)
-    return parentFitsValue && !(this.isEmpty() && type !== Ingredients.Bread)
+    return parentFitsValue && !(this.isEmpty() && this.recipe[type].index !== 0)
   }
 
   public addIngredient = (type: Ingredients) => {
-    console.log('in burger add ingredient')
     this.ingredients.push(new BurgerIngredient(type, this.coordinates, 0))
 
-    // TODO: на каждое добавление ингредиента проверять порядок хлеб -котлета - салат - помидор
-    // переставлять если нужно
-
-    // сортируем массив по индексам элементов, самый маленький индекс должен быть первым потом по возрастанию добавляем отступы
-    // TODO: check if sorting works as expected
+    // sort ingredients by index, so that the smallest index means the first ingredient on the bun
     this.ingredients
       .sort((a, b) => {
         return this.recipe[a.type].index - this.recipe[b.type].index
@@ -95,7 +91,6 @@ class Burger extends ComposedDish {
   }
 
   public setIngredientCoordinates = (point: TPoint) => {
-    // const ingredientsNumber
     this.ingredients.forEach(i => {
       const ingredient = i as BurgerIngredient
       ingredient.coordinates = {
@@ -110,13 +105,9 @@ class Burger extends ComposedDish {
     }
   }
 
-  // TODO: make parent dish that can be hovered
-  public getIsHovered = () => this.isHovered
-
-  public setIsHovered = (isHovered: boolean) => {
-    this.isHovered = isHovered
-    // TODO: avoid double calls! remove 20 number
-    if (isHovered) {
+  public setHover(intersects: boolean, ingredient: Ingredient): void {
+    super.setHover(intersects, ingredient)
+    if (this.isHovered) {
       this.plate.width = this.plate.width + 20
       this.plate.height = this.plate.height + 20
     } else {
