@@ -19,7 +19,7 @@ class Client
   public orders: Order[] = []
   public gameState = ClientGameState.WaitingForStart
   // TODO: can we make the same for cooking zone and client?
-  private isHovered = false
+  public isHovered = false
   public movingInterval = -1
   private isMoving = false
 

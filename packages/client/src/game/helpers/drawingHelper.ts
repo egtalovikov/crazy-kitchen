@@ -1,4 +1,3 @@
-import { store } from '@/store'
 import Painter from '../core/painter'
 import { GameState } from '../store/gameState'
 import { draggingState } from './draggingHelper'
@@ -21,12 +20,9 @@ class DrawingHelper {
     let startY = 70
     const x = 50
 
-    // TODO: move remaining time from redux to gameState object?
-    const state = store.getState().game
-
     const timeText = `Время: ${gameState.remainingTime} сек.`
     this.painter.drawText(timeText, { x, y: startY }) // set coordinate
-    const scoreText = `Собрано бургеров: ${state.score}`
+    const scoreText = `Собрано бургеров: ${gameState.score}`
     this.painter.drawText(scoreText, { x, y: (startY += textGap) })
   }
 

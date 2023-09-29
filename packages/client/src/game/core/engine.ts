@@ -17,7 +17,6 @@ class Engine {
   private mainLoop = (now: number) => {
     this.drawingHelper.drawGameFrame(gameState)
 
-    // update clients and dragging object reverting state
     this.updateObjects()
 
     this.decrementTime(now)
@@ -28,6 +27,7 @@ class Engine {
   }
 
   private updateObjects = () => {
+    // update clients, cooked ingredients and dragging object reverting state
     gameState.clients.forEach(client => {
       client.update()
     })

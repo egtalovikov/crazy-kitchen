@@ -9,9 +9,14 @@ import BurgerZone from '../objects/zones/burgerZone'
 // TODO: move remaining time here, logic revision
 export class GameState {
   public clients: Client[]
+
   public cookingZones: CookingZone[]
+
   public ingredientZones: IngredientZone[]
+
   public remainingTime = 60 // TODO: move to level params
+
+  public score = 0
 
   constructor() {
     this.clients = this.initClients()
