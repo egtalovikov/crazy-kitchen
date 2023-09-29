@@ -4,7 +4,7 @@ import DishIngredient from '../ingredients/dishIngredient'
 import { TPoint } from '@/game/types/commonTypes'
 import { Ingredients } from '@/game/types/ingredients'
 import { Draggable, Drawable, Hoverable } from '@/game/types/dragInterfaces'
-import { Recipes, TRecipe } from '@/game/types/recipe'
+import { RecipeTypes, TRecipe } from '@/game/types/recipe'
 import gameState from '@/game/store/gameState'
 import Ingredient from '../ingredients/ingredient'
 import recipeParameters from '@/game/parameters/recipeParams'
@@ -19,11 +19,11 @@ class Dish implements Drawable, Draggable, Hoverable {
 
   public isHovered = false
 
-  public type: Recipes
+  public type: RecipeTypes
 
   public recipe: TRecipe
 
-  constructor(type: Recipes, point: TPoint) {
+  constructor(type: RecipeTypes, point: TPoint) {
     this.coordinates = point
     this.type = type
     this.recipe = recipeParameters[type].recipe

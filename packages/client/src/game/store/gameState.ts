@@ -2,7 +2,7 @@ import Client from '../objects/orders/client'
 import CookingZone from '../objects/zones/cookingZone'
 import { Clients } from '../types/clients'
 import { Ingredients } from '../types/ingredients'
-import { Recipes } from '../types/recipe'
+import { BurgerTypes } from '../types/recipe'
 import IngredientZone from '../objects/zones/ingredientZone'
 import BurgerZone from '../objects/zones/burgerZone'
 
@@ -20,7 +20,9 @@ class GameState {
 
   private initClients = (): Client[] => {
     const clients = []
-    clients.push(new Client(Clients.Client1, [Recipes.Burger]))
+    clients.push(
+      new Client(Clients.Client1, [BurgerTypes.Simple, BurgerTypes.Total])
+    )
     return clients
   }
 
@@ -39,7 +41,6 @@ class GameState {
 
   private initCookingZones = () => {
     // TODO: create several zones
-    //return [new CookingZone(Recipes.Burger)]
     return [new BurgerZone()]
   }
 

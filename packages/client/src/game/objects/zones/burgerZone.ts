@@ -1,10 +1,10 @@
-import { Recipes } from '@/game/types/recipe'
+import { RecipeTypes } from '@/game/types/recipe'
 import CookingZone from './cookingZone'
 import Burger from '../dishes/burger'
 
 class BurgerZone extends CookingZone {
   constructor() {
-    super(Recipes.Burger)
+    super(RecipeTypes.Burger)
     this.dish = new Burger(this.coordinates)
   }
 

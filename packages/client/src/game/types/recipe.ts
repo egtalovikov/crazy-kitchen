@@ -1,8 +1,16 @@
 import { TObjectParameter } from './commonTypes'
 import { Ingredients } from './ingredients'
 
-export enum Recipes {
+// recipe types e.g. burger, hotdog, etc.
+export enum RecipeTypes {
   Burger,
+}
+
+export enum BurgerTypes {
+  Simple,
+  WithTomato,
+  WithSalad,
+  Total,
 }
 
 export type TRecipeParameters = TObjectParameter & {

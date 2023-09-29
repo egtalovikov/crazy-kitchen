@@ -1,25 +1,15 @@
-import recipeParameters from '../../parameters/recipeParams'
 import { TPoint } from '../../types/commonTypes'
-import { Recipes, TRecipe } from '../../types/recipe'
+import { RecipeTypes, TRecipe, TRecipeParameters } from '../../types/recipe'
 import BaseObject from '../base/baseObject'
 
-class Order {
-  public type: Recipes
+class Order extends BaseObject {
+  public type: RecipeTypes
   public recipe: TRecipe
-  public image: BaseObject
 
-  constructor(type: Recipes, point: TPoint) {
-    const params = recipeParameters[type]
-    // need to change logic here, Recipes type is used for all
-    // types of burgers, but in order we need a specific version
+  constructor(type: RecipeTypes, point: TPoint, params: TRecipeParameters) {
+    super(params.imageSrc, params.width, params.height, point)
     this.type = type
     this.recipe = params.recipe
-    this.image = new BaseObject(
-      params.imageSrc,
-      params.width,
-      params.height,
-      point
-    )
   }
 }
 

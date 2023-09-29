@@ -1,5 +1,5 @@
 import { TPoint } from '@/game/types/commonTypes'
-import { Recipes } from '@/game/types/recipe'
+import { RecipeTypes } from '@/game/types/recipe'
 import BaseSpriteObject from '../base/baseSpriteObject'
 import plateParameters from '@/game/parameters/plateParameters'
 import { topBunParams } from '@/game/parameters/ingredientsOnBurgerParams'
@@ -17,7 +17,7 @@ class Burger extends Dish {
   public ingredients: BurgerIngredient[] = []
 
   constructor(point: TPoint) {
-    super(Recipes.Burger, point)
+    super(RecipeTypes.Burger, point)
     this.plate = new BaseSpriteObject({
       ...plateParameters,
       point: this.coordinates,

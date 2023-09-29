@@ -1,12 +1,13 @@
 import clientsParameters from '../../parameters/clientParams'
 import { ClientGameState, Clients } from '../../types/clients'
-import { Recipes } from '../../types/recipe'
+import { BurgerTypes } from '../../types/recipe'
 import BaseFrameObject from '../base/baseFrameObject'
 import Order from './order'
 import Dish from '../dishes/dish'
 import { Drawable, Hoverable } from '@/game/types/dragInterfaces'
 import Painter from '@/game/core/painter'
 import RecipeHelper from '@/game/helpers/recipeHelper'
+import BurgerOrder from './burgerOrder'
 
 class Client extends BaseFrameObject implements Drawable, Hoverable {
   public type: Clients
@@ -16,7 +17,7 @@ class Client extends BaseFrameObject implements Drawable, Hoverable {
   private isHovered = false
   public movingInterval = -1
 
-  constructor(type: Clients, recipes: Recipes[]) {
+  constructor(type: Clients, burgerTypes: BurgerTypes[]) {
     const params = clientsParameters[type]
     // todo add moving logic to client, temp start point
     super(params.imageSrc, params.width, params.height, params.frameWidth, {
@@ -24,8 +25,8 @@ class Client extends BaseFrameObject implements Drawable, Hoverable {
       y: 375,
     })
     this.type = type
-    recipes.forEach(recipe =>
-      this.orders.push(new Order(recipe, this.orderCoordinate()))
+    burgerTypes.forEach(type =>
+      this.orders.push(new BurgerOrder(type, this.orderCoordinate()))
     )
   }
 
@@ -70,7 +71,7 @@ class Client extends BaseFrameObject implements Drawable, Hoverable {
 
   public draw(painter: Painter): void {
     painter.drawObject(this)
-    this.orders.forEach(order => painter.drawObject(order.image))
+    this.orders.forEach(order => painter.drawObject(order))
   }
 
   public addObject(dish: Dish): void {

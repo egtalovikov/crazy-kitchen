@@ -1,4 +1,4 @@
-import { Recipes } from '../../types/recipe'
+import { RecipeTypes } from '../../types/recipe'
 import BaseZone from '../base/baseZone'
 import zoneParams from '../../parameters/zoneParameters'
 import Dish from '../dishes/dish'
@@ -6,9 +6,9 @@ import { DragSource, Drawable } from '@/game/types/dragInterfaces'
 import Painter from '@/game/core/painter'
 class CookingZone extends BaseZone implements Drawable, DragSource {
   protected dish: Dish
-  private type: Recipes
+  private type: RecipeTypes
 
-  constructor(type: Recipes) {
+  constructor(type: RecipeTypes) {
     const params = zoneParams
     super(params.width, params.height, params.coordinates)
     this.dish = new Dish(type, this.coordinates)
