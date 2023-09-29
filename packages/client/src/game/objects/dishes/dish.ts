@@ -11,9 +11,9 @@ import recipeParameters from '@/game/parameters/recipeParams'
 import CollisionHelper from '@/game/helpers/collisionHelper'
 import Client from '../orders/client'
 import CookingZone from '../zones/cookingZone'
-import { Drawable, Animatable } from '@/game/types/interfaces'
+import { Drawable } from '@/game/types/interfaces'
 
-class Dish implements Drawable, Draggable, Hoverable, Animatable {
+class Dish implements Drawable, Draggable, Hoverable {
   public ingredients: DishIngredient[] = []
 
   public coordinates: TPoint
@@ -43,19 +43,6 @@ class Dish implements Drawable, Draggable, Hoverable, Animatable {
 
   protected ingredientFits(type: Ingredients): boolean {
     return !!this.recipe[type] && !this.ingredients.some(i => i.type === type)
-  }
-
-  /* animation methods */
-
-  public update(): void {
-    if (this.isMoving) {
-      if (this.coordinates.x <= 0) {
-        this.isMoving = false
-        // todo callback!
-      } else {
-        this.coordinates.x -= 2
-      }
-    }
   }
 
   /* drawing methods */
@@ -106,6 +93,17 @@ class Dish implements Drawable, Draggable, Hoverable, Animatable {
 
   public addObject(ingredient: Ingredient): void {
     this.addIngredient(ingredient.type)
+  }
+
+  public update(): void {
+    if (this.isMoving) {
+      if (this.coordinates.x <= 0) {
+        this.isMoving = false
+        // todo callback!
+      } else {
+        this.coordinates.x -= 2
+      }
+    }
   }
 }
 

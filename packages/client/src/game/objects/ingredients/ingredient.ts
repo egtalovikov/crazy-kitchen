@@ -10,14 +10,11 @@ import gameState from '@/game/store/gameState'
 import CollisionHelper from '@/game/helpers/collisionHelper'
 import Dish from '../dishes/dish'
 import IngredientZone from '../zones/ingredientZone'
-import { Drawable, Animatable } from '@/game/types/interfaces'
+import { Drawable } from '@/game/types/interfaces'
 
 // Ingredient from ingredient zone, can be cooked, can be dragged and revert to its basePoint
 // can be burnt
-class Ingredient
-  extends BaseFrameObject
-  implements Drawable, Draggable, Animatable
-{
+class Ingredient extends BaseFrameObject implements Drawable, Draggable {
   public type: Ingredients
   public basePoint: TPoint
   public preparationRequired: boolean // todo better name
@@ -68,19 +65,6 @@ class Ingredient
   public setIsInOrder = () => {
     this.getState().isInOrder = true
   }
-  /* animation methods */
-
-  public update(): void {
-    console.log('update')
-    if (this.isMoving) {
-      if (this.coordinates.x + this.width <= 0) {
-        this.isMoving = false
-        // todo callback!
-      } else {
-        this.coordinates.x -= 2
-      }
-    }
-  }
 
   /* drawing methods */
 
@@ -117,6 +101,18 @@ class Ingredient
     // temp solution to check intersection, is it ok?
     const zone = gameState.cookingZones.find(zone => zone.getDish() == dish)
     return CollisionHelper.objectsIntersect(this, zone!)
+  }
+
+  public update(): void {
+    console.log('update')
+    if (this.isMoving) {
+      if (this.coordinates.x + this.width <= 0) {
+        this.isMoving = false
+        // todo callback!
+      } else {
+        this.coordinates.x -= 2
+      }
+    }
   }
 }
 

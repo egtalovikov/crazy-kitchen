@@ -1,4 +1,5 @@
 import { TPoint } from './commonTypes'
+import { Animatable } from '@/game/types/interfaces'
 
 export interface Hoverable {
   setHover(intersects: boolean, object: Draggable): void
@@ -11,7 +12,7 @@ export interface DragSource {
   reset(): void
 }
 
-export interface Draggable {
+export interface Draggable extends Animatable {
   setCoordinates(point: TPoint): void
   revertToSource(source: DragSource, callback: () => void): void
   getTargets(): Hoverable[]
