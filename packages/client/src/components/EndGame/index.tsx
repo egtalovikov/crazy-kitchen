@@ -14,7 +14,7 @@ export const EndGame: FC = () => {
   const { score } = useSelector((rootState: CoreRootState) => rootState.game)
   const gameOverMessage = engine.isGameWinned() ? 'Вы выиграли' : 'Вы проиграли'
 
-  const startGameOver = () => engine.setGameRestart()
+  const startGameOver = () => engine.restartGame()
 
   return (
     <div className={`${styles.wrapper} ${styles.opened}`}>

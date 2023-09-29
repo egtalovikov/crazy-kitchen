@@ -53,15 +53,6 @@ class Engine {
 
   /* game state logic */
 
-  private setGameOver = () => {
-    const { game } = store.getState()
-    const state =
-      game.score === game.level.ordersCount
-        ? GlobalGameState.Winned
-        : GlobalGameState.Failed
-    this.setGameState(state)
-  }
-
   private pause = () => {
     window.cancelAnimationFrame(this.requestId)
   }
@@ -73,30 +64,31 @@ class Engine {
   private resetGame = () => {
     window.cancelAnimationFrame(this.requestId)
     this.requestId = -1
-    this.setGameState(GlobalGameState.Started)
-    // this reset time, score
-  }
-
-  private startLevel = () => {
-    this.setGameRestart()
-    this.continue()
+    this.startTime = 0
+    gameState.remainingTime = gameState.currentLevel.time
   }
 
   private setGameState = (state: GlobalGameState) => {
     store.dispatch(setGameState(state))
   }
 
-  public startGame = () => {
+  private setGameOver = () => {
+    const { game } = store.getState()
+    const state =
+      game.score === game.level.ordersCount
+        ? GlobalGameState.Winned
+        : GlobalGameState.Failed
+    this.setGameState(state)
     this.resetGame()
-    this.startLevel()
   }
 
-  public setGameRestart = () => {
+  public startGame = () => {
+    this.resetGame()
     this.setGameState(GlobalGameState.Started)
-    gameState.remainingTime = gameState.currentLevel.time
-    this.requestId = -1
-    this.startTime = 0
+    this.continue()
   }
+
+  public restartGame = () => this.setGameState(GlobalGameState.Started)
 
   /* drag&drop logic */
 
@@ -109,7 +101,7 @@ class Engine {
   public handleDraggingStop = () =>
     DraggingHelper.shouldDrag() && DraggingHelper.dragStop()
 
-  /* game over methods */
+  /* game over state methods */
 
   public isGameOver = () => {
     const { gameState } = store.getState().game
