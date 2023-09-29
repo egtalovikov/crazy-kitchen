@@ -73,9 +73,8 @@ class Engine {
   }
 
   private setGameOver = () => {
-    const { game } = store.getState()
     const state =
-      game.score === game.level.ordersCount
+      gameState.score === gameState.currentLevel.ordersCount
         ? GlobalGameState.Winned
         : GlobalGameState.Failed
     this.setGameState(state)

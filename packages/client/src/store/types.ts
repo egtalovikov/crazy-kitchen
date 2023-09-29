@@ -1,4 +1,3 @@
-import { TLevelParams } from '@/game/types/levels'
 import { GlobalGameState } from '../game/types/commonTypes'
 import { store } from './index'
 
@@ -20,10 +19,6 @@ export interface AuthState {
 // todo one style
 export type TGameState = {
   gameState: GlobalGameState
-  score: number
-  level: TLevelParams
-  orderIndex: number
-  ordersFinished: number
 }
 
 export interface CoreRootState {

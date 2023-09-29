@@ -5,13 +5,12 @@ import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import { MAIN_ROUTE } from '@/utils/consts'
-import { useSelector } from 'react-redux'
-import { CoreRootState } from '@/store/types'
 import engine from '@/game/core/engine'
+import gameState from '@/game/store/gameState'
 
 export const EndGame: FC = () => {
   const { goRoute } = useGoToRoute()
-  const { score } = useSelector((rootState: CoreRootState) => rootState.game)
+  const { score } = gameState
   const gameOverMessage = engine.isGameWinned() ? 'Вы выиграли' : 'Вы проиграли'
 
   const startGameOver = () => engine.restartGame()
