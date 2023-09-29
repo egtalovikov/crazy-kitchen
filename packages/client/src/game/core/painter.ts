@@ -4,11 +4,7 @@ import BaseZone from '../objects/base/baseZone'
 import { TPoint } from '../types/commonTypes'
 
 class Painter {
-  constructor(private _contextDelegate: () => CanvasRenderingContext2D) {}
-
-  get context() {
-    return this._contextDelegate()
-  }
+  constructor(private context: CanvasRenderingContext2D) {}
 
   private drawFrame = (object: BaseObject) => {
     this.context.drawImage(

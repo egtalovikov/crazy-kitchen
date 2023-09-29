@@ -1,26 +1,17 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react'
+import React, { useRef, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import Engine from '@/game/core/engine'
 import style from './Game.module.scss'
 import { CoreRootState } from '@/store/types'
 import { TPoint } from '@/game/types/commonTypes'
 import { EndGame } from '@components/EndGame'
+import engine from '@/game/core/engine'
 
 const Game: React.FC = () => {
   const state = useSelector((rootState: CoreRootState) => rootState.game)
+
   const [gameOver, setGameOver] = useState(false)
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
-  const contextDelegate = useCallback((): CanvasRenderingContext2D => {
-    const context = canvasRef.current?.getContext('2d')
-    if (context) {
-      return context
-    } else {
-      throw Error('contextDelegate : canvas not found')
-    }
-  }, [])
-
-  const gameEngineRef = useRef<Engine>(new Engine(contextDelegate))
 
   const getClickCoordinates = (event: MouseEvent): TPoint => {
     const canvas = canvasRef.current
@@ -35,25 +26,31 @@ const Game: React.FC = () => {
   }
 
   const handleMouseDown = (event: MouseEvent) =>
-    gameEngineRef.current?.handleDruggingStart(getClickCoordinates(event))
+    engine.handleDruggingStart(getClickCoordinates(event))
 
   const handleMouseMove = (event: MouseEvent) =>
-    gameEngineRef.current?.handleDraggingMove(getClickCoordinates(event))
+    engine.handleDraggingMove(getClickCoordinates(event))
 
-  const handleMouseUp = () => gameEngineRef.current?.handleDraggingStop()
+  const handleMouseUp = () => engine.handleDraggingStop()
 
   useEffect(() => {
+    console.log('in Game.tsx')
+
     const canvas = canvasRef.current
     if (!canvas) {
-      console.log('useEffect : canvas not found')
-      return
+      throw Error('useEffect : canvas not found')
     }
+    const context = canvas.getContext('2d')
+    if (!context) {
+      throw Error('useEffect : canvas context not found')
+    }
+
     canvas.width = window.innerWidth
     canvas.height = window.innerHeight
 
-    gameEngineRef.current?.startGame()
+    engine.setDrawingHelper(context)
+    engine.startGame()
 
-    // Обработчики перетаскивания ингредиентов.
     canvas.addEventListener('mousedown', handleMouseDown)
     canvas.addEventListener('mousemove', handleMouseMove)
     canvas.addEventListener('mouseup', handleMouseUp)
@@ -65,9 +62,8 @@ const Game: React.FC = () => {
     }
   }, [])
 
-  /* this will repaint remaining time every second */
   useEffect(() => {
-    if (gameEngineRef.current?.isGameOver()) {
+    if (engine.isGameOver()) {
       setGameOver(true)
     }
   }, [state.gameState])
@@ -75,7 +71,7 @@ const Game: React.FC = () => {
   if (gameOver) {
     return (
       <div className={style.endBackground}>
-        <EndGame engine={gameEngineRef.current} />
+        <EndGame />
       </div>
     )
   }

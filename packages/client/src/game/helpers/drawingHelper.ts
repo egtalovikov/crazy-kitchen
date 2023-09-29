@@ -6,8 +6,8 @@ import { Drawable } from '../types/interfaces'
 class DrawingHelper {
   public painter: Painter
 
-  constructor(contextDelegate: () => CanvasRenderingContext2D) {
-    this.painter = new Painter(contextDelegate)
+  constructor(ctx: CanvasRenderingContext2D) {
+    this.painter = new Painter(ctx)
   }
 
   public prepareFrame = () => {

@@ -6,16 +6,13 @@ import DraggingHelper, { draggingState } from '../helpers/draggingHelper'
 import gameState from '../store/gameState'
 class Engine {
   private requestId = -1
+
   private startTime = 0
 
-  private drawingHelper: DrawingHelper
-
-  constructor(contextDelegate: () => CanvasRenderingContext2D) {
-    this.drawingHelper = new DrawingHelper(contextDelegate)
-  }
+  private drawingHelper?: DrawingHelper
 
   private mainLoop = (now: number) => {
-    this.drawingHelper.drawGameFrame(gameState)
+    this.drawingHelper?.drawGameFrame(gameState)
 
     this.updateObjects()
 
@@ -50,6 +47,10 @@ class Engine {
     }
   }
 
+  public setDrawingHelper = (ctx: CanvasRenderingContext2D) => {
+    this.drawingHelper = new DrawingHelper(ctx)
+  }
+
   /* game state logic */
 
   private setGameOver = () => {
@@ -77,8 +78,7 @@ class Engine {
   }
 
   private startLevel = () => {
-    this.setGameState(GlobalGameState.Started)
-    //this.drawingHelper.drawGameFrame(gameState)
+    this.setGameStart()
     this.continue()
   }
 
@@ -91,24 +91,20 @@ class Engine {
     this.startLevel()
   }
 
+  public setGameStart = () => {
+    this.setGameState(GlobalGameState.Started)
+  }
+
   /* drag&drop logic */
 
   public handleDruggingStart = (point: TPoint) =>
     DraggingHelper.dragStart(point)
 
-  public handleDraggingMove = (point: TPoint) => {
-    if (DraggingHelper.shouldDrag()) {
-      DraggingHelper.drag(point)
-      //this.drawingHelper.drawGameFrame(gameState)
-    }
-  }
+  public handleDraggingMove = (point: TPoint) =>
+    DraggingHelper.shouldDrag() && DraggingHelper.drag(point)
 
-  public handleDraggingStop = () => {
-    if (DraggingHelper.shouldDrag()) {
-      DraggingHelper.dragStop()
-      //this.drawingHelper.drawGameFrame(gameState)
-    }
-  }
+  public handleDraggingStop = () =>
+    DraggingHelper.shouldDrag() && DraggingHelper.dragStop()
 
   /* game over methods */
 
@@ -123,4 +119,4 @@ class Engine {
     store.getState().game.gameState == GlobalGameState.Winned
 }
 
-export default Engine
+export default new Engine()

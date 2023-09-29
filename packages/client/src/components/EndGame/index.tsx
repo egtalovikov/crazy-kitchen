@@ -7,22 +7,19 @@ import Button from '@mui/material/Button'
 import { MAIN_ROUTE } from '@/utils/consts'
 import { useSelector } from 'react-redux'
 import { CoreRootState } from '@/store/types'
-import Engine from '@/game/core/engine'
+import engine from '@/game/core/engine'
 
-type TEndGameProps = {
-  engine?: Engine
-}
-
-export const EndGame: FC<TEndGameProps> = ({ engine }) => {
+export const EndGame: FC = () => {
   const { goRoute } = useGoToRoute()
   const { score } = useSelector((rootState: CoreRootState) => rootState.game)
-  const gameOverMessage = engine?.isGameWinned()
-    ? 'Вы выиграли'
-    : 'Вы проиграли'
+  const gameOverMessage = engine.isGameWinned() ? 'Вы выиграли' : 'Вы проиграли'
 
   const startGameOver = () => {
     console.log('startGameOver')
-    engine?.startGame()
+    // TODO: why not working?
+    // engine.setGameStart()
+    // goRoute(GAME_ROUTE)
+    location.reload()
   }
 
   return (
