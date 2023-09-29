@@ -7,7 +7,7 @@ class DishIngredient extends BaseSpriteObject {
   public type: Ingredients
   constructor(type: Ingredients, point: TPoint) {
     const params = ingredientsOnBurgerParams[type]
-    super(params.imageSrc, params.width, params.height, point, params)
+    super({ ...params, point: point })
     this.type = type
   }
 }

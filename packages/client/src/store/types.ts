@@ -21,7 +21,6 @@ export interface AuthState {
 export type TGameState = {
   gameState: GlobalGameState
   score: number
-  remainingTime: number
   level: TLevelParams
   orderIndex: number
   ordersFinished: number

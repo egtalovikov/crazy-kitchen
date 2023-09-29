@@ -7,10 +7,11 @@ import IngredientZone from '../objects/zones/ingredientZone'
 import BurgerZone from '../objects/zones/burgerZone'
 
 // TODO: move remaining time here, logic revision
-class GameState {
+export class GameState {
   public clients: Client[]
   public cookingZones: CookingZone[]
   public ingredientZones: IngredientZone[]
+  public remainingTime = 60 // TODO: move to level params
 
   constructor() {
     this.clients = this.initClients()
@@ -21,7 +22,7 @@ class GameState {
   private initClients = (): Client[] => {
     const clients = []
     clients.push(
-      new Client(Clients.Client1, [BurgerTypes.Simple, BurgerTypes.Total])
+      new Client(Clients.Client1, [BurgerTypes.WithTomato, BurgerTypes.Total])
     )
     return clients
   }

@@ -1,9 +1,10 @@
 import { Ingredients } from '../types/ingredients'
 import { BurgerTypes, RecipeTypes, TRecipeParameters } from '../types/recipe'
+// TODO: add proper images
 import totalBurgerImage from '@assets/ingredients/totalBurger.png'
-import tomatoBurgerImage from '@assets/ingredients/totalBurger.png'
-import saladBurgerImage from '@assets/ingredients/totalBurger.png'
-import simpleBurgerImage from '@assets/ingredients/totalBurger.png'
+import tomatoBurgerImage from '@assets/ingredients/burgerTomatoSalad.png'
+import saladBurgerImage from '@assets/ingredients/burgerCheeseSalad.png'
+import simpleBurgerImage from '@assets/ingredients/burgerBread.png'
 
 // TODO: store burger ingredients in recipe
 const recipeParameters: Record<RecipeTypes, TRecipeParameters> = {

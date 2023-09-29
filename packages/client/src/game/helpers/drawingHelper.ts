@@ -1,8 +1,8 @@
 import { store } from '@/store'
 import Painter from '../core/painter'
-import gameState from '../store/gameState'
-import { Drawable } from '../types/dragInterfaces'
+import { GameState } from '../store/gameState'
 import { draggingState } from './draggingHelper'
+import { Drawable } from '../types/interfaces'
 
 class DrawingHelper {
   public painter: Painter
@@ -15,7 +15,7 @@ class DrawingHelper {
     this.painter.clearCanvas()
   }
 
-  public drawLevelState = () => {
+  public drawLevelState = (gameState: GameState) => {
     // TODO: calculate this depending on window size
     const textGap = 50
     let startY = 70
@@ -24,13 +24,13 @@ class DrawingHelper {
     // TODO: move remaining time from redux to gameState object?
     const state = store.getState().game
 
-    const timeText = `Время: ${state.remainingTime} сек.`
+    const timeText = `Время: ${gameState.remainingTime} сек.`
     this.painter.drawText(timeText, { x, y: startY }) // set coordinate
     const scoreText = `Собрано бургеров: ${state.score}`
     this.painter.drawText(scoreText, { x, y: (startY += textGap) })
   }
 
-  public drawGameFrame = () => {
+  public drawGameFrame = (gameState: GameState) => {
     this.prepareFrame()
 
     gameState.clients.forEach(client => {
@@ -42,17 +42,17 @@ class DrawingHelper {
     })
 
     // temp for testing, remove
-    this.tempDrawIngredientZones()
+    this.tempDrawIngredientZones(gameState)
 
     // TODO: is it ok to import dragging state here?
     // is it ok to cast like that?
     ;(draggingState.object as unknown as Drawable)?.draw(this.painter)
 
-    this.drawLevelState()
+    this.drawLevelState(gameState)
   }
 
   // temp for testing, remove
-  public tempDrawIngredientZones = () => {
+  public tempDrawIngredientZones = (gameState: GameState) => {
     gameState.ingredientZones.forEach(zone => {
       this.painter.tempDrawZone(zone)
     })

@@ -1,11 +1,13 @@
 import { GlobalGameState, TPoint } from '../types/commonTypes'
 import { store } from '@store/index'
-import { setGameState, setRemainingTime } from '@store/modules/game/gameSlice'
+import { setGameState } from '@store/modules/game/gameSlice'
 import DrawingHelper from '../helpers/drawingHelper'
 import DraggingHelper from '../helpers/draggingHelper'
+import gameState from '../store/gameState'
 
 class Engine {
-  private levelInterval = -1
+  private requestId = -1
+  private startTime = 0
 
   private drawingHelper: DrawingHelper
 
@@ -13,19 +15,38 @@ class Engine {
     this.drawingHelper = new DrawingHelper(contextDelegate)
   }
 
-  private mainLoop = () => {
-    // TODO: add client update logic for clients to go and order
-    // add requestAnimationFrame
-    const { remainingTime } = store.getState().game
+  private mainLoop = (now: number) => {
+    this.drawingHelper.drawGameFrame(gameState)
 
-    if (remainingTime <= 0) {
-      this.pause()
-      this.setGameOver()
-      return
+    // update clients and dragging object reverting state
+    this.updateObjects()
+
+    this.decrementTime(now)
+
+    this.checkRemainingTime()
+
+    this.requestId = window.requestAnimationFrame(this.mainLoop)
+  }
+
+  private updateObjects = () => {
+    gameState.clients.forEach(client => {
+      client.update()
+    })
+  }
+
+  private decrementTime = (time: number) => {
+    if (time - this.startTime >= 1000) {
+      this.startTime = time
+      gameState.remainingTime -= 1
     }
+  }
 
-    store.dispatch(setRemainingTime(remainingTime - 1))
-    this.drawingHelper.drawGameFrame()
+  private checkRemainingTime = () => {
+    const { remainingTime } = gameState
+    if (remainingTime <= 0) {
+      this.setGameOver()
+      this.pause()
+    }
   }
 
   /* game state logic */
@@ -40,23 +61,23 @@ class Engine {
   }
 
   private pause = () => {
-    window.clearInterval(this.levelInterval)
+    window.cancelAnimationFrame(this.requestId)
   }
 
   private continue = () => {
-    this.levelInterval = window.setInterval(this.mainLoop, 1000) // 1000) temp for testing
+    this.requestId = window.requestAnimationFrame(this.mainLoop)
   }
 
   private resetGame = () => {
-    window.clearInterval(this.levelInterval)
-    this.levelInterval = -1
+    window.cancelAnimationFrame(this.requestId)
+    this.requestId = -1
     this.setGameState(GlobalGameState.Started)
     // this reset time, score
   }
 
   private startLevel = () => {
     this.setGameState(GlobalGameState.Started)
-    this.drawingHelper.drawGameFrame()
+    //this.drawingHelper.drawGameFrame(gameState)
     this.continue()
   }
 
@@ -77,14 +98,14 @@ class Engine {
   public handleDraggingMove = (point: TPoint) => {
     if (DraggingHelper.shouldDrag()) {
       DraggingHelper.drag(point)
-      this.drawingHelper.drawGameFrame()
+      //this.drawingHelper.drawGameFrame(gameState)
     }
   }
 
   public handleDraggingStop = () => {
     if (DraggingHelper.shouldDrag()) {
       DraggingHelper.dragStop()
-      this.drawingHelper.drawGameFrame()
+      //this.drawingHelper.drawGameFrame(gameState)
     }
   }
 

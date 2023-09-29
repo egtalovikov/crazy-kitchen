@@ -4,18 +4,24 @@ import { BurgerTypes } from '../../types/recipe'
 import BaseFrameObject from '../base/baseFrameObject'
 import Order from './order'
 import Dish from '../dishes/dish'
-import { Drawable, Hoverable } from '@/game/types/dragInterfaces'
+import { Hoverable } from '@/game/types/dragInterfaces'
 import Painter from '@/game/core/painter'
 import RecipeHelper from '@/game/helpers/recipeHelper'
 import BurgerOrder from './burgerOrder'
+import { Drawable, Animatable } from '@/game/types/interfaces'
 
-class Client extends BaseFrameObject implements Drawable, Hoverable {
+// TODO: draw all client orders!
+class Client
+  extends BaseFrameObject
+  implements Drawable, Hoverable, Animatable
+{
   public type: Clients
   public orders: Order[] = []
   public gameState = ClientGameState.WaitingForStart
   // TODO: can we make the same for cooking zone and client?
   private isHovered = false
   public movingInterval = -1
+  private isMoving = false
 
   constructor(type: Clients, burgerTypes: BurgerTypes[]) {
     const params = clientsParameters[type]
@@ -40,52 +46,10 @@ class Client extends BaseFrameObject implements Drawable, Hoverable {
 
   private dishFits = (dish: Dish) => this.orders.some(o => o.type === dish.type)
 
-  public setHover = (intersects: boolean, dish: Dish) => {
-    const dishFits = this.dishFits(dish)
-    if (intersects && dishFits) {
-      console.log('in client hover true')
-      this.isHovered = true
-    } else if (this.isHovered && !intersects) {
-      console.log('in client hover false')
-      this.isHovered = false
-    }
-  }
-
-  // TODO: make requestAnimationFrame in main loop!
-  private moveAway = () => {
-    if (this.coordinates.x + this.width <= 0) {
-      window.clearInterval(this.movingInterval)
-    } else {
-      this.coordinates = {
-        x: this.coordinates.x - 20,
-        y: this.coordinates.y,
-      }
-    }
-  }
-
   private setOrdersFinished = () => {
     if (!this.orders.length) {
-      this.movingInterval = window.setInterval(this.moveAway, 300)
+      this.isMoving = true
     }
-  }
-
-  public draw(painter: Painter): void {
-    painter.drawObject(this)
-    this.orders.forEach(order => painter.drawObject(order))
-  }
-
-  public addObject(dish: Dish): void {
-    // TODO: не будет работать с разными блюдами одного типа
-    // либо для каждого вида бургера свой тип и динамически менять тип
-    // либо сверять ингредиенты
-    const orders = this.findOrderOfType(dish)
-    const index = this.orders.findIndex(order => order == orders[0])
-    //const index = this.orders.findIndex(order => order.type !== dish.type)
-    this.orders.splice(index, 1)
-
-    // todo do it here or in draggingHelper ?
-    this.isHovered = false
-    this.setOrdersFinished()
   }
 
   private findOrderOfType = (dish: Dish) => {
@@ -101,9 +65,57 @@ class Client extends BaseFrameObject implements Drawable, Hoverable {
     })
   }
 
+  /* animate logic */
+
+  public update = () => {
+    if (this.isMoving) {
+      if (this.coordinates.x + this.width <= 0) {
+        this.isMoving = false
+      } else {
+        this.coordinates.x -= 10
+      }
+    }
+  }
+
+  /* drawing logic */
+
+  public draw(painter: Painter): void {
+    painter.drawObject(this)
+    this.orders.forEach(order => painter.drawObject(order))
+  }
+
+  /* drag&drop logic */
+
+  public addObject(dish: Dish): void {
+    // TODO: не будет работать с разными блюдами одного типа
+    // либо для каждого вида бургера свой тип и динамически менять тип
+    // либо сверять ингредиенты
+    const orders = this.findOrderOfType(dish)
+    const index = this.orders.findIndex(order => order == orders[0])
+    //const index = this.orders.findIndex(order => order.type !== dish.type)
+    this.orders.splice(index, 1)
+
+    // todo do it here or in draggingHelper ?
+    this.isHovered = false
+    this.setOrdersFinished()
+    console.log('addObject')
+    console.log(this.orders)
+  }
+
   public objectFits(dish: Dish): boolean {
     const hasDishType = this.orders.some(order => order.type === dish.type)
     return hasDishType && !!this.findOrderOfType(dish).length
+  }
+
+  public setHover = (intersects: boolean, dish: Dish) => {
+    const dishFits = this.dishFits(dish)
+    if (intersects && dishFits) {
+      console.log('in client hover true')
+      this.isHovered = true
+    } else if (this.isHovered && !intersects) {
+      console.log('in client hover false')
+      this.isHovered = false
+    }
   }
 }
 

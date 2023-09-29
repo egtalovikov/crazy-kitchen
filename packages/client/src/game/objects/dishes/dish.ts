@@ -3,7 +3,7 @@ import BaseSpriteObject from '../base/baseSpriteObject'
 import DishIngredient from '../ingredients/dishIngredient'
 import { TPoint } from '@/game/types/commonTypes'
 import { Ingredients } from '@/game/types/ingredients'
-import { Draggable, Drawable, Hoverable } from '@/game/types/dragInterfaces'
+import { Draggable, Hoverable } from '@/game/types/dragInterfaces'
 import { RecipeTypes, TRecipe } from '@/game/types/recipe'
 import gameState from '@/game/store/gameState'
 import Ingredient from '../ingredients/ingredient'
@@ -11,6 +11,7 @@ import recipeParameters from '@/game/parameters/recipeParams'
 import CollisionHelper from '@/game/helpers/collisionHelper'
 import Client from '../orders/client'
 import CookingZone from '../zones/cookingZone'
+import { Drawable } from '@/game/types/interfaces'
 
 class Dish implements Drawable, Draggable, Hoverable {
   public ingredients: DishIngredient[] = []

@@ -1,9 +1,4 @@
-import Painter from '../core/painter'
 import { TPoint } from './commonTypes'
-
-export interface Drawable {
-  draw(painter: Painter): void
-}
 
 export interface Draggable {
   setCoordinates(point: TPoint): void

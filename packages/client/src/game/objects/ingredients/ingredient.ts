@@ -1,4 +1,4 @@
-import { Draggable, Drawable } from '@/game/types/dragInterfaces'
+import { Draggable } from '@/game/types/dragInterfaces'
 import ingredientsParams from '../../parameters/ingredientParams'
 import { ingredientZoneParams } from '../../parameters/zoneParameters'
 import { IngredientState } from '../../store/ingredient'
@@ -10,6 +10,7 @@ import gameState from '@/game/store/gameState'
 import CollisionHelper from '@/game/helpers/collisionHelper'
 import Dish from '../dishes/dish'
 import IngredientZone from '../zones/ingredientZone'
+import { Drawable } from '@/game/types/interfaces'
 
 // Ingredient from ingredient zone, can be cooked, can be dragged and revert to its basePoint
 // can be burnt

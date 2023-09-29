@@ -11,7 +11,6 @@ const firstLevel = GameLevels[GameLevelList.Level1]
 const initialState: TGameState = {
   gameState: GlobalGameState.WaitingForStart,
   score: 0,
-  remainingTime: firstLevel.time,
   level: firstLevel,
   orderIndex: 0,
   ordersFinished: 0,
@@ -24,9 +23,6 @@ const gameSlice = createSlice({
     setGameState: (state, action) => {
       state.gameState = action.payload
     },
-    setRemainingTime: (state, action) => {
-      state.remainingTime = action.payload
-    },
     setScore: (state, action) => {
       state.score = action.payload
     },
@@ -36,6 +32,5 @@ const gameSlice = createSlice({
   },
 })
 
-export const { setGameState, setRemainingTime, setScore, setOrderIndex } =
-  gameSlice.actions
+export const { setGameState, setScore, setOrderIndex } = gameSlice.actions
 export const gameReducer = gameSlice.reducer
