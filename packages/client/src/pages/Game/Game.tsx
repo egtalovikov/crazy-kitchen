@@ -67,7 +67,7 @@ const Game: React.FC = () => {
 
   useEffect(() => {
     setGameOver(engine.isGameOver())
-  }, [state.gameState])
+  }, [state.globalGameState])
 
   if (gameOver) {
     return (

@@ -3,7 +3,7 @@ import { GlobalGameState } from '@/game/types/commonTypes'
 import { TGameState } from '@/store/types'
 
 const initialState: TGameState = {
-  gameState: GlobalGameState.WaitingForStart,
+  globalGameState: GlobalGameState.WaitingForStart,
 }
 
 const gameSlice = createSlice({
@@ -11,7 +11,7 @@ const gameSlice = createSlice({
   initialState,
   reducers: {
     setGameState: (state, action) => {
-      state.gameState = action.payload
+      state.globalGameState = action.payload
     },
   },
 })

@@ -82,6 +82,9 @@ class Engine {
   }
 
   public startGame = () => {
+    if (!this.drawingHelper) {
+      throw Error('no drawing helper is set')
+    }
     this.resetGame()
     this.setGameState(GlobalGameState.Started)
     this.continue()
@@ -103,14 +106,12 @@ class Engine {
   /* game over state methods */
 
   public isGameOver = () => {
-    const { gameState } = store.getState().game
-    return (
-      gameState == GlobalGameState.Failed || gameState == GlobalGameState.Winned
-    )
+    const { globalGameState: state } = store.getState().game
+    return state == GlobalGameState.Failed || state == GlobalGameState.Winned
   }
 
   public isGameWinned = () =>
-    store.getState().game.gameState == GlobalGameState.Winned
+    store.getState().game.globalGameState == GlobalGameState.Winned
 }
 
 export default new Engine()

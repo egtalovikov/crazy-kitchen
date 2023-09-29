@@ -18,7 +18,7 @@ export interface AuthState {
 
 // todo one style
 export type TGameState = {
-  gameState: GlobalGameState
+  globalGameState: GlobalGameState
 }
 
 export interface CoreRootState {

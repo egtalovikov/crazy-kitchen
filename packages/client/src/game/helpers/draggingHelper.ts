@@ -1,10 +1,8 @@
 import gameState from '../store/gameState'
 import { TPoint } from '../types/commonTypes'
 import colHelper from './collisionHelper'
-import BaseZone from '../objects/base/baseZone'
 import { DragSource, Draggable, Hoverable } from '../types/dragInterfaces'
-import IngredientZone from '../objects/zones/ingredientZone'
-import CookingZone from '../objects/zones/cookingZone'
+import BaseZone from '../objects/base/baseZone'
 
 type DraggingState = {
   source: DragSource | null
@@ -21,7 +19,7 @@ export const draggingState: DraggingState = {
 class DraggingHelper {
   private static checkZoneIntersection(
     point: TPoint,
-    zones: IngredientZone[] | CookingZone[] // TODO: can we remove this dependency?
+    zones: (DragSource & BaseZone)[]
   ) {
     zones.forEach(zone => {
       if (colHelper.intersectsWithPoint(point, zone)) {
@@ -46,9 +44,7 @@ class DraggingHelper {
     if (object) {
       object.setCoordinates(point)
       draggingState.targets?.forEach(target => {
-        // TODO: can we remove this cast?
-        const targetZone = target as unknown as BaseZone
-        const intersects = colHelper.intersectsWithPoint(point, targetZone)
+        const intersects = object.intersects(target)
         target.setHover(intersects, object)
       })
     }
