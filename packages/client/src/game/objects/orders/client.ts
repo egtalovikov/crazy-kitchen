@@ -72,7 +72,7 @@ class Client
       if (this.coordinates.x + this.width <= 0) {
         this.isMoving = false
       } else {
-        this.coordinates.x -= 10
+        this.coordinates.x -= 2
       }
     }
   }

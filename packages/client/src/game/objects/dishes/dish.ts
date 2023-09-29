@@ -11,9 +11,9 @@ import recipeParameters from '@/game/parameters/recipeParams'
 import CollisionHelper from '@/game/helpers/collisionHelper'
 import Client from '../orders/client'
 import CookingZone from '../zones/cookingZone'
-import { Drawable } from '@/game/types/interfaces'
+import { Drawable, Animatable } from '@/game/types/interfaces'
 
-class Dish implements Drawable, Draggable, Hoverable {
+class Dish implements Drawable, Draggable, Hoverable, Animatable {
   public ingredients: DishIngredient[] = []
 
   public coordinates: TPoint
@@ -23,6 +23,8 @@ class Dish implements Drawable, Draggable, Hoverable {
   public type: RecipeTypes
 
   public recipe: TRecipe
+
+  private isMoving = false
 
   constructor(type: RecipeTypes, point: TPoint) {
     this.coordinates = point
@@ -43,7 +45,20 @@ class Dish implements Drawable, Draggable, Hoverable {
     return !!this.recipe[type] && !this.ingredients.some(i => i.type === type)
   }
 
-  /* drawing logic */
+  /* animation methods */
+
+  public update(): void {
+    if (this.isMoving) {
+      if (this.coordinates.x <= 0) {
+        this.isMoving = false
+        // todo callback!
+      } else {
+        this.coordinates.x -= 2
+      }
+    }
+  }
+
+  /* drawing methods */
   public getObjectsToDraw(): BaseSpriteObject[] {
     return this.isEmpty() ? [] : this.ingredients
   }
@@ -51,7 +66,7 @@ class Dish implements Drawable, Draggable, Hoverable {
     this.getObjectsToDraw().forEach(object => painter.tempDrawFrame(object))
   }
 
-  /* drag&drop logic */
+  /* drag&drop methods */
 
   public setCoordinates(point: TPoint): void {
     this.ingredients.forEach(i => {
@@ -72,7 +87,9 @@ class Dish implements Drawable, Draggable, Hoverable {
 
   public revertToSource(zone: CookingZone): void {
     // TODO: animate revert flying
-    this.setCoordinates(zone.coordinates)
+    //this.setCoordinates(zone.coordinates)
+    console.log(zone)
+    this.isMoving = true
   }
 
   public setHover(intersects: boolean, ingredient: Ingredient): void {

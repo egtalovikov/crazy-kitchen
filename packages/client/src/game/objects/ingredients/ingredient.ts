@@ -10,16 +10,20 @@ import gameState from '@/game/store/gameState'
 import CollisionHelper from '@/game/helpers/collisionHelper'
 import Dish from '../dishes/dish'
 import IngredientZone from '../zones/ingredientZone'
-import { Drawable } from '@/game/types/interfaces'
+import { Drawable, Animatable } from '@/game/types/interfaces'
 
 // Ingredient from ingredient zone, can be cooked, can be dragged and revert to its basePoint
 // can be burnt
-class Ingredient extends BaseFrameObject implements Drawable, Draggable {
+class Ingredient
+  extends BaseFrameObject
+  implements Drawable, Draggable, Animatable
+{
   public type: Ingredients
   public basePoint: TPoint
   public preparationRequired: boolean // todo better name
   public state = new IngredientState()
   private interval = -1
+  private isMoving = false
 
   constructor(type: Ingredients) {
     const params = ingredientsParams[type]
@@ -37,7 +41,7 @@ class Ingredient extends BaseFrameObject implements Drawable, Draggable {
 
   public getState = () => this.state as IngredientState
 
-  private moving = () => {
+  /* private moving = () => {
     if (
       this.coordinates.x === this.basePoint.x &&
       this.coordinates.y === this.basePoint.y
@@ -59,15 +63,32 @@ class Ingredient extends BaseFrameObject implements Drawable, Draggable {
         )
       }
     }
-  }
+  }*/
 
   public setIsInOrder = () => {
     this.getState().isInOrder = true
   }
+  /* animation methods */
+
+  public update(): void {
+    console.log('update')
+    if (this.isMoving) {
+      if (this.coordinates.x + this.width <= 0) {
+        this.isMoving = false
+        // todo callback!
+      } else {
+        this.coordinates.x -= 2
+      }
+    }
+  }
+
+  /* drawing methods */
 
   public draw(painter: Painter): void {
     painter.drawObject(this)
   }
+
+  /* drag&drop methods */
 
   public setCoordinates = (point: TPoint) => {
     this.coordinates = {
@@ -79,8 +100,12 @@ class Ingredient extends BaseFrameObject implements Drawable, Draggable {
     // todo where to store zone coordinates?
     // this.interval = window.setInterval(this.moving, 100)
     // TODO: fly back to its zone and delete
-    this.coordinates = zone.coordinates
-    callback()
+    //this.coordinates = zone.coordinates
+    //callback()
+    this.isMoving = true
+    console.log(zone)
+    console.log(callback)
+    //this.update()
   }
 
   public getTargets(): Dish[] {

@@ -2,9 +2,9 @@ import { GlobalGameState, TPoint } from '../types/commonTypes'
 import { store } from '@store/index'
 import { setGameState } from '@store/modules/game/gameSlice'
 import DrawingHelper from '../helpers/drawingHelper'
-import DraggingHelper from '../helpers/draggingHelper'
+import DraggingHelper, { draggingState } from '../helpers/draggingHelper'
 import gameState from '../store/gameState'
-
+import { Animatable } from '@/game/types/interfaces'
 class Engine {
   private requestId = -1
   private startTime = 0
@@ -32,6 +32,12 @@ class Engine {
     gameState.clients.forEach(client => {
       client.update()
     })
+
+    if (draggingState.object) {
+      // TODO: inherit Draggable from Animatable?
+      // or add update method to draggable?
+      ;(draggingState.object as unknown as Animatable).update()
+    }
   }
 
   private decrementTime = (time: number) => {
