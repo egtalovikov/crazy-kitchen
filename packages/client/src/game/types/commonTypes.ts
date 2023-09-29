@@ -17,3 +17,18 @@ export enum GlobalGameState {
   Winned,
   Failed,
 }
+
+export type BaseSpriteObjectParams = {
+  imageSrc: string
+  width: number
+  height: number
+  frameWidth?: number
+  spriteX: number
+  spriteY: number
+  sWidth: number
+  sHeight: number
+}
+
+export type BaseSpriteObjectParamsWithPoint = BaseSpriteObjectParams & {
+  point: TPoint
+}

@@ -1,4 +1,4 @@
-import { TPoint } from '@/game/types/commonTypes'
+import { BaseSpriteObjectParamsWithPoint } from '@/game/types/commonTypes'
 import BaseObject from './baseObject'
 
 class BaseSpriteObject extends BaseObject {
@@ -10,18 +10,12 @@ class BaseSpriteObject extends BaseObject {
 
   public sHeight: number
 
-  constructor(
-    imageSrc: string,
-    width: number,
-    height: number,
-    point: TPoint,
-    params: any // todo remove any
-  ) {
-    super(imageSrc, width, height, point)
+  constructor(params: BaseSpriteObjectParamsWithPoint) {
+    super(params.imageSrc, params.width, params.height, params.point)
     this.spriteX = params.spriteX
     this.spriteY = params.spriteY
-    this.sWidth = params.spriteWidth
-    this.sHeight = params.spriteHeight
+    this.sWidth = params.sWidth
+    this.sHeight = params.sHeight
   }
 }
 export default BaseSpriteObject

@@ -19,7 +19,7 @@ export const draggingState: DraggingState = {
 }
 
 class DraggingHelper {
-  private static zoneIntersection(
+  private static checkZoneIntersection(
     point: TPoint,
     zones: IngredientZone[] | CookingZone[] // TODO: can we remove this dependency?
   ) {
@@ -37,8 +37,8 @@ class DraggingHelper {
   }
 
   public static dragStart = (point: TPoint) => {
-    DraggingHelper.zoneIntersection(point, gameState.ingredientZones)
-    DraggingHelper.zoneIntersection(point, gameState.cookingZones)
+    DraggingHelper.checkZoneIntersection(point, gameState.ingredientZones)
+    DraggingHelper.checkZoneIntersection(point, gameState.cookingZones)
   }
 
   public static drag = (point: TPoint) => {
@@ -61,13 +61,15 @@ class DraggingHelper {
         if (object.intersects(target) && target.objectFits(object)) {
           target.addObject(object)
           draggingState.source?.reset()
+          draggingState.source = null
         } else {
-          object.revertToSource()
+          object.revertToSource(draggingState.source!, () => {
+            draggingState.source = null
+          })
         }
       })
 
       draggingState.object = null
-      draggingState.source = null
       draggingState.targets = null
     }
   }

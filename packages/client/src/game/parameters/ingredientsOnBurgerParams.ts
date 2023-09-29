@@ -1,5 +1,6 @@
 import set from '@assets/ingredients/test/burgerSet.png'
 import { Ingredients } from '../types/ingredients'
+import { BaseSpriteObjectParams } from '../types/commonTypes'
 
 const ingredientsOnBurgerParams = {
   [Ingredients.Salad]: {
@@ -42,12 +43,12 @@ const ingredientsOnBurgerParams = {
 
 export default ingredientsOnBurgerParams
 
-export const topBunParams = {
+export const topBunParams: BaseSpriteObjectParams = {
   width: 120,
   height: 50,
   imageSrc: set,
   spriteX: 85,
   spriteY: 75,
-  spriteWidth: 240,
-  spriteHeight: 100,
+  sWidth: 240,
+  sHeight: 100,
 }

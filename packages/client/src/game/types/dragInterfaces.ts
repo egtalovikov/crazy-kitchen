@@ -7,13 +7,13 @@ export interface Drawable {
 
 export interface Draggable {
   setCoordinates(point: TPoint): void
-  revertToSource(): void
+  revertToSource(source: DragSource, callback: () => void): void
   getTargets(): Hoverable[]
   intersects(target: Hoverable): boolean
 }
 
 export interface Hoverable {
-  setHover(intersects: boolean, objetc: Draggable): void
+  setHover(intersects: boolean, object: Draggable): void
   objectFits(object: Draggable): boolean
   addObject(object: Draggable): void
 }

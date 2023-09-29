@@ -9,6 +9,7 @@ import Painter from '@/game/core/painter'
 import gameState from '@/game/store/gameState'
 import CollisionHelper from '@/game/helpers/collisionHelper'
 import Dish from '../dishes/dish'
+import IngredientZone from '../zones/ingredientZone'
 
 // Ingredient from ingredient zone, can be cooked, can be dragged and revert to its basePoint
 // can be burnt
@@ -73,9 +74,12 @@ class Ingredient extends BaseFrameObject implements Drawable, Draggable {
       y: point.y - this.height / 2,
     }
   }
-  public revertToSource(): void {
-    this.interval = window.setInterval(this.moving, 100)
+  public revertToSource(zone: IngredientZone, callback: () => void): void {
+    // todo where to store zone coordinates?
+    // this.interval = window.setInterval(this.moving, 100)
     // TODO: fly back to its zone and delete
+    this.coordinates = zone.coordinates
+    callback()
   }
 
   public getTargets(): Dish[] {

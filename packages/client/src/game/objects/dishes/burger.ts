@@ -4,49 +4,32 @@ import BaseSpriteObject from '../base/baseSpriteObject'
 import plateParameters from '@/game/parameters/plateParameters'
 import { topBunParams } from '@/game/parameters/ingredientsOnBurgerParams'
 import { Ingredients } from '@/game/types/ingredients'
-import ComposedDish from './composedDish'
 import BurgerIngredient from '../ingredients/burgerIngredient'
 import Ingredient from '../ingredients/ingredient'
+import Dish from './dish'
 
-class Burger extends ComposedDish {
+class Burger extends Dish {
   public topBun: BaseSpriteObject
 
   public plate: BaseSpriteObject
 
-  // how to override properly?
+  // TODO: is it ok to override like that?
   public ingredients: BurgerIngredient[] = []
 
   constructor(point: TPoint) {
     super(Recipes.Burger, point)
-    this.plate = this.initPlate()
-    this.topBun = this.initTopBun()
+    this.plate = new BaseSpriteObject({
+      ...plateParameters,
+      point: this.coordinates,
+    })
+    this.topBun = new BaseSpriteObject({
+      ...topBunParams,
+      point: this.coordinates,
+    })
   }
 
-  private initPlate = () => {
-    const params = plateParameters
-    return new BaseSpriteObject(
-      params.imageSrc,
-      params.width,
-      params.height,
-      this.coordinates,
-      { spriteX: 0, spriteY: 0, sWidth: params.width, sHeight: params.height }
-    )
-  }
-
-  private initTopBun = () => {
-    const params = topBunParams
-    const topBun = new BaseSpriteObject(
-      params.imageSrc,
-      params.width,
-      params.height,
-      this.coordinates,
-      params
-    )
-    return topBun
-  }
-
-  private calcHeightGap = (orderNumber: number) => {
-    return 40 - orderNumber * 20
+  private calcHeightIndent = (orderNumber: number) => {
+    return 40 - orderNumber * 20 // TODO: calculate values
   }
 
   public ingredientFits(type: Ingredients) {
@@ -63,10 +46,10 @@ class Burger extends ComposedDish {
         return this.recipe[a.type].index - this.recipe[b.type].index
       })
       .forEach((ingredient, i) => {
-        ingredient.setIndent(this.calcHeightGap(i))
+        ingredient.setIndent(this.calcHeightIndent(i))
         ingredient.coordinates = {
           x: this.coordinates.x + 15,
-          y: this.coordinates.y + this.calcHeightGap(i),
+          y: this.coordinates.y + this.calcHeightIndent(i),
         }
       })
 
@@ -74,7 +57,7 @@ class Burger extends ComposedDish {
 
     this.topBun.coordinates = {
       x: this.coordinates.x + 15,
-      y: this.coordinates.y + this.calcHeightGap(ingredientsNumber + 1),
+      y: this.coordinates.y + this.calcHeightIndent(ingredientsNumber + 1),
     }
   }
 
@@ -90,7 +73,9 @@ class Burger extends ComposedDish {
     return result
   }
 
-  public setIngredientCoordinates = (point: TPoint) => {
+  /* drag&drop logic */
+
+  public setCoordinates(point: TPoint) {
     this.ingredients.forEach(i => {
       const ingredient = i as BurgerIngredient
       ingredient.coordinates = {
@@ -101,7 +86,7 @@ class Burger extends ComposedDish {
     const ingredientsNumber = this.ingredients.length
     this.topBun.coordinates = {
       x: point.x + 15,
-      y: point.y + this.calcHeightGap(ingredientsNumber + 1),
+      y: point.y + this.calcHeightIndent(ingredientsNumber + 1),
     }
   }
 

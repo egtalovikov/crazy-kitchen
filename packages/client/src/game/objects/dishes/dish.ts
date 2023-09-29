@@ -10,16 +10,12 @@ import Ingredient from '../ingredients/ingredient'
 import recipeParameters from '@/game/parameters/recipeParams'
 import CollisionHelper from '@/game/helpers/collisionHelper'
 import Client from '../orders/client'
+import CookingZone from '../zones/cookingZone'
 
-// this object should have functionality of drag dish to client
-
-// TODO: how we can split logic for drinks and burgers
 class Dish implements Drawable, Draggable, Hoverable {
   public ingredients: DishIngredient[] = []
 
   public coordinates: TPoint
-
-  public startPoint: TPoint // needed to revert to cooking zone, can we store ref to it somehow?
 
   public isHovered = false
 
@@ -29,29 +25,34 @@ class Dish implements Drawable, Draggable, Hoverable {
 
   constructor(type: Recipes, point: TPoint) {
     this.coordinates = point
-    this.startPoint = { x: point.x, y: point.y }
     this.type = type
     this.recipe = recipeParameters[type].recipe
   }
 
   public addIngredient = (type: Ingredients) => {
-    console.log('in dish add ingredient')
-    const ingredient = new DishIngredient(type, {
-      x: this.coordinates.x,
-      y: this.coordinates.y,
-    })
+    const ingredient = new DishIngredient(type, this.coordinates)
     this.ingredients.push(ingredient)
   }
 
-  public getObjectsToDraw(): BaseSpriteObject[] {
-    return this.isEmpty() ? [] : this.ingredients
-  }
-
-  public isEmpty = (): boolean => {
+  public isEmpty(): boolean {
     return this.ingredients.length === 0
   }
 
-  public setIngredientCoordinates = (point: TPoint) => {
+  protected ingredientFits(type: Ingredients): boolean {
+    return !!this.recipe[type] && !this.ingredients.some(i => i.type === type)
+  }
+
+  /* drawing logic */
+  public getObjectsToDraw(): BaseSpriteObject[] {
+    return this.isEmpty() ? [] : this.ingredients
+  }
+  public draw(painter: Painter): void {
+    this.getObjectsToDraw().forEach(object => painter.tempDrawFrame(object))
+  }
+
+  /* drag&drop logic */
+
+  public setCoordinates(point: TPoint): void {
     this.ingredients.forEach(i => {
       i.coordinates = {
         x: point.x,
@@ -60,29 +61,17 @@ class Dish implements Drawable, Draggable, Hoverable {
     })
   }
 
-  public draw(painter: Painter): void {
-    this.ingredients.forEach(object => painter.tempDrawFrame(object))
-  }
-
-  public setCoordinates(point: TPoint): void {
-    this.setIngredientCoordinates(point)
-  }
-
-  public revertToSource(): void {
-    // TODO: полет назад на зону и установка обратно в нее ?
-    this.setIngredientCoordinates(this.startPoint)
-  }
-
   public getTargets(): Client[] {
     return gameState.clients
   }
 
-  protected ingredientFits(type: Ingredients): boolean {
-    return !!this.recipe[type] && !this.ingredients.some(i => i.type === type)
-  }
-
   public intersects(client: Client): boolean {
     return CollisionHelper.intersectsWithObjectsArr(client, this.ingredients)
+  }
+
+  public revertToSource(zone: CookingZone): void {
+    // TODO: animate revert flying
+    this.setCoordinates(zone.coordinates)
   }
 
   public setHover(intersects: boolean, ingredient: Ingredient): void {
