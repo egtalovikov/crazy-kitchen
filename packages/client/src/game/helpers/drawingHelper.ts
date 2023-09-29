@@ -21,7 +21,7 @@ class DrawingHelper {
     let startY = 70
     const x = 50
 
-    // TODO: move it from store to gameState
+    // TODO: move remaining time from redux to gameState object?
     const state = store.getState().game
 
     const timeText = `Время: ${state.remainingTime} сек.`
@@ -44,7 +44,8 @@ class DrawingHelper {
     // temp for testing, remove
     this.tempDrawIngredientZones()
 
-    // TODO: cast? is draggingState is ok here?
+    // TODO: is it ok to import dragging state here?
+    // is it ok to cast like that?
     ;(draggingState.object as unknown as Drawable)?.draw(this.painter)
 
     this.drawLevelState()
