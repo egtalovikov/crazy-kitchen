@@ -45,8 +45,11 @@ const Game: React.FC = () => {
       throw Error('useEffect : canvas context not found')
     }
 
-    canvas.width = window.innerWidth
-    canvas.height = window.innerHeight
+    // TODO: resize canvas on window resize
+    /*canvas.width = window.innerWidth
+    canvas.height = window.innerHeight*/
+    canvas.width = 1593
+    canvas.height = 959
 
     engine.setDrawingHelper(context)
     engine.startGame()
@@ -63,9 +66,7 @@ const Game: React.FC = () => {
   }, [])
 
   useEffect(() => {
-    if (engine.isGameOver()) {
-      setGameOver(true)
-    }
+    setGameOver(engine.isGameOver())
   }, [state.gameState])
 
   if (gameOver) {

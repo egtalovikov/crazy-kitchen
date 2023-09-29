@@ -5,8 +5,10 @@ import { Ingredients } from '../types/ingredients'
 import { BurgerTypes } from '../types/recipe'
 import IngredientZone from '../objects/zones/ingredientZone'
 import BurgerZone from '../objects/zones/burgerZone'
+import GameLevels from '../parameters/levelParams'
+import { GameLevelList } from '../types/levels'
 
-// TODO: move remaining time here, logic revision
+const firstLevel = GameLevels[GameLevelList.Level1]
 export class GameState {
   public clients: Client[]
 
@@ -14,9 +16,11 @@ export class GameState {
 
   public ingredientZones: IngredientZone[]
 
-  public remainingTime = 60 // TODO: move to level params
-
   public score = 0
+
+  public currentLevel = firstLevel
+
+  public remainingTime = firstLevel.time
 
   constructor() {
     this.clients = this.initClients()

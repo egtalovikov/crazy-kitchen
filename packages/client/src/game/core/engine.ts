@@ -78,7 +78,7 @@ class Engine {
   }
 
   private startLevel = () => {
-    this.setGameStart()
+    this.setGameRestart()
     this.continue()
   }
 
@@ -91,8 +91,11 @@ class Engine {
     this.startLevel()
   }
 
-  public setGameStart = () => {
+  public setGameRestart = () => {
     this.setGameState(GlobalGameState.Started)
+    gameState.remainingTime = gameState.currentLevel.time
+    this.requestId = -1
+    this.startTime = 0
   }
 
   /* drag&drop logic */
