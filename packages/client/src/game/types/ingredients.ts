@@ -1,15 +1,13 @@
-import { TObjectParameter, TPoint } from './commonTypes'
+import { TObjectParameter } from './commonTypes'
 
 // TODO: rename with BurgerIngredients???
 export enum Ingredients {
-  // Cheese, // 0
-  Salad, // 1
-  Cutlet, // 2
-  Tomato, // 3
-  Bread, // 4
+  Salad,
+  Cutlet,
+  Tomato,
+  Bread,
 }
 
 export type TIngredientParameter = TObjectParameter & {
-  startPoint: TPoint
   preparationRequired: boolean
 }

@@ -16,7 +16,7 @@ class Drink extends BaseSpriteObject implements Drawable {
   /* drag&drop logic */
 
   public setCoordinates(point: TPoint): void {
-    this.coordinates = point
+    this.coordinates = { ...point }
   }
 
   public getTargets(): Client[] {

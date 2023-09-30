@@ -18,7 +18,7 @@ class Dish implements Drawable, Draggable, Hoverable {
 
   public coordinates: TPoint
 
-  public isHovered = false
+  public isHovered = false // TODO: do we need to make it public?
 
   public type: RecipeTypes
 
@@ -27,7 +27,7 @@ class Dish implements Drawable, Draggable, Hoverable {
   private isMoving = false
 
   constructor(type: RecipeTypes, point: TPoint) {
-    this.coordinates = point
+    this.coordinates = { ...point }
     this.type = type
     this.recipe = recipeParameters[type].recipe
   }
@@ -56,12 +56,7 @@ class Dish implements Drawable, Draggable, Hoverable {
   /* drag&drop methods */
 
   public setCoordinates(point: TPoint): void {
-    this.ingredients.forEach(i => {
-      i.coordinates = {
-        x: point.x,
-        y: point.y,
-      }
-    })
+    this.ingredients.forEach(i => i.setCoordinates(point))
   }
 
   public getTargets(): Client[] {

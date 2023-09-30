@@ -16,6 +16,8 @@ class Burger extends Dish {
   // TODO: is it ok to override like that?
   public ingredients: BurgerIngredient[] = []
 
+  private INGREDIENT_INDENT = 15
+
   constructor(point: TPoint) {
     super(RecipeTypes.Burger, point)
     this.plate = new BaseSpriteObject({
@@ -26,6 +28,8 @@ class Burger extends Dish {
       ...topBunParams,
       point: this.coordinates,
     })
+    console.log('constructor')
+    console.log(this.plate)
   }
 
   private calcHeightIndent = (orderNumber: number) => {
@@ -38,6 +42,8 @@ class Burger extends Dish {
   }
 
   public addIngredient = (type: Ingredients) => {
+    console.log('addIngredient1')
+    console.log(this.plate)
     this.ingredients.push(new BurgerIngredient(type, this.coordinates, 0))
 
     // sort ingredients by index, so that the smallest index means the first ingredient on the bun
@@ -59,6 +65,10 @@ class Burger extends Dish {
       x: this.coordinates.x + 15,
       y: this.coordinates.y + this.calcHeightIndent(ingredientsNumber + 1),
     }
+    console.log('addIngredient2')
+    console.log(this.coordinates)
+    console.log(this.plate.coordinates)
+    console.log(this.plate)
   }
 
   public getObjectsToDraw() {
@@ -76,26 +86,33 @@ class Burger extends Dish {
   /* drag&drop logic */
 
   public setCoordinates(point: TPoint) {
-    this.ingredients.forEach(i => {
-      const ingredient = i as BurgerIngredient
-      ingredient.coordinates = {
-        x: point.x + 15,
-        y: point.y + ingredient.heightIndent,
-      }
-    })
+    this.ingredients.forEach(i =>
+      i.setCoordinates(point, this.INGREDIENT_INDENT)
+    )
     const ingredientsNumber = this.ingredients.length
     this.topBun.coordinates = {
-      x: point.x + 15,
+      x: point.x + this.INGREDIENT_INDENT,
       y: point.y + this.calcHeightIndent(ingredientsNumber + 1),
     }
   }
 
   public setHover(intersects: boolean, ingredient: Ingredient): void {
-    super.setHover(intersects, ingredient)
+    /* super.setHover(intersects, ingredient)
     if (this.isHovered) {
       this.plate.width = this.plate.width + 20
       this.plate.height = this.plate.height + 20
     } else {
+      this.plate.width = this.plate.width - 20
+      this.plate.height = this.plate.height - 20
+    } */
+
+    // TODO: can we use parent method?
+    if (intersects && this.ingredientFits(ingredient.type) && !this.isHovered) {
+      this.isHovered = true
+      this.plate.width = this.plate.width + 20
+      this.plate.height = this.plate.height + 20
+    } else if (this.isHovered && !intersects) {
+      this.isHovered = false
       this.plate.width = this.plate.width - 20
       this.plate.height = this.plate.height - 20
     }

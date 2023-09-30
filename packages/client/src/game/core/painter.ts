@@ -66,6 +66,13 @@ class Painter {
       object.width,
       object.height
     )
+    // temp for testing
+    this.context.strokeRect(
+      object.coordinates.x,
+      object.coordinates.y,
+      object.width,
+      object.height
+    )
   }
 }
 

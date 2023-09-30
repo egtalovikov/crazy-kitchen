@@ -10,7 +10,7 @@ class BaseZone {
   constructor(width: number, height: number, point: TPoint) {
     this.width = width
     this.height = height
-    this.coordinates = point
+    this.coordinates = { ...point }
   }
 }
 

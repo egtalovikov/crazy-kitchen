@@ -25,9 +25,9 @@ class CookingZone extends BaseZone implements Drawable, DragSource {
   public draw(painter: Painter): void {
     painter.tempDrawZone(this) // temp for testing, remove
     if (!this.isEmpty()) {
-      this.dish
-        .getObjectsToDraw()
-        .forEach(object => painter.tempDrawFrame(object))
+      this.dish.getObjectsToDraw().forEach(object => {
+        painter.tempDrawFrame(object)
+      })
     }
   }
 

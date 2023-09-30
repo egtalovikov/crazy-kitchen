@@ -1,7 +1,7 @@
 import { TPoint } from '@/game/types/commonTypes'
 import BaseObject from './baseObject'
 
-// TODO: use this object for objects with animations
+// use this object for objects with animations
 class BaseFrameObject extends BaseObject {
   public frameWidth: number
 

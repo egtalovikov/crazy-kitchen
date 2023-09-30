@@ -58,14 +58,16 @@ class DraggingHelper {
           target.addObject(object)
           draggingState.source?.reset()
           draggingState.source = null
+          draggingState.object = null
         } else {
           object.revertToSource(draggingState.source!, () => {
             draggingState.source = null
+            draggingState.object = null
+            // TODO: intersection when old object is moving and new is assigned?
           })
         }
       })
 
-      draggingState.object = null
       draggingState.targets = null
     }
   }

@@ -16,23 +16,27 @@ import { Drawable } from '@/game/types/interfaces'
 // can be burnt
 class Ingredient extends BaseFrameObject implements Drawable, Draggable {
   public type: Ingredients
-  public basePoint: TPoint
+
   public preparationRequired: boolean // todo better name
   public state = new IngredientState()
-  private interval = -1
+  private basePoint: TPoint
+
+  /* revert to zone logic */
   private isMoving = false
+  private movingCallback: (() => void) | null = null
 
   constructor(type: Ingredients) {
     const params = ingredientsParams[type]
+    const zoneParams = ingredientZoneParams[type]
     super(
       params.imageSrc,
       params.width,
       params.height,
       params.frameWidth,
-      params.startPoint
+      zoneParams.coordinates
     )
     this.type = type
-    this.basePoint = ingredientZoneParams[type].coordinates
+    this.basePoint = { ...zoneParams.coordinates }
     this.preparationRequired = params.preparationRequired
   }
 
@@ -87,6 +91,7 @@ class Ingredient extends BaseFrameObject implements Drawable, Draggable {
     //this.coordinates = zone.coordinates
     //callback()
     this.isMoving = true
+    this.movingCallback = callback
     console.log(zone)
     console.log(callback)
     //this.update()
@@ -106,9 +111,15 @@ class Ingredient extends BaseFrameObject implements Drawable, Draggable {
   public update(): void {
     console.log('update')
     if (this.isMoving) {
+      // TODO: use basePoint to cacl moving direction
+      console.log(this.basePoint)
       if (this.coordinates.x + this.width <= 0) {
         this.isMoving = false
-        // todo callback!
+        // TODO: is it ok?
+        if (this.movingCallback) {
+          this.movingCallback()
+          this.movingCallback = null
+        }
       } else {
         this.coordinates.x -= 2
       }
