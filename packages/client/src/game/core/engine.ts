@@ -11,10 +11,11 @@ class Engine {
 
   private drawingHelper?: DrawingHelper
 
+  // TODO: what to do if game paused, should we store now somewhere?
   private mainLoop = (now: number) => {
     this.drawingHelper?.drawGameFrame(gameState)
 
-    this.updateObjects()
+    this.updateObjects(now)
 
     this.decrementTime(now)
 
@@ -23,13 +24,14 @@ class Engine {
     this.requestId = window.requestAnimationFrame(this.mainLoop)
   }
 
-  private updateObjects = () => {
+  private updateObjects = (time: number) => {
     // update clients, cooked ingredients and dragging object reverting state
     gameState.clients.forEach(client => {
       client.update()
     })
-
-    draggingState.object?.update()
+    console.log('updateObjects')
+    draggingState.object?.update(time)
+    draggingState.revertedObjects.forEach(object => object.update(time))
   }
 
   private decrementTime = (time: number) => {
@@ -55,10 +57,16 @@ class Engine {
 
   private pause = () => {
     window.cancelAnimationFrame(this.requestId)
+    this.requestId = -1
   }
 
   private continue = () => {
-    this.requestId = window.requestAnimationFrame(this.mainLoop)
+    console.log('continue')
+    // fix for double calls, should we handle it differently?
+    if (this.requestId === -1) {
+      console.log('continue2')
+      this.requestId = window.requestAnimationFrame(this.mainLoop)
+    }
   }
 
   private resetGame = () => {
@@ -87,6 +95,7 @@ class Engine {
     }
     this.resetGame()
     this.setGameState(GlobalGameState.Started)
+    console.log('startGame')
     this.continue()
   }
 

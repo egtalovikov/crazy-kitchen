@@ -15,7 +15,7 @@ export interface DragSource {
 
 export interface Draggable extends Animatable {
   setCoordinates(point: TPoint): void
-  revertToSource(source: DragSource, callback: () => void): void
+  revertToSource(callback: () => void): void
   getTargets(): Hoverable[]
   intersects(target: Hoverable): boolean
 }

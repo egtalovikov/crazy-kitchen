@@ -7,6 +7,7 @@ import BaseZone from '../objects/base/baseZone'
 type DraggingState = {
   source: DragSource | null
   object: Draggable | null
+  revertedObjects: Draggable[]
   targets: Hoverable[] | null
 }
 
@@ -14,6 +15,7 @@ export const draggingState: DraggingState = {
   source: null,
   object: null,
   targets: null,
+  revertedObjects: [],
 }
 
 class DraggingHelper {
@@ -57,17 +59,18 @@ class DraggingHelper {
         if (object.intersects(target) && target.objectFits(object)) {
           target.addObject(object)
           draggingState.source?.reset()
-          draggingState.source = null
-          draggingState.object = null
         } else {
-          object.revertToSource(draggingState.source!, () => {
-            draggingState.source = null
-            draggingState.object = null
-            // TODO: intersection when old object is moving and new is assigned?
+          draggingState.revertedObjects.push(object)
+          object.revertToSource(() => {
+            const index = draggingState.revertedObjects.indexOf(object)
+            if (index !== -1) {
+              draggingState.revertedObjects.splice(index, 1)
+            }
           })
         }
       })
-
+      draggingState.object = null
+      draggingState.source = null
       draggingState.targets = null
     }
   }

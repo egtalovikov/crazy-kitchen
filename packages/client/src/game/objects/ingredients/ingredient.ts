@@ -9,12 +9,11 @@ import Painter from '@/game/core/painter'
 import gameState from '@/game/store/gameState'
 import CollisionHelper from '@/game/helpers/collisionHelper'
 import Dish from '../dishes/dish'
-import IngredientZone from '../zones/ingredientZone'
-import { Drawable } from '@/game/types/interfaces'
+import Trajectory from '../trajectory/trajectory'
 
 // Ingredient from ingredient zone, can be cooked, can be dragged and revert to its basePoint
 // can be burnt
-class Ingredient extends BaseFrameObject implements Drawable, Draggable {
+class Ingredient extends BaseFrameObject implements Draggable {
   public type: Ingredients
 
   public preparationRequired: boolean // todo better name
@@ -24,6 +23,7 @@ class Ingredient extends BaseFrameObject implements Drawable, Draggable {
   /* revert to zone logic */
   private isMoving = false
   private movingCallback: (() => void) | null = null
+  private trajectory: Trajectory | null = null
 
   constructor(type: Ingredients) {
     const params = ingredientsParams[type]
@@ -84,17 +84,16 @@ class Ingredient extends BaseFrameObject implements Drawable, Draggable {
       y: point.y - this.height / 2,
     }
   }
-  public revertToSource(zone: IngredientZone, callback: () => void): void {
-    // todo where to store zone coordinates?
-    // this.interval = window.setInterval(this.moving, 100)
-    // TODO: fly back to its zone and delete
-    //this.coordinates = zone.coordinates
-    //callback()
+  public revertToSource(callback: () => void): void {
+    // TODO: fly back to its basePoint and delete in callback
     this.isMoving = true
     this.movingCallback = callback
-    console.log(zone)
-    console.log(callback)
-    //this.update()
+    this.trajectory = new Trajectory(
+      this.coordinates,
+      this.basePoint,
+      Date.now()
+    )
+    this.coordinates = this.trajectory.current
   }
 
   public getTargets(): Dish[] {
@@ -108,11 +107,13 @@ class Ingredient extends BaseFrameObject implements Drawable, Draggable {
     return CollisionHelper.objectsIntersect(this, zone!)
   }
 
-  public update(): void {
+  public update(time: number): void {
     console.log('update')
     if (this.isMoving) {
+      console.log('isMoving')
       // TODO: use basePoint to cacl moving direction
-      console.log(this.basePoint)
+      //console.log(this.basePoint)
+
       if (this.coordinates.x + this.width <= 0) {
         this.isMoving = false
         // TODO: is it ok?
@@ -121,7 +122,11 @@ class Ingredient extends BaseFrameObject implements Drawable, Draggable {
           this.movingCallback = null
         }
       } else {
-        this.coordinates.x -= 2
+        console.log(this.coordinates)
+        //this.coordinates.x -= 2
+        if (this.trajectory) {
+          this.coordinates = this.trajectory.getCurrentPoint(time)
+        }
       }
     }
   }

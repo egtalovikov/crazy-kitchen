@@ -1,8 +1,6 @@
 import Painter from '../core/painter'
 import { GameState } from '../store/gameState'
 import { draggingState } from './draggingHelper'
-import { Drawable } from '../types/interfaces'
-
 class DrawingHelper {
   public painter: Painter
 
@@ -42,9 +40,14 @@ class DrawingHelper {
 
     // TODO: is it ok to import dragging state here?
     // is it ok to cast like that?
-    ;(draggingState.object as unknown as Drawable)?.draw(this.painter)
+    draggingState.object?.draw(this.painter)
+    draggingState.revertedObjects.forEach(object => object.draw(this.painter))
 
     this.drawLevelState(gameState)
+
+    /* console.log('drawGameFrame')
+    console.log(draggingState.object)
+    console.log(draggingState.revertedObjects) */
   }
 
   // temp for testing, remove

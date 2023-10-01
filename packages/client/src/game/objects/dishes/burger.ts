@@ -36,6 +36,14 @@ class Burger extends Dish {
     return 40 - orderNumber * 20 // TODO: calculate values
   }
 
+  private removeHover = () => {
+    this.isHovered = false
+    this.plate.width = this.plate.width - 20
+    this.plate.height = this.plate.height - 20
+  }
+
+  /* public methods */
+
   public ingredientFits(type: Ingredients) {
     const parentFitsValue = super.ingredientFits(type)
     return parentFitsValue && !(this.isEmpty() && this.recipe[type].index !== 0)
@@ -69,6 +77,8 @@ class Burger extends Dish {
     console.log(this.coordinates)
     console.log(this.plate.coordinates)
     console.log(this.plate)
+    console.log(this.isHovered)
+    this.removeHover()
   }
 
   public getObjectsToDraw() {
@@ -96,6 +106,7 @@ class Burger extends Dish {
     }
   }
 
+  // TODO: double setting why?
   public setHover(intersects: boolean, ingredient: Ingredient): void {
     /* super.setHover(intersects, ingredient)
     if (this.isHovered) {
@@ -112,9 +123,7 @@ class Burger extends Dish {
       this.plate.width = this.plate.width + 20
       this.plate.height = this.plate.height + 20
     } else if (this.isHovered && !intersects) {
-      this.isHovered = false
-      this.plate.width = this.plate.width - 20
-      this.plate.height = this.plate.height - 20
+      this.removeHover()
     }
   }
 }

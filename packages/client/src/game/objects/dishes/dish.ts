@@ -10,13 +10,13 @@ import Ingredient from '../ingredients/ingredient'
 import recipeParameters from '@/game/parameters/recipeParams'
 import CollisionHelper from '@/game/helpers/collisionHelper'
 import Client from '../orders/client'
-import CookingZone from '../zones/cookingZone'
-import { Drawable } from '@/game/types/interfaces'
+import Trajectory from '../trajectory/trajectory'
 
-class Dish implements Drawable, Draggable, Hoverable {
+class Dish implements Draggable, Hoverable {
   public ingredients: DishIngredient[] = []
 
-  public coordinates: TPoint
+  public coordinates: TPoint // TODO: check if it is used and where?
+  // can we replace it with basePoint?
 
   public isHovered = false // TODO: do we need to make it public?
 
@@ -24,12 +24,21 @@ class Dish implements Drawable, Draggable, Hoverable {
 
   public recipe: TRecipe
 
+  /* moving props */
+
   private isMoving = false
+
+  private basePoint: TPoint
+
+  private trajectory: Trajectory | null = null
+
+  private callback: (() => void) | null = null
 
   constructor(type: RecipeTypes, point: TPoint) {
     this.coordinates = { ...point }
     this.type = type
     this.recipe = recipeParameters[type].recipe
+    this.basePoint = { ...point }
   }
 
   public addIngredient = (type: Ingredients) => {
@@ -67,11 +76,18 @@ class Dish implements Drawable, Draggable, Hoverable {
     return CollisionHelper.intersectsWithObjectsArr(client, this.ingredients)
   }
 
-  public revertToSource(zone: CookingZone): void {
+  public revertToSource(): void {
     // TODO: animate revert flying
     //this.setCoordinates(zone.coordinates)
-    console.log(zone)
+    //console.log(zone)
     this.isMoving = true
+    this.trajectory = new Trajectory(
+      this.coordinates,
+      this.basePoint,
+      Date.now()
+    )
+
+    this.coordinates = this.trajectory.current
   }
 
   public setHover(intersects: boolean, ingredient: Ingredient): void {
@@ -90,13 +106,15 @@ class Dish implements Drawable, Draggable, Hoverable {
     this.addIngredient(ingredient.type)
   }
 
-  public update(): void {
+  public update(time: number): void {
     if (this.isMoving) {
       if (this.coordinates.x <= 0) {
         this.isMoving = false
+        this.callback && this.callback()
         // todo callback!
       } else {
-        this.coordinates.x -= 2
+        //this.coordinates.x -= 2
+        this.trajectory?.updateCurrentPoint(time)
       }
     }
   }
