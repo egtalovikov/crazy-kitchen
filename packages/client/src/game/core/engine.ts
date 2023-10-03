@@ -7,38 +7,40 @@ import gameState from '../store/gameState'
 class Engine {
   private requestId = -1
 
-  private startTime = 0
-
   private drawingHelper?: DrawingHelper
 
+  private mainLoopIndex = 0
+
   // TODO: what to do if game paused, should we store now somewhere?
-  private mainLoop = (now: number) => {
+  private mainLoop = () => {
+    this.mainLoopIndex++
+
     this.drawingHelper?.drawGameFrame(gameState)
 
-    this.updateObjects(now)
+    this.updateObjects()
 
-    this.decrementTime(now)
+    this.decrementTime()
 
     this.checkRemainingTime()
 
     this.requestId = window.requestAnimationFrame(this.mainLoop)
   }
 
-  private updateObjects = (time: number) => {
-    // update clients, cooked ingredients and dragging object reverting state
+  public getMainLoopIndex = () => this.mainLoopIndex
+
+  private updateObjects = () => {
+    // TODO: update cooked ingredients
     gameState.clients.forEach(client => {
       client.update()
     })
-    console.log('updateObjects')
-    draggingState.object?.update(time)
-    draggingState.revertedObjects.forEach(object => object.update(time))
+
+    draggingState.revertedObjects.forEach(object =>
+      object.update(this.mainLoopIndex)
+    )
   }
 
-  private decrementTime = (time: number) => {
-    if (time - this.startTime >= 1000) {
-      this.startTime = time
-      gameState.remainingTime -= 1
-    }
+  private decrementTime = () => {
+    gameState.remainingTime -= 1
   }
 
   private checkRemainingTime = () => {
@@ -55,30 +57,19 @@ class Engine {
 
   /* game state logic */
 
-  private pause = () => {
-    window.cancelAnimationFrame(this.requestId)
-    this.requestId = -1
-  }
+  private pause = () => window.cancelAnimationFrame(this.requestId)
 
-  private continue = () => {
-    console.log('continue')
-    // fix for double calls, should we handle it differently?
-    if (this.requestId === -1) {
-      console.log('continue2')
-      this.requestId = window.requestAnimationFrame(this.mainLoop)
-    }
-  }
+  private continue = () =>
+    (this.requestId = window.requestAnimationFrame(this.mainLoop))
 
   private resetGame = () => {
     window.cancelAnimationFrame(this.requestId)
     this.requestId = -1
-    this.startTime = 0
     gameState.remainingTime = gameState.currentLevel.time
   }
 
-  private setGameState = (state: GlobalGameState) => {
+  private setGameState = (state: GlobalGameState) =>
     store.dispatch(setGameState(state))
-  }
 
   private setGameOver = () => {
     const state =
@@ -95,7 +86,6 @@ class Engine {
     }
     this.resetGame()
     this.setGameState(GlobalGameState.Started)
-    console.log('startGame')
     this.continue()
   }
 

@@ -15,7 +15,20 @@ export interface DragSource {
 
 export interface Draggable extends Animatable {
   setCoordinates(point: TPoint): void
-  revertToSource(callback: () => void): void
+  revertToSource(source: DragSource, callback: () => void): void
   getTargets(): Hoverable[]
   intersects(target: Hoverable): boolean
+}
+
+export class CurrentDraggingState {
+  constructor(
+    public source: DragSource,
+    public object: Draggable,
+    public targets: Hoverable[]
+  ) {}
+}
+
+export type DraggingState = {
+  current: CurrentDraggingState | null
+  revertedObjects: Draggable[]
 }

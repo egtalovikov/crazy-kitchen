@@ -40,7 +40,7 @@ class DrawingHelper {
 
     // TODO: is it ok to import dragging state here?
     // is it ok to cast like that?
-    draggingState.object?.draw(this.painter)
+    draggingState.current?.object.draw(this.painter)
     draggingState.revertedObjects.forEach(object => object.draw(this.painter))
 
     this.drawLevelState(gameState)

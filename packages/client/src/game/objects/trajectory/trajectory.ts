@@ -1,18 +1,26 @@
 import { TPoint } from '@/game/types/commonTypes'
 
+// TODO: fix speed
+// const ANIMATION_SPEED = 2
+
 class Trajectory {
   public current: TPoint
 
   private pathLength: number
 
+  private pathEnded = false
+
   constructor(
     private start: TPoint,
     private end: TPoint,
-    private startTime: number
+    private startTime: number,
+    public movingEndFn: () => void
   ) {
     this.current = start
     this.pathLength = this.calculatePath()
   }
+
+  private getDeltaTime = (time: number) => time - this.startTime
 
   private calculatePath(): number {
     const deltaX = Math.abs(this.start.x - this.end.x)
@@ -26,48 +34,48 @@ class Trajectory {
     }
   }
 
-  private calculateCurrentAxisPoint(time: number, delta: number): number {
-    const deltaTime = time - this.startTime
-    return (delta / this.pathLength) * deltaTime
+  private calculateCurrentAxisPoint(
+    time: number,
+    delta: number,
+    isDeltaPositive: boolean
+  ): number {
+    const deltaTime = this.getDeltaTime(time)
+    const deltaCoordinate = (delta / this.pathLength) * deltaTime
+    return isDeltaPositive ? deltaCoordinate : -deltaCoordinate
   }
 
   private calculateCurrentPoint(time: number): TPoint {
-    const currentX = this.calculateCurrentAxisPoint(
-      time,
-      Math.abs(this.start.x - this.end.x)
-    )
-    const currentY = this.calculateCurrentAxisPoint(
-      time,
-      Math.abs(this.start.y - this.end.y)
-    )
+    const currentX =
+      this.start.x +
+      this.calculateCurrentAxisPoint(
+        time,
+        Math.abs(this.start.x - this.end.x),
+        this.end.x > this.start.x
+      )
+    const currentY =
+      this.start.y +
+      this.calculateCurrentAxisPoint(
+        time,
+        Math.abs(this.start.y - this.end.y),
+        this.end.y > this.start.y
+      )
     return { x: currentX, y: currentY }
   }
 
-  public updateCurrentPoint(time: number) {
-    const deltaTime = time - this.startTime
-
-    if (deltaTime > this.pathLength) {
-      // stop moving
-      console.log('stop moving')
-    } else {
-      this.current = this.calculateCurrentPoint(time)
-    }
-
-    //return this.current
-  }
-
+  // TODO: rename, try to update object coordinates with the same ref
   public getCurrentPoint(time: number): TPoint {
-    const deltaTime = time - this.startTime
+    const deltaTime = this.getDeltaTime(time)
 
     if (deltaTime > this.pathLength) {
-      // stop moving
-      console.log('stop moving')
+      this.pathEnded = true
     } else {
       this.current = this.calculateCurrentPoint(time)
     }
 
     return this.current
   }
+
+  public isPathEnded = () => this.pathEnded
 }
 
 export default Trajectory

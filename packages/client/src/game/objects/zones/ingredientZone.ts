@@ -2,7 +2,7 @@ import BaseZone from '../base/baseZone'
 import Ingredient from '../ingredients/ingredient'
 import { Ingredients } from '@/game/types/ingredients'
 import { ingredientZoneParams } from '@/game/parameters/zoneParameters'
-import { DragSource, Draggable } from '@/game/types/dragInterfaces'
+import { DragSource, Draggable } from '@/game/types/dragTypes'
 
 class IngredientZone extends BaseZone implements DragSource {
   private type: Ingredients

@@ -4,7 +4,7 @@ import { BurgerTypes } from '../../types/recipe'
 import BaseFrameObject from '../base/baseFrameObject'
 import Order from './order'
 import Dish from '../dishes/dish'
-import { Hoverable } from '@/game/types/dragInterfaces'
+import { Hoverable } from '@/game/types/dragTypes'
 import Painter from '@/game/core/painter'
 import RecipeHelper from '@/game/helpers/recipeHelper'
 import BurgerOrder from './burgerOrder'
@@ -18,7 +18,7 @@ class Client
   public type: Clients
   public orders: Order[] = []
   public gameState = ClientGameState.WaitingForStart
-  // TODO: can we make the same for cooking zone and client?
+  // TODO: should we include this to Hoverable interface and break open-closed principle?
   public isHovered = false
   public movingInterval = -1
   private isMoving = false
@@ -91,15 +91,13 @@ class Client
     // либо для каждого вида бургера свой тип и динамически менять тип
     // либо сверять ингредиенты
     const orders = this.findOrderOfType(dish)
+    // temp fix to remove order from client
     const index = this.orders.findIndex(order => order == orders[0])
-    //const index = this.orders.findIndex(order => order.type !== dish.type)
     this.orders.splice(index, 1)
 
-    // todo do it here or in draggingHelper ?
+    // TODO: do it here or in draggingHelper ?
     this.isHovered = false
     this.setOrdersFinished()
-    console.log('addObject')
-    console.log(this.orders)
   }
 
   public objectFits(dish: Dish): boolean {

@@ -1,4 +1,4 @@
-import { Draggable } from '@/game/types/dragInterfaces'
+import { Draggable } from '@/game/types/dragTypes'
 import ingredientsParams from '../../parameters/ingredientParams'
 import { ingredientZoneParams } from '../../parameters/zoneParameters'
 import { IngredientState } from '../../store/ingredient'
@@ -10,6 +10,8 @@ import gameState from '@/game/store/gameState'
 import CollisionHelper from '@/game/helpers/collisionHelper'
 import Dish from '../dishes/dish'
 import Trajectory from '../trajectory/trajectory'
+import engine from '@/game/core/engine'
+import IngredientZone from '../zones/ingredientZone'
 
 // Ingredient from ingredient zone, can be cooked, can be dragged and revert to its basePoint
 // can be burnt
@@ -18,11 +20,8 @@ class Ingredient extends BaseFrameObject implements Draggable {
 
   public preparationRequired: boolean // todo better name
   public state = new IngredientState()
-  private basePoint: TPoint
 
-  /* revert to zone logic */
-  private isMoving = false
-  private movingCallback: (() => void) | null = null
+  /* revert to zone moving logic */
   private trajectory: Trajectory | null = null
 
   constructor(type: Ingredients) {
@@ -36,39 +35,10 @@ class Ingredient extends BaseFrameObject implements Draggable {
       zoneParams.coordinates
     )
     this.type = type
-    this.basePoint = { ...zoneParams.coordinates }
     this.preparationRequired = params.preparationRequired
   }
 
   public getState = () => this.state as IngredientState
-
-  /* private moving = () => {
-    if (
-      this.coordinates.x === this.basePoint.x &&
-      this.coordinates.y === this.basePoint.y
-    ) {
-      clearInterval(this.interval)
-    } else {
-      const step = 7
-      // TODO: all cases if x> base point
-      if (this.coordinates.x < this.basePoint.x) {
-        this.coordinates.x = Math.min(
-          this.coordinates.x + step,
-          this.basePoint.x
-        )
-      }
-      if (this.coordinates.y < this.basePoint.y) {
-        this.coordinates.y = Math.min(
-          this.coordinates.y + step,
-          this.basePoint.y
-        )
-      }
-    }
-  }*/
-
-  public setIsInOrder = () => {
-    this.getState().isInOrder = true
-  }
 
   /* drawing methods */
 
@@ -84,16 +54,16 @@ class Ingredient extends BaseFrameObject implements Draggable {
       y: point.y - this.height / 2,
     }
   }
-  public revertToSource(callback: () => void): void {
-    // TODO: fly back to its basePoint and delete in callback
-    this.isMoving = true
-    this.movingCallback = callback
+  public revertToSource(source: IngredientZone, callback: () => void): void {
+    // TODO: is it ok to use index?
     this.trajectory = new Trajectory(
       this.coordinates,
-      this.basePoint,
-      Date.now()
+      source.coordinates,
+      engine.getMainLoopIndex(),
+      callback
     )
-    this.coordinates = this.trajectory.current
+    // TODO: can we store same ref to coordinates?
+    // this.coordinates = this.trajectory.current
   }
 
   public getTargets(): Dish[] {
@@ -102,31 +72,20 @@ class Ingredient extends BaseFrameObject implements Draggable {
   }
 
   public intersects(dish: Dish): boolean {
-    // temp solution to check intersection, is it ok?
+    // TODO: temp solution to check intersection, is it ok?
     const zone = gameState.cookingZones.find(zone => zone.getDish() == dish)
     return CollisionHelper.objectsIntersect(this, zone!)
   }
 
   public update(time: number): void {
-    console.log('update')
-    if (this.isMoving) {
+    /* trajectory is not null only if we need to move the ingredient */
+    if (this.trajectory) {
       console.log('isMoving')
-      // TODO: use basePoint to cacl moving direction
-      //console.log(this.basePoint)
-
-      if (this.coordinates.x + this.width <= 0) {
-        this.isMoving = false
-        // TODO: is it ok?
-        if (this.movingCallback) {
-          this.movingCallback()
-          this.movingCallback = null
-        }
+      if (!this.trajectory.isPathEnded()) {
+        // TODO: can we store same ref to coordinates?
+        this.coordinates = this.trajectory.getCurrentPoint(time)
       } else {
-        console.log(this.coordinates)
-        //this.coordinates.x -= 2
-        if (this.trajectory) {
-          this.coordinates = this.trajectory.getCurrentPoint(time)
-        }
+        this.trajectory.movingEndFn()
       }
     }
   }

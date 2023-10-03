@@ -1,20 +1,15 @@
 import gameState from '../store/gameState'
 import { TPoint } from '../types/commonTypes'
 import colHelper from './collisionHelper'
-import { DragSource, Draggable, Hoverable } from '../types/dragInterfaces'
+import {
+  CurrentDraggingState,
+  DragSource,
+  DraggingState,
+} from '../types/dragTypes'
 import BaseZone from '../objects/base/baseZone'
 
-type DraggingState = {
-  source: DragSource | null
-  object: Draggable | null
-  revertedObjects: Draggable[]
-  targets: Hoverable[] | null
-}
-
 export const draggingState: DraggingState = {
-  source: null,
-  object: null,
-  targets: null,
+  current: null,
   revertedObjects: [],
 }
 
@@ -28,9 +23,11 @@ class DraggingHelper {
         const object = zone.getDraggable()
         if (object) {
           object.setCoordinates(point)
-          draggingState.object = object
-          draggingState.source = zone
-          draggingState.targets = object.getTargets()
+          draggingState.current = new CurrentDraggingState(
+            zone,
+            object,
+            object.getTargets()
+          )
         }
       }
     })
@@ -42,10 +39,11 @@ class DraggingHelper {
   }
 
   public static drag = (point: TPoint) => {
-    const object = draggingState.object
-    if (object) {
+    const current = draggingState.current
+    if (current) {
+      const { object, targets } = current
       object.setCoordinates(point)
-      draggingState.targets?.forEach(target => {
+      targets.forEach(target => {
         const intersects = object.intersects(target)
         target.setHover(intersects, object)
       })
@@ -53,15 +51,16 @@ class DraggingHelper {
   }
 
   public static dragStop = () => {
-    const object = draggingState.object
-    if (object) {
-      draggingState.targets?.forEach(target => {
+    const current = draggingState.current
+    if (current) {
+      const { source, object, targets } = current
+      targets.forEach(target => {
         if (object.intersects(target) && target.objectFits(object)) {
           target.addObject(object)
-          draggingState.source?.reset()
+          source.reset()
         } else {
           draggingState.revertedObjects.push(object)
-          object.revertToSource(() => {
+          object.revertToSource(source, () => {
             const index = draggingState.revertedObjects.indexOf(object)
             if (index !== -1) {
               draggingState.revertedObjects.splice(index, 1)
@@ -69,14 +68,12 @@ class DraggingHelper {
           })
         }
       })
-      draggingState.object = null
-      draggingState.source = null
-      draggingState.targets = null
+      draggingState.current = null
     }
   }
 
   public static shouldDrag = (): boolean => {
-    return !!draggingState.object
+    return !!draggingState.current
   }
 }
 
