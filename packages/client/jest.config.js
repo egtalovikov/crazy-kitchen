@@ -20,6 +20,8 @@ export default {
     '^hocs/(.*)': '<rootDir>/src/hocs/$1',
     '^__mocks__/(.*)': '<rootDir>/src/__mocks__/$1',
     '\\.(css|scss)$': 'identity-obj-proxy',
+    '^@components/(.*)$': '<rootDir>/src/components/$1',
+    '^@utils/(.*)$': '<rootDir>/src/utils/$1',
   },
   transform: {
     // '^.+\\.(png|svg|jpg|jpeg)$': 'jest-transform-stub',
