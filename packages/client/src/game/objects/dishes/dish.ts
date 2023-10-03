@@ -26,6 +26,7 @@ class Dish implements Draggable, Hoverable {
   public recipe: TRecipe
 
   /* revert to zone moving logic */
+  // TODO: same as isHovered, do we need to make a public contract for trajectory for Draggable?
   private trajectory: Trajectory | null = null
 
   constructor(type: RecipeTypes, point: TPoint) {

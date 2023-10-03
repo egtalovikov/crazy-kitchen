@@ -1,7 +1,6 @@
 import { Draggable } from '@/game/types/dragTypes'
 import ingredientsParams from '../../parameters/ingredientParams'
 import { ingredientZoneParams } from '../../parameters/zoneParameters'
-import { IngredientState } from '../../store/ingredient'
 import { TPoint } from '../../types/commonTypes'
 import { Ingredients } from '../../types/ingredients'
 import BaseFrameObject from '../base/baseFrameObject'
@@ -19,7 +18,6 @@ class Ingredient extends BaseFrameObject implements Draggable {
   public type: Ingredients
 
   public preparationRequired: boolean // todo better name
-  public state = new IngredientState()
 
   /* revert to zone moving logic */
   private trajectory: Trajectory | null = null
@@ -37,8 +35,6 @@ class Ingredient extends BaseFrameObject implements Draggable {
     this.type = type
     this.preparationRequired = params.preparationRequired
   }
-
-  public getState = () => this.state as IngredientState
 
   /* drawing methods */
 
