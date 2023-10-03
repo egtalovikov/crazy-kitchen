@@ -11,15 +11,17 @@ class Engine {
 
   private mainLoopIndex = 0
 
+  private startTime = 0
+
   // TODO: what to do if game paused, should we store now somewhere?
-  private mainLoop = () => {
+  private mainLoop = (now: number) => {
     this.mainLoopIndex++
 
     this.drawingHelper?.drawGameFrame(gameState)
 
     this.updateObjects()
 
-    this.decrementTime()
+    this.decrementTime(now)
 
     this.checkRemainingTime()
 
@@ -39,8 +41,11 @@ class Engine {
     )
   }
 
-  private decrementTime = () => {
-    gameState.remainingTime -= 1
+  private decrementTime = (time: number) => {
+    if (time - this.startTime >= 1000) {
+      this.startTime = time
+      gameState.remainingTime -= 1
+    }
   }
 
   private checkRemainingTime = () => {

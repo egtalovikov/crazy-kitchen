@@ -58,7 +58,7 @@ class Dish implements Draggable, Hoverable {
   /* drag&drop methods */
 
   public setCoordinates(point: TPoint): void {
-    this.ingredients.forEach(i => i.setCoordinates(point))
+    this.coordinates = { ...point } // todo do we need copy here
   }
 
   public getTargets(): Client[] {
@@ -97,7 +97,7 @@ class Dish implements Draggable, Hoverable {
   public update(time: number): void {
     if (this.trajectory) {
       if (!this.trajectory.isPathEnded()) {
-        this.coordinates = this.trajectory.getCurrentPoint(time)
+        this.setCoordinates(this.trajectory.getCurrentPoint(time))
       } else {
         this.trajectory.movingEndFn()
       }

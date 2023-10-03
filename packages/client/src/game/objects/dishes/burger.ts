@@ -96,6 +96,7 @@ class Burger extends Dish {
   /* drag&drop logic */
 
   public setCoordinates(point: TPoint) {
+    super.setCoordinates(point)
     this.ingredients.forEach(i =>
       i.setCoordinates(point, this.INGREDIENT_INDENT)
     )
@@ -108,15 +109,7 @@ class Burger extends Dish {
 
   // TODO: double setting why?
   public setHover(intersects: boolean, ingredient: Ingredient): void {
-    /* super.setHover(intersects, ingredient)
-    if (this.isHovered) {
-      this.plate.width = this.plate.width + 20
-      this.plate.height = this.plate.height + 20
-    } else {
-      this.plate.width = this.plate.width - 20
-      this.plate.height = this.plate.height - 20
-    } */
-
+    /* super.setHover(intersects, ingredient) */
     // TODO: can we use parent method?
     if (intersects && this.ingredientFits(ingredient.type) && !this.isHovered) {
       this.isHovered = true
