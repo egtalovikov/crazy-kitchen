@@ -24,5 +24,11 @@
     }
   },
   "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "references": [{ "path": "./tsconfig.node.json" }],
+  "paths": {
+    "@/*": ["./src/*"],
+    "@assets/*": ["./src/assets/*"],
+    "@store/*": ["./src/store/*"],
+    "@pages/*": ["./src/pages/*"]
+  }
 }

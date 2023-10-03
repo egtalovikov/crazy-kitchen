@@ -24,4 +24,5 @@ export type TGameState = {
 export interface CoreRootState {
   authReducer: AuthState
   game: TGameState
+  game: TGameState
 }
