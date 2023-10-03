@@ -1,15 +1,11 @@
 import { useNavigate } from 'react-router-dom'
-import { useAppDispatch } from '../../hooks/useAppDispatch'
-import { MAIN_ROUTE, REGISTRATION_ROUTE } from '../../utils/consts'
-import { postSignIn } from '../../api/auth'
-import { fetchUserData } from '../../store/modules/auth/auth.reducer'
+import { useAppDispatch } from '@/hooks/useAppDispatch'
+import { MAIN_ROUTE, REGISTRATION_ROUTE } from '@/utils/consts'
+import { postSignIn } from '@/api/auth'
+import { fetchUserData } from '@/store/modules/auth/auth.reducer'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  registerSchema,
-  RegisterInputs,
-  LoginInputs,
-} from '../../utils/validationsSchema'
+import { registerSchema, RegisterInputs } from '@/utils/validationsSchema'
 
 export const useSignIn = () => {
   const {
