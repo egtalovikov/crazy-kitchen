@@ -14,7 +14,7 @@ import {
   TOPIC_ROUTE_CREATE,
 } from './utils/consts'
 import Profile from './pages/Profile'
-import Leaderboard from './pages/Leaderboard'
+
 import TopicCreate from './pages/TopicCreate'
 import Topic from './pages/Topic/index'
 import Forum from './pages/Forum/index'
@@ -23,6 +23,7 @@ import SignUp from './pages/SignUp'
 import MainPage from './pages/MainPage'
 import StartPage from './pages/StartPage'
 import ErrorPage from './pages/ErrorPage/ErrorPage'
+import Leaderboard from './pages/LeaderBoard'
 
 export const publicRoutes = [
   {

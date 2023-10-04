@@ -9,6 +9,7 @@ import {
   setScore,
 } from '../../../../store/modules/game/gameSlice'
 import CollisionHelper from '../utils/collisionHelper'
+import { addPlayerToLeaderBoard } from '../../../../api/leaderBoard'
 
 class Engine {
   private levelInterval = -1
@@ -174,9 +175,14 @@ class Engine {
     this.startLevel()
   }
 
-  public setWinFailState = () => {
+  public setWinFailState = async () => {
     const gameState = store.getState().game
+    const user = store.getState().authReducer
+    const userName = user.display_name ? user.display_name : user.login
     console.log('set complete state')
+    if (userName) {
+      await addPlayerToLeaderBoard(userName, gameState.score.toString())
+    }
     if (gameState.score === gameState.level.ordersCount) {
       // game winned
       this.setGameState(GlobalGameState.Winned)
