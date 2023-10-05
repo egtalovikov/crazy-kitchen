@@ -44,41 +44,43 @@ class Ingredient extends BaseFrameObject implements Draggable {
 
   /* drag&drop methods */
 
+  public getTargets(): Dish[] {
+    return gameState.cookingZones.map(zone => zone.getDish())
+  }
+
+  public intersects(dish: Dish): boolean {
+    // TODO: temp solution to check intersection, is it ok?
+    // problem is that empty dish has no dimentions and we need to check zone intersection
+    const zone = gameState.cookingZones.find(zone => zone.getDish() == dish)
+    return CollisionHelper.objectsIntersect(this, zone!)
+  }
+
   public setCoordinates = (point: TPoint) => {
     this.coordinates = {
       x: point.x - this.width / 2,
       y: point.y - this.height / 2,
     }
   }
+
+  // TODO: same code as in dish.ts How we can refactor this???
   public revertToSource(source: IngredientZone, callback: () => void): void {
-    // TODO: is it ok to use index?
     this.trajectory = new Trajectory(
       this.coordinates,
       source.coordinates,
-      engine.getMainLoopIndex(),
+      engine.getMainLoopIndex(), // TODO: is it ok to use index?
       callback
     )
     // TODO: can we store same ref to coordinates?
     // this.coordinates = this.trajectory.current
   }
 
-  public getTargets(): Dish[] {
-    const dishes = gameState.cookingZones.map(zone => zone.getDish())
-    return dishes
-  }
-
-  public intersects(dish: Dish): boolean {
-    // TODO: temp solution to check intersection, is it ok?
-    const zone = gameState.cookingZones.find(zone => zone.getDish() == dish)
-    return CollisionHelper.objectsIntersect(this, zone!)
-  }
-
+  // TODO: same code as in dish.ts How we can refactor this???
   public update(time: number): void {
     /* trajectory is not null only if we need to move the ingredient */
     if (this.trajectory) {
       if (!this.trajectory.isPathEnded()) {
         // TODO: can we store same ref to coordinates?
-        this.coordinates = this.trajectory.getCurrentPoint(time)
+        this.setCoordinates(this.trajectory.getCurrentPoint(time))
       } else {
         this.trajectory.movingEndFn()
       }

@@ -1,18 +1,18 @@
 import Painter from '@/game/core/painter'
-import BaseSpriteObject from '../base/baseSpriteObject'
-import DishIngredient from '../ingredients/dishIngredient'
+import BaseSpriteObject from '@gameObjects/base/baseSpriteObject'
+import DishIngredient from '@gameObjects/ingredients/dishIngredient'
 import { TPoint } from '@gameTypes/commonTypes'
 import { Ingredients } from '@gameTypes/ingredients'
 import { Draggable, Hoverable } from '@gameTypes/dragTypes'
 import { RecipeTypes, TRecipe } from '@gameTypes/recipe'
 import gameState from '@game/store/gameState'
-import Ingredient from '../ingredients/ingredient'
+import Ingredient from '@gameObjects/ingredients/ingredient'
 import recipeParameters from '@gameParams/recipeParams'
 import CollisionHelper from '@game/helpers/collisionHelper'
-import Client from '../orders/client'
-import Trajectory from '../trajectory/trajectory'
+import Client from '@gameObjects/orders/client'
+import Trajectory from '@gameObjects/trajectory/trajectory'
 import engine from '@game/core/engine'
-import CookingZone from '../zones/cookingZone'
+import CookingZone from '@gameObjects/zones/cookingZone'
 
 class Dish implements Draggable, Hoverable {
   protected coordinates: TPoint
@@ -66,7 +66,7 @@ class Dish implements Draggable, Hoverable {
   }
 
   // these 3 methods are not specific to Dish and can be reused in Ingredients
-  // if we make common parent with coordinates
+  // if we make common parent with coordinates?
   public setCoordinates(point: TPoint): void {
     this.coordinates = { ...point } // TODO: do we need copy here
   }
