@@ -107,6 +107,7 @@ class Dish implements Draggable, Hoverable {
   }
 
   public addObject(ingredient: Ingredient): void {
+    // TODO: do not add if the dish is not in the zone!
     this.addIngredient(ingredient.type)
   }
 }
