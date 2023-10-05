@@ -1,5 +1,4 @@
 import path from 'path'
-import path from 'path'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import dotenv from 'dotenv'
@@ -22,6 +21,14 @@ export default defineConfig({
       '@store': path.resolve(__dirname, './src/store'),
       '@pages': path.resolve(__dirname, './src/pages'),
       '@components': path.resolve(__dirname, './src/components'),
+      '@utils': path.resolve(__dirname, './src/utils'),
+      '@hooks': path.resolve(__dirname, './src/hooks'),
+      '@game': path.resolve(__dirname, './src/game'),
+      '@api': path.resolve(__dirname, './src/api'),
+      '@types': path.resolve(__dirname, './src/types'),
+      '@gameObjects': path.resolve(__dirname, './src/game/objects'),
+      '@gameParams': path.resolve(__dirname, './src/game/parameters'),
+      '@gameTypes': path.resolve(__dirname, './src/game/types'),
     },
   },
 })

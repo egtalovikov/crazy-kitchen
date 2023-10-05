@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { GlobalGameState } from '@/game/types/commonTypes'
-import { TGameState } from '@/store/types'
+import { GlobalGameState } from '@gameTypes/commonTypes'
+import { TGameState } from '@store/types'
 
 const initialState: TGameState = {
   globalGameState: GlobalGameState.WaitingForStart,

@@ -2,9 +2,9 @@ import { RecipeTypes } from '../../types/recipe'
 import BaseZone from '../base/baseZone'
 import zoneParams from '../../parameters/zoneParameters'
 import Dish from '../dishes/dish'
-import { DragSource } from '@/game/types/dragTypes'
+import { DragSource } from '@gameTypes/dragTypes'
 import Painter from '@/game/core/painter'
-import { Drawable } from '@/game/types/interfaces'
+import { Drawable } from '@gameTypes/interfaces'
 class CookingZone extends BaseZone implements Drawable, DragSource {
   protected dish: Dish
   private type: RecipeTypes

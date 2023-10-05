@@ -1,5 +1,5 @@
 import personImage from '@assets/person.png'
-import { Clients, TClientParameter } from '../types/clients'
+import { Clients, TClientParameter } from '@gameTypes/clients'
 
 const clientsParameters: Record<Clients, TClientParameter> = {
   [Clients.Client1]: {

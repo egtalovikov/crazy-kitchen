@@ -2,10 +2,10 @@ import BaseSpriteObject from '../base/baseSpriteObject'
 import Painter from '@/game/core/painter'
 import CollisionHelper from '@/game/helpers/collisionHelper'
 import gameState from '@/game/store/gameState'
-import { TPoint } from '@/game/types/commonTypes'
+import { TPoint } from '@gameTypes/commonTypes'
 import Client from '../orders/client'
 import CookingZone from '../zones/cookingZone'
-import { Drawable } from '@/game/types/interfaces'
+import { Drawable } from '@gameTypes/interfaces'
 
 class Drink extends BaseSpriteObject implements Drawable {
   /* drawing logic */

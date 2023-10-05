@@ -1,4 +1,4 @@
-import { GlobalGameState } from '../game/types/commonTypes'
+import { GlobalGameState } from '@gameTypes/commonTypes'
 import { store } from './index'
 
 export type AppDispatch = typeof store.dispatch

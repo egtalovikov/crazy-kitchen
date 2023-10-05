@@ -1,9 +1,9 @@
-import { TPoint } from '@/game/types/commonTypes'
-import { RecipeTypes } from '@/game/types/recipe'
+import { TPoint } from '@gameTypes/commonTypes'
+import { RecipeTypes } from '@gameTypes/recipe'
 import BaseSpriteObject from '../base/baseSpriteObject'
-import plateParameters from '@/game/parameters/plateParameters'
-import { topBunParams } from '@/game/parameters/ingredientsOnBurgerParams'
-import { Ingredients } from '@/game/types/ingredients'
+import plateParameters from '@gameParams/plateParameters'
+import { topBunParams } from '@gameParams/ingredientsOnBurgerParams'
+import { Ingredients } from '@gameTypes/ingredients'
 import BurgerIngredient from '../ingredients/burgerIngredient'
 import Ingredient from '../ingredients/ingredient'
 import Dish from './dish'
@@ -28,8 +28,6 @@ class Burger extends Dish {
       ...topBunParams,
       point: this.coordinates,
     })
-    console.log('constructor')
-    console.log(this.plate)
   }
 
   private calcHeightIndent = (orderNumber: number) => {
@@ -44,14 +42,7 @@ class Burger extends Dish {
 
   /* public methods */
 
-  public ingredientFits(type: Ingredients) {
-    const parentFitsValue = super.ingredientFits(type)
-    return parentFitsValue && !(this.isEmpty() && this.recipe[type].index !== 0)
-  }
-
   public addIngredient = (type: Ingredients) => {
-    console.log('addIngredient1')
-    console.log(this.plate)
     this.ingredients.push(new BurgerIngredient(type, this.coordinates, 0))
 
     // sort ingredients by index, so that the smallest index means the first ingredient on the bun
@@ -73,11 +64,6 @@ class Burger extends Dish {
       x: this.coordinates.x + 15,
       y: this.coordinates.y + this.calcHeightIndent(ingredientsNumber + 1),
     }
-    console.log('addIngredient2')
-    console.log(this.coordinates)
-    console.log(this.plate.coordinates)
-    console.log(this.plate)
-    console.log(this.isHovered)
     this.removeHover()
   }
 
@@ -107,11 +93,19 @@ class Burger extends Dish {
     }
   }
 
+  public objectFits(ingredient: Ingredient) {
+    const parentFitsValue = super.objectFits(ingredient)
+    return (
+      parentFitsValue &&
+      !(this.isEmpty() && this.recipe[ingredient.type].index !== 0)
+    )
+  }
+
   // TODO: double setting why?
   public setHover(intersects: boolean, ingredient: Ingredient): void {
     /* super.setHover(intersects, ingredient) */
     // TODO: can we use parent method?
-    if (intersects && this.ingredientFits(ingredient.type) && !this.isHovered) {
+    if (intersects && this.objectFits(ingredient) && !this.isHovered) {
       this.isHovered = true
       this.plate.width = this.plate.width + 20
       this.plate.height = this.plate.height + 20

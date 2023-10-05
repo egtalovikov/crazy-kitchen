@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { getUserInfo } from '../../../api/auth'
-import { AUTHORIZATION_STATUS } from '../../../utils/consts'
+import { getUserInfo } from '@api/auth'
+import { AUTHORIZATION_STATUS } from '@utils/consts'
 import { AuthState } from '../../types'
 
 const initialState: AuthState = {

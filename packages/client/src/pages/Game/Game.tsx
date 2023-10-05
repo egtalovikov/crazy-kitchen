@@ -2,9 +2,9 @@ import React, { useRef, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import style from './Game.module.scss'
 import { CoreRootState } from '@/store/types'
-import { TPoint } from '@/game/types/commonTypes'
+import { TPoint } from '@gameTypes/commonTypes'
 import { EndGame } from '@components/EndGame'
-import engine from '@/game/core/engine'
+import engine from '@game/core/engine'
 
 const Game: React.FC = () => {
   const state = useSelector((rootState: CoreRootState) => rootState.game)

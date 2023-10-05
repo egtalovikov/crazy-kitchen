@@ -1,6 +1,6 @@
-import { Ingredients } from '@/game/types/ingredients'
-import ingredientsOnBurgerParams from '@/game/parameters/ingredientsOnBurgerParams'
-import { TPoint } from '@/game/types/commonTypes'
+import { Ingredients } from '@gameTypes/ingredients'
+import ingredientsOnBurgerParams from '@gameParams/ingredientsOnBurgerParams'
+import { TPoint } from '@gameTypes/commonTypes'
 import BaseSpriteObject from '../base/baseSpriteObject'
 
 class DishIngredient extends BaseSpriteObject {

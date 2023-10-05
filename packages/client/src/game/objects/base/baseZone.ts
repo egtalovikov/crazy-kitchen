@@ -1,4 +1,4 @@
-import { TPoint } from '@/game/types/commonTypes'
+import { TPoint } from '@gameTypes/commonTypes'
 
 // base object that have point and size but is not painted on game field
 

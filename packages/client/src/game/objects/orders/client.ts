@@ -4,11 +4,11 @@ import { BurgerTypes } from '../../types/recipe'
 import BaseFrameObject from '../base/baseFrameObject'
 import Order from './order'
 import Dish from '../dishes/dish'
-import { Hoverable } from '@/game/types/dragTypes'
-import Painter from '@/game/core/painter'
-import RecipeHelper from '@/game/helpers/recipeHelper'
+import { Hoverable } from '@gameTypes/dragTypes'
+import Painter from '@game/core/painter'
+import RecipeHelper from '@game/helpers/recipeHelper'
 import BurgerOrder from './burgerOrder'
-import { Drawable, Animatable } from '@/game/types/interfaces'
+import { Drawable, Animatable } from '@gameTypes/interfaces'
 
 // TODO: draw all client orders!
 class Client

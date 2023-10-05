@@ -1,4 +1,4 @@
-import { RecipeTypes } from '@/game/types/recipe'
+import { RecipeTypes } from '@gameTypes/recipe'
 import CookingZone from './cookingZone'
 import Burger from '../dishes/burger'
 

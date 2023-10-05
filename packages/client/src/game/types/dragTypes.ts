@@ -1,5 +1,5 @@
 import { TPoint } from './commonTypes'
-import { Animatable } from '@/game/types/interfaces'
+import { Animatable } from '@gameTypes/interfaces'
 
 export interface Hoverable {
   isHovered: boolean

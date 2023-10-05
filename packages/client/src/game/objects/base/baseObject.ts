@@ -1,5 +1,5 @@
 import BaseZone from './baseZone'
-import { TPoint } from '@/game/types/commonTypes'
+import { TPoint } from '@gameTypes/commonTypes'
 
 // base object that have point and size like BaseZone but also is painted on game field
 class BaseObject extends BaseZone {

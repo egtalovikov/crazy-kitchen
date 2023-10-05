@@ -1,4 +1,4 @@
-import { BaseSpriteObjectParamsWithPoint } from '@/game/types/commonTypes'
+import { BaseSpriteObjectParamsWithPoint } from '@gameTypes/commonTypes'
 import BaseObject from './baseObject'
 
 class BaseSpriteObject extends BaseObject {

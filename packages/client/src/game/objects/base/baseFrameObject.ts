@@ -1,4 +1,4 @@
-import { TPoint } from '@/game/types/commonTypes'
+import { TPoint } from '@gameTypes/commonTypes'
 import BaseObject from './baseObject'
 
 // use this object for objects with animations

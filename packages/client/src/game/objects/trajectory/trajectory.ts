@@ -1,4 +1,4 @@
-import { TPoint } from '@/game/types/commonTypes'
+import { TPoint } from '@gameTypes/commonTypes'
 
 // TODO: fix speed
 // const ANIMATION_SPEED = 2

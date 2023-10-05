@@ -1,7 +1,7 @@
-import { BurgerTypes, RecipeTypes } from '@/game/types/recipe'
+import { BurgerTypes, RecipeTypes } from '@gameTypes/recipe'
 import Order from './order'
-import { TPoint } from '@/game/types/commonTypes'
-import { burgerRecipes } from '@/game/parameters/recipeParams'
+import { TPoint } from '@gameTypes/commonTypes'
+import { burgerRecipes } from '@gameParams/recipeParams'
 
 class BurgerOrder extends Order {
   constructor(type: BurgerTypes, point: TPoint) {

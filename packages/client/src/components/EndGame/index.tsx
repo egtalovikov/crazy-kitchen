@@ -1,12 +1,12 @@
 import React, { FC } from 'react'
 import styles from './EndGame.module.scss'
-import { useGoToRoute } from '@/utils/useGoToRoute'
+import { useGoToRoute } from '@utils/useGoToRoute'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import { MAIN_ROUTE } from '@/utils/consts'
-import engine from '@/game/core/engine'
-import gameState from '@/game/store/gameState'
+import { MAIN_ROUTE } from '@utils/consts'
+import engine from '@game/core/engine'
+import gameState from '@game/store/gameState'
 
 export const EndGame: FC = () => {
   const { goRoute } = useGoToRoute()
