@@ -24,7 +24,7 @@ class Dish implements Draggable, Hoverable {
   public recipe: TRecipe
 
   // TODO: do we need to make it public? interface vs private
-  public isHovered = false
+  protected isHovered = false
 
   /* revert to zone moving logic */
   // TODO: same as isHovered, do we need to make a public contract for trajectory for Draggable?
@@ -97,6 +97,7 @@ class Dish implements Draggable, Hoverable {
     return !!this.recipe[type] && !this.ingredients.some(i => i.type === type)
   }
 
+  // TODO: is there a way to create only one method for this and client.ts setHover?
   public setHover(intersects: boolean, ingredient: Ingredient): void {
     if (intersects && this.objectFits(ingredient) && !this.isHovered) {
       this.isHovered = true

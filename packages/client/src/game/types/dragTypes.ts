@@ -2,7 +2,6 @@ import { TPoint } from './commonTypes'
 import { Animatable } from '@gameTypes/interfaces'
 
 export interface Hoverable {
-  isHovered: boolean
   setHover(intersects: boolean, object: Draggable): void
   objectFits(object: Draggable): boolean
   addObject(object: Draggable): void

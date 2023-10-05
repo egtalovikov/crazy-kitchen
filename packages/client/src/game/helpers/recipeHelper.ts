@@ -3,6 +3,7 @@ import { Ingredients } from '../types/ingredients'
 import { TRecipe } from '../types/recipe'
 
 class RecipeHelper {
+  // TODO decide if we need this method?
   /* public static recipesAreEqual(recipe1: TRecipe, recipe2: TRecipe): boolean {
     for (const key in recipe1) {
       const ingredient = key as unknown as Ingredients

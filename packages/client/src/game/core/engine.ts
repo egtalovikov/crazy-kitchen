@@ -1,9 +1,10 @@
-import { GlobalGameState, TPoint } from '../types/commonTypes'
+import { GlobalGameState, TPoint } from '@gameTypes/commonTypes'
 import { store } from '@store/index'
 import { setGameState } from '@store/modules/game/gameSlice'
-import DrawingHelper from '../helpers/drawingHelper'
-import DraggingHelper, { draggingState } from '../helpers/draggingHelper'
-import gameState from '../store/gameState'
+import DrawingHelper from '@game/helpers/drawingHelper'
+import DraggingHelper, { draggingState } from '@game/helpers/draggingHelper'
+import gameState from '@game/store/gameState'
+import { Animatable } from '@gameTypes/interfaces'
 class Engine {
   private requestId = -1
 
@@ -30,15 +31,13 @@ class Engine {
 
   public getMainLoopIndex = () => this.mainLoopIndex
 
+  private updateAnimatables = (objects: Animatable[]) =>
+    objects.forEach(o => o.update(this.mainLoopIndex))
+
   private updateObjects = () => {
     // TODO: update cooked ingredients
-    gameState.clients.forEach(client => {
-      client.update()
-    })
-
-    draggingState.revertedObjects.forEach(object =>
-      object.update(this.mainLoopIndex)
-    )
+    this.updateAnimatables(gameState.clients)
+    this.updateAnimatables(draggingState.revertedObjects)
   }
 
   private decrementTime = (time: number) => {

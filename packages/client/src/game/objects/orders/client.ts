@@ -10,7 +10,6 @@ import RecipeHelper from '@game/helpers/recipeHelper'
 import BurgerOrder from './burgerOrder'
 import { Drawable, Animatable } from '@gameTypes/interfaces'
 
-// TODO: draw all client orders!
 class Client
   extends BaseFrameObject
   implements Drawable, Hoverable, Animatable
@@ -19,13 +18,12 @@ class Client
   public orders: Order[] = []
   public gameState = ClientGameState.WaitingForStart
   // TODO: should we include this to Hoverable interface and break open-closed principle?
-  public isHovered = false
-  public movingInterval = -1
+  private isHovered = false
   private isMoving = false
 
   constructor(type: Clients, burgerTypes: BurgerTypes[]) {
     const params = clientsParameters[type]
-    // todo add moving logic to client, temp start point
+    // TODO: add moving logic to client, temp start point
     super(params.imageSrc, params.width, params.height, params.frameWidth, {
       x: 800,
       y: 375,
@@ -44,16 +42,15 @@ class Client
     }
   }
 
-  private dishFits = (dish: Dish) => this.orders.some(o => o.type === dish.type)
-
   private setOrdersFinished = () => {
     if (!this.orders.length) {
+      // TODO: add trajectory
       this.isMoving = true
     }
   }
 
   private findOrderOfType = (dish: Dish) => {
-    return this.orders.filter(order => {
+    return this.orders.find(order => {
       if (order.type === dish.type) {
         return RecipeHelper.ingredientsFitsRecipe(
           order.recipe,
@@ -67,7 +64,9 @@ class Client
 
   /* animate logic */
 
-  public update = () => {
+  public update = (time: number) => {
+    // TODO: make update using trajectory?
+    console.log(time)
     if (this.isMoving) {
       if (this.coordinates.x + this.width <= 0) {
         this.isMoving = false
@@ -87,29 +86,32 @@ class Client
   /* drag&drop logic */
 
   public addObject(dish: Dish): void {
-    // TODO: не будет работать с разными блюдами одного типа
-    // либо для каждого вида бургера свой тип и динамически менять тип
-    // либо сверять ингредиенты
-    const orders = this.findOrderOfType(dish)
-    // temp fix to remove order from client
-    const index = this.orders.findIndex(order => order == orders[0])
-    this.orders.splice(index, 1)
-
-    // TODO: do it here or in draggingHelper ?
-    this.isHovered = false
-    this.setOrdersFinished()
+    // dish type is not the only criteria for comparision
+    // we need to check all ingredients
+    // e.g. dish type 'Burger', ingredients: tomato, cutlet & bread
+    const order = this.findOrderOfType(dish)
+    if (order) {
+      const index = this.orders.findIndex(o => o == order)
+      this.orders.splice(index, 1)
+      // TODO: do it here or in draggingHelper ?
+      this.isHovered = false
+      this.setOrdersFinished()
+    } else {
+      throw Error('Client addObject method: No such order')
+    }
   }
-
   public objectFits(dish: Dish): boolean {
     const hasDishType = this.orders.some(order => order.type === dish.type)
-    return hasDishType && !!this.findOrderOfType(dish).length
+    return hasDishType && !!this.findOrderOfType(dish)
   }
 
+  // TODO: is there a way to create only one method for this and dish.ts setHover?
   public setHover = (intersects: boolean, dish: Dish) => {
-    const dishFits = this.dishFits(dish)
-    if (intersects && dishFits) {
+    if (intersects && this.objectFits(dish) && !this.isHovered) {
+      console.log('client hover')
       this.isHovered = true
     } else if (this.isHovered && !intersects) {
+      console.log('client hover end')
       this.isHovered = false
     }
   }
