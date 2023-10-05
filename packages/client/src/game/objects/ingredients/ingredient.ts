@@ -76,7 +76,6 @@ class Ingredient extends BaseFrameObject implements Draggable {
   public update(time: number): void {
     /* trajectory is not null only if we need to move the ingredient */
     if (this.trajectory) {
-      console.log('isMoving')
       if (!this.trajectory.isPathEnded()) {
         // TODO: can we store same ref to coordinates?
         this.coordinates = this.trajectory.getCurrentPoint(time)

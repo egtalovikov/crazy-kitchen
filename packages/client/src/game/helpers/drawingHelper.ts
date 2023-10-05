@@ -44,10 +44,6 @@ class DrawingHelper {
     draggingState.revertedObjects.forEach(object => object.draw(this.painter))
 
     this.drawLevelState(gameState)
-
-    /* console.log('drawGameFrame')
-    console.log(draggingState.object)
-    console.log(draggingState.revertedObjects) */
   }
 
   // temp for testing, remove

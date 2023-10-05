@@ -108,10 +108,8 @@ class Client
   public setHover = (intersects: boolean, dish: Dish) => {
     const dishFits = this.dishFits(dish)
     if (intersects && dishFits) {
-      console.log('in client hover true')
       this.isHovered = true
     } else if (this.isHovered && !intersects) {
-      console.log('in client hover false')
       this.isHovered = false
     }
   }

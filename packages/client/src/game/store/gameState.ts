@@ -40,8 +40,6 @@ export class GameState {
     const zones: IngredientZone[] = []
     Object.values(Ingredients).forEach(type => {
       if (!isNaN(Number(type))) {
-        console.log('type')
-        console.log(type)
         const zone = new IngredientZone(type as unknown as Ingredients)
         zones.push(zone)
       }

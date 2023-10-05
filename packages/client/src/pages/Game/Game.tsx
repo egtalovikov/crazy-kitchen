@@ -34,8 +34,6 @@ const Game: React.FC = () => {
   const handleMouseUp = () => engine.handleDraggingStop()
 
   useEffect(() => {
-    console.log('in Game.tsx')
-
     const canvas = canvasRef.current
     if (!canvas) {
       throw Error('useEffect : canvas not found')
