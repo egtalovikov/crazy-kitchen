@@ -5,6 +5,7 @@ import DrawingHelper from '@game/helpers/drawingHelper'
 import DraggingHelper, { draggingState } from '@game/helpers/draggingHelper'
 import gameState from '@game/store/gameState'
 import { Animatable } from '@gameTypes/interfaces'
+import { addPlayerToLeaderBoard } from '@/api/leaderBoard'
 class Engine {
   private requestId = -1
 
@@ -81,7 +82,16 @@ class Engine {
         ? GlobalGameState.Winned
         : GlobalGameState.Failed
     this.setGameState(state)
+    this.sendScoreToLeaderboard()
     this.resetGame()
+  }
+
+  private sendScoreToLeaderboard = async () => {
+    const user = store.getState().authReducer
+    const userName = user.display_name ? user.display_name : user.login
+    if (userName) {
+      await addPlayerToLeaderBoard(userName, gameState.score.toString())
+    }
   }
 
   public startGame = () => {
