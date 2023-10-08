@@ -1,0 +1,36 @@
+@import '../../stylus/style-constants.module';
+
+.background {
+  @include background();
+  background-image: url('../../assets/mainBackground.png');
+}
+
+.description {
+  width: 600px;
+  border-radius: 30px;
+  background: #5bc7f2;
+  border: 2px solid white;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+  padding: 40px;
+  border-radius: 8px;
+}
+
+.title {
+  @include whiteFs38()
+}
+
+
+.player {
+  &_item {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  &_score {
+    @include whiteFs24()
+  }
+  &_name {
+    @include whiteFs24()
+  }
+}
