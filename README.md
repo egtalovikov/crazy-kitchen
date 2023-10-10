@@ -28,6 +28,8 @@ https://disk.yandex.ru/d/8iLpKSIOYhaxuA
 3. Выполните команду `yarn dev --scope=client` чтобы запустить только клиент
 4. Выполните команду `yarn dev --scope=server` чтобы запустить только server
 
+### Описание API
+Форум: ./documentation/api-forum.md
 
 ### Как добавить зависимости?
 В этом проекте используется `monorepo` на основе [`lerna`](https://github.com/lerna/lerna)
