@@ -28,6 +28,9 @@ https://disk.yandex.ru/d/8iLpKSIOYhaxuA
 3. Выполните команду `yarn dev --scope=client` чтобы запустить только клиент
 4. Выполните команду `yarn dev --scope=server` чтобы запустить только server
 
+### Описание API
+Форум: ./documentation/api-forum.md
+Схема: https://drive.google.com/file/d/1bi7hFkXMSNz1OdHa30eUWv80c3845Uyb/view
 
 ### Как добавить зависимости?
 В этом проекте используется `monorepo` на основе [`lerna`](https://github.com/lerna/lerna)
@@ -96,3 +99,5 @@ https://disk.yandex.ru/d/8iLpKSIOYhaxuA
 
 Если вам понадобится только один сервис, просто уточните какой в команде
 `docker compose up {sevice_name}`, например `docker compose up server`
+
+Запуск для работы с базой в documentation/postgres.md

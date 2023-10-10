@@ -14,14 +14,26 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "experimentalDecorators": true,
+    "paths": {
+      "@/*": ["./src/*"],
+      "@assets/*": ["./src/assets/*"],
+      "@store/*": ["./src/store/*"],
+      "@pages/*": ["./src/pages/*"],
+      "@components/*": ["./src/components/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@game/*": ["./src/game/*"],
+      "@api/*": ["./src/api/*"],
+      "@types/*": ["./src/api/*"],
+      "@gameObjects/*": ["./src/game/objects/*"],
+      "@gameParams/*": ["./src/game/parameters/*"],
+      "@gameTypes/*": ["./src/game/types/*"]
+    }
   },
   "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }],
-  "paths": {
-    "@/*": ["./src/*"],
-    "@assets/*": ["./src/assets/*"],
-    "@store/*": ["./src/store/*"],
-    "@pages/*": ["./src/pages/*"]
-  }
+  "references": [{ "path": "./tsconfig.node.json" }]
 }
+
+
