@@ -36,6 +36,7 @@ const bootstrap = async () => {
   } else {
     // @ts-ignore
     app.use(
+      // @ts-ignore
       sirv('dist/client', {
         gzip: true,
       })
