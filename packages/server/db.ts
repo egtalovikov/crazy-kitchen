@@ -3,6 +3,8 @@ import { commentModel } from './models/comment'
 import { reactionModel } from './models/reaction'
 import { replyModel } from './models/reply'
 import { topicModel } from './models/topic'
+import { userTheme } from './models/theme/userTheme'
+import { siteTheme } from './models/theme/theme'
 import dotenv from 'dotenv'
 import { Op } from 'sequelize'
 const { POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB, POSTGRES_PORT } =
@@ -20,6 +22,10 @@ const sequelizeOptions: SequelizeOptions = {
 }
 // Создаем инстанс Sequelize
 export const sequelize = new Sequelize(sequelizeOptions)
+
+// Инициализируем модели
+export const UserTheme = sequelize.define('UserTheme', userTheme, {})
+export const SiteTheme = sequelize.define('SiteTheme', siteTheme, {})
 
 //Устанавливаем связи между таблицами
 // topicModel.hasMany(commentModel, { foreignKey: 'topicId' });
