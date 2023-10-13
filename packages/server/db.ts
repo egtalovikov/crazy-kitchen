@@ -7,6 +7,7 @@ import { userTheme } from './models/theme/userTheme'
 import { siteTheme } from './models/theme/theme'
 import dotenv from 'dotenv'
 import { Op } from 'sequelize'
+import themeService from './services/themeService'
 const { POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB, POSTGRES_PORT } =
   process.env
 
@@ -35,6 +36,10 @@ export const SiteTheme = sequelize.define('SiteTheme', siteTheme, {})
 // replyModel.belongsTo(commentModel);
 // reactionModel.belongsTo(commentModel);
 
+UserTheme.belongsTo(SiteTheme, {
+  foreignKey: { name: 'themeId', allowNull: false },
+})
+
 export async function dbConnect() {
   console.log('dbConnect')
   try {
@@ -46,6 +51,11 @@ export async function dbConnect() {
     ])
     // Синхронизация базы данных
     await sequelize.sync({ alter: true })
+
+    await themeService.createManyThemes([
+      { name: 'light', description: 'Light theme for site' },
+      { name: 'dark', description: 'Dark theme for site' },
+    ])
     console.log('Connection has been established successfully.')
   } catch (error) {
     console.error('Unable to connect to the database:', error)
