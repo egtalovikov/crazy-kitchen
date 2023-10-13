@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react'
 import './App.css'
-import { BrowserRouter } from 'react-router-dom'
 import AppRouter from './components/AppRouter'
 import { store } from './store'
 import { fetchUserData } from './store/modules/auth/auth.reducer'
 import CssBaseline from '@mui/material/CssBaseline'
+import ErrorBoundary from '@components/ErrorBoundary'
+import { Provider } from 'react-redux'
 
 function App() {
   useEffect(() => {
@@ -23,10 +24,16 @@ function App() {
   }, [])
 
   return (
-    <BrowserRouter>
-      <CssBaseline />
+    <>
       <AppRouter />
-    </BrowserRouter>
+      <React.StrictMode>
+        <ErrorBoundary>
+          <Provider store={store}>
+            <CssBaseline />
+          </Provider>
+        </ErrorBoundary>
+      </React.StrictMode>
+    </>
   )
 }
 

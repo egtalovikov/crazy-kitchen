@@ -1,25 +1,14 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import AppRouter from './components/AppRouter'
-import ErrorBoundary from './components/ErrorBoundary'
 import './index.css'
-import { store } from './store'
-import { Provider } from 'react-redux'
-import CssBaseline from '@mui/material/CssBaseline'
 import { BrowserRouter } from 'react-router-dom'
+import App from './App'
 
 ReactDOM.hydrateRoot(
   document.getElementById('root') as HTMLElement,
-  <React.StrictMode>
-    <ErrorBoundary>
-      <Provider store={store}>
-        <BrowserRouter>
-          <CssBaseline />
-          <AppRouter />
-        </BrowserRouter>
-      </Provider>
-    </ErrorBoundary>
-  </React.StrictMode>
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
 )
 
 function startServiceWorker() {
