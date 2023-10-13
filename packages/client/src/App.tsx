@@ -24,16 +24,14 @@ function App() {
   }, [])
 
   return (
-    <>
-      <AppRouter />
-      <React.StrictMode>
-        <ErrorBoundary>
-          <Provider store={store}>
-            <CssBaseline />
-          </Provider>
-        </ErrorBoundary>
-      </React.StrictMode>
-    </>
+    <React.StrictMode>
+      <ErrorBoundary>
+        <Provider store={store}>
+          <CssBaseline />
+          <AppRouter />
+        </Provider>
+      </ErrorBoundary>
+    </React.StrictMode>
   )
 }
 
