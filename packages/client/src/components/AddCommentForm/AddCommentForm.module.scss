@@ -1,0 +1,40 @@
+.popup {
+  display: none;
+  flex-wrap: wrap;
+  position: absolute;
+  width: auto;
+  left: 10px;
+  padding: 5px;
+  background: rgb(21 23 41 / 70%);
+  border: 1px solid #d3dce6;
+  box-shadow: 0 0 6px rgb(0 0 0 / 25%);
+  border-radius: 7px;
+}
+
+.popup_bottom {
+  top: 60%;
+  margin-top: 10px;
+}
+
+.popup_open {
+  display: flex;
+}
+
+.emojis {
+  margin-right: 5px;
+}
+
+.comment-box {
+  position: relative;
+  width: 100%;
+}
+
+.emoji-button {
+  width: 29px;
+  height: 25px;
+  background-size: contain;
+  background-color: white;
+  border: none;
+  background-repeat: no-repeat;
+  margin-left: 1vh;
+}
