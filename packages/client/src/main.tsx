@@ -5,7 +5,6 @@ import ErrorBoundary from './components/ErrorBoundary'
 import './index.css'
 import { store } from './store'
 import { Provider } from 'react-redux'
-
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <ErrorBoundary>

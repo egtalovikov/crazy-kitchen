@@ -1,15 +1,10 @@
 import BaseApi from '../BaseApi'
 import API from '../api.path'
-import { TThemeData } from './theme.types'
+import { TThemeData, TChangeThemeRequestData } from './theme.types'
 
 type TThemeRequestData = {
   theme: TThemeData | null
   error: Error | null
-}
-
-type TChangeThemeRequestData = {
-  themeName: string
-  userId: number
 }
 
 class ThemeApi extends BaseApi {
@@ -48,4 +43,4 @@ class ThemeApi extends BaseApi {
   }
 }
 
-export default ThemeApi
+export default new ThemeApi()

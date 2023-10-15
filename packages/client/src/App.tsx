@@ -5,8 +5,13 @@ import AppRouter from './components/AppRouter'
 import { store } from './store'
 import { fetchUserData } from './store/modules/auth/auth.reducer'
 import CssBaseline from '@mui/material/CssBaseline'
+import { ThemeProvider } from '@mui/material/styles'
+import { useColorTheme } from './theme/useColorTheme'
+import { fetchUserTheme } from './store/modules/theme/theme.reducer'
 
 function App() {
+  const { theme } = useColorTheme()
+
   useEffect(() => {
     const fetchServerData = async () => {
       const url = `${__SERVER_PORT__}`
@@ -20,12 +25,16 @@ function App() {
 
   useEffect(() => {
     store.dispatch(fetchUserData())
+
+    store.dispatch(fetchUserTheme())
   }, [])
 
   return (
     <BrowserRouter>
-      <CssBaseline />
-      <AppRouter />
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <AppRouter />
+      </ThemeProvider>
     </BrowserRouter>
   )
 }

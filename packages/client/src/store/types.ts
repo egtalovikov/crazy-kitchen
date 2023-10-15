@@ -1,6 +1,7 @@
 import { GlobalGameState } from '../pages/Game/game/types/commonTypes'
 import { store } from './index'
 import { TLevelParams } from '../pages/Game/game/types/commonTypes'
+import { TThemeData } from '../api/themes/theme.types'
 
 export type AppDispatch = typeof store.dispatch
 
@@ -17,6 +18,11 @@ export interface AuthState {
   authorizedStatus: string
 }
 
+export interface ThemeState {
+  nameTheme: string
+  descriptionTheme: string | null
+}
+
 // todo one style
 export type TGameState = {
   gameState: GlobalGameState
@@ -28,4 +34,5 @@ export type TGameState = {
 export interface CoreRootState {
   authReducer: AuthState
   game: TGameState
+  theme: ThemeState
 }
