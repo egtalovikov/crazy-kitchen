@@ -13,7 +13,7 @@ export const AddCommentForm = ({
 }: {
   topicId: number
   comments: []
-  setComments: Dispatch<SetStateAction<[any]>>
+  setComments: Dispatch<SetStateAction<any>>
 }) => {
   const [comment, setComment] = useState<string>('')
   const { id } = useSelector(
