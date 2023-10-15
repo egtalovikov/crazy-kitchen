@@ -6,7 +6,7 @@ import InputBase from '@mui/material/InputBase'
 import { ButtonBlue } from '../../components/Button'
 import { TOPIC_ROUTE_CREATE } from '../../utils/consts'
 import { useGoToRoute } from '../../utils/useGoToRoute'
-import { useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import forumApi from '../../api/forum'
 
 type Topic = {
@@ -18,7 +18,10 @@ type Topic = {
 
 const Forum = () => {
   const { goRoute } = useGoToRoute()
-  const [topics, setTopics] = useState([])
+  const [topics, setTopics]: [
+    topics: [],
+    setTopics: Dispatch<SetStateAction<[]>>
+  ] = useState([])
 
   useEffect(() => {
     const getTopics = async () => {
