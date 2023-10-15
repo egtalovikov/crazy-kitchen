@@ -5,6 +5,10 @@ const $host = axios.create({
   // baseURL: __BASE_URL__,
 })
 
+const $ourHost = axios.create({
+  baseURL: 'http://localhost:3001/api/v2',
+})
+
 const authInterceptor = (config: InternalAxiosRequestConfig) => {
   config.withCredentials = true
   return config
@@ -12,4 +16,4 @@ const authInterceptor = (config: InternalAxiosRequestConfig) => {
 
 $host.interceptors.request.use(authInterceptor)
 
-export { $host }
+export { $host, $ourHost }

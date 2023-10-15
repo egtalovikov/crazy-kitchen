@@ -2,7 +2,7 @@ import React from 'react'
 import { Comment } from '../Comment'
 import Box from '@mui/material/Box'
 
-const commentList = () => {
+const commentList = ({ comments }: { comments: [] }) => {
   return (
     <Box
       sx={{
@@ -15,14 +15,26 @@ const commentList = () => {
         padding: '40px 15px',
         marginTop: '40px',
       }}>
-      <Comment
-        commentText={'I love this National park so much'}
-        commentAuthor={'Leo Messi'}
-        commentDate={'24 april 2022'}
-        commentAvatar={
-          'https://img.uefa.com/imgml/TP/players/2020/2022/324x324/95803.jpg'
-        }
-      />
+      {comments.map(
+        (comment: {
+          message: string
+          author: string
+          createdDate: string | number | Date
+          authorAvatar: string
+        }) => (
+          <Comment
+            commentText={comment.message}
+            commentAuthor={comment.author}
+            commentDate={new Date(comment.createdDate).toLocaleString()}
+            commentAvatar={
+              comment.authorAvatar
+                ? 'https://ya-praktikum.tech/api/v2/resources' +
+                  comment.authorAvatar
+                : ''
+            }
+          />
+        )
+      )}
     </Box>
   )
 }

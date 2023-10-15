@@ -6,9 +6,32 @@ import InputBase from '@mui/material/InputBase'
 import { ButtonBlue } from '../../components/Button'
 import { TOPIC_ROUTE_CREATE } from '../../utils/consts'
 import { useGoToRoute } from '../../utils/useGoToRoute'
+import { useEffect, useState } from 'react'
+import forumApi from '../../api/forum'
+
+type Topic = {
+  message: string
+  topic: string
+  createdAt: string
+  id: string
+}
 
 const Forum = () => {
   const { goRoute } = useGoToRoute()
+  const [topics, setTopics] = useState([])
+
+  useEffect(() => {
+    const getTopics = async () => {
+      try {
+        const { data } = await forumApi.getTopics()
+        setTopics(data.topics)
+      } catch (e) {
+        console.log(e)
+      }
+    }
+
+    getTopics()
+  }, [])
 
   return (
     <div className={styles.background}>
@@ -24,8 +47,14 @@ const Forum = () => {
           placeholder={'Давай поищем тебе топик'}
           classes={{ root: styles.search }}
         />
-        <TopicCardPreview title={'Hi, world'} mainText={'sssss'} />
-        <TopicCardPreview title={'Best game'} mainText={'ssssss321312'} />
+        {topics.map((topic: Topic) => (
+          <TopicCardPreview
+            title={topic.topic}
+            mainText={topic.message}
+            createdAt={topic.createdAt}
+            id={topic.id}
+          />
+        ))}
         <ButtonBlue onClickCallback={() => goRoute(TOPIC_ROUTE_CREATE)}>
           Cоздать свой классный топик
         </ButtonBlue>
