@@ -7,3 +7,8 @@ export const authorizedStatusSelector = createSelector(
   [authSelector],
   authSelector => authSelector?.authorizedStatus
 )
+
+export const userIdSelector = createSelector(
+  [authSelector],
+  authSelector => authSelector?.id
+)
