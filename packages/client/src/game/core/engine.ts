@@ -5,7 +5,7 @@ import DrawingHelper from '@game/helpers/drawingHelper'
 import DraggingHelper, { draggingState } from '@game/helpers/draggingHelper'
 import gameState from '@game/store/gameState'
 import { Animatable } from '@gameTypes/interfaces'
-import { addPlayerToLeaderBoard } from '@/api/leaderBoard'
+import { addPlayerToLeaderBoard } from '../../api/leaderBoard'
 class Engine {
   private requestId = -1
 
