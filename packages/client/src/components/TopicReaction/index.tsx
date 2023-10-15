@@ -15,10 +15,8 @@ export const TopicReaction: React.FC = () => {
     const target = e.target as HTMLSpanElement
     const emoji = target.textContent
 
-    // Создаем копию текущего состояния реакций
     const newReactions: Reactions = { ...reactions }
 
-    // Увеличиваем счетчик для выбранной реакции
     newReactions[emoji!] = (newReactions[emoji!] || 0) + 1
 
     setReactions(newReactions)
