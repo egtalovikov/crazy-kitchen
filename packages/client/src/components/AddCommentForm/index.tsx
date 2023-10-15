@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react'
+import React, { ChangeEvent, Dispatch, SetStateAction, useState } from 'react'
 import Input from '@mui/material/Input'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
@@ -13,7 +13,7 @@ export const AddCommentForm = ({
 }: {
   topicId: number
   comments: []
-  setComments: React.Dispatch<React.SetStateAction<[any]>>
+  setComments: Dispatch<SetStateAction<[any]>>
 }) => {
   const [comment, setComment] = useState<string>('')
   const { id } = useSelector(
