@@ -1,8 +1,8 @@
 import { Sequelize, SequelizeOptions } from 'sequelize-typescript'
-import { commentModel } from './models/comment'
-import { reactionModel } from './models/reaction'
-import { replyModel } from './models/reply'
-import { topicModel } from './models/topic'
+import { CommentModel } from './models/comment'
+import { ReactionModel } from './models/reaction'
+import { ReplyModel } from './models/reply'
+import { TopicModel } from './models/topic'
 import { userTheme } from './models/theme/userTheme'
 import { siteTheme } from './models/theme/theme'
 import dotenv from 'dotenv'
@@ -29,7 +29,7 @@ export const UserTheme = sequelize.define('UserTheme', userTheme, {})
 export const SiteTheme = sequelize.define('SiteTheme', siteTheme, {})
 
 //Устанавливаем связи между таблицами
-// topicModel.hasMany(commentModel, { foreignKey: 'topicId' });
+// TopicModel.hasMany(commentModel, { foreignKey: 'topicId' });
 // commentModel.belongsTo(topicModel);
 // commentModel.hasMany(replyModel, { foreignKey: { allowNull: false } });
 // commentModel.hasMany(reactionModel, { foreignKey: { allowNull: false } });
@@ -44,10 +44,10 @@ export async function dbConnect() {
   console.log('dbConnect')
   try {
     await sequelize.addModels([
-      topicModel,
-      reactionModel,
-      replyModel,
-      commentModel,
+      TopicModel,
+      ReactionModel,
+      ReplyModel,
+      CommentModel,
     ])
     // Синхронизация базы данных
     await sequelize.sync({ alter: true })

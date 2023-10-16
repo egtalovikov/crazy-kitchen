@@ -1,5 +1,4 @@
 import dotenv from 'dotenv'
-import cors from 'cors'
 dotenv.config()
 
 import express from 'express'
@@ -8,7 +7,7 @@ import apiRouter from './api/api-router'
 import bodyParser from 'body-parser'
 
 const app = express()
-app.use(cors())
+
 const port = Number(process.env.SERVER_PORT) || 3001
 
 async function startServer() {
@@ -16,8 +15,17 @@ async function startServer() {
   await dbConnect() // Дождаться запуска базы данных
   await new Promise(resolve => setTimeout(resolve, 5000))
 
-  app.use(bodyParser.json())
+  app.use(function (_req, res, next) {
+    res.header('Access-Control-Allow-Origin', 'http://127.0.0.1:2999')
+    res.header(
+      'Access-Control-Allow-Headers',
+      'Origin, X-Requested-With, Content-Type, Accept'
+    )
+    res.header('Access-Control-Allow-Credentials', 'true')
+    next()
+  })
 
+  app.use(bodyParser.json())
   app.use('/api/v2', apiRouter)
 
   await app.get('/', (_, res) => {

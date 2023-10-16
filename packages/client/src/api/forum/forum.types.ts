@@ -1,60 +1,73 @@
 import { Reactions } from 'server/models/reaction'
 
+//ответ после сохранения нового топика
+export type TTopicServerData = {
+  id: number
+  topicName: string
+  message: string
+  authorId: number
+  //возможно Date
+  updatedAt: string
+  createdAt: string
+}
+
+//формат в который преобразуем ответ после сохранения топика - удалить после проверки фронта
+export type TTopic = {
+  id: number
+  topicName: string
+  message: string
+  authorId: number
+  //возможно Date
+  updatedAt: string
+  createdAt: string
+}
+
 export type TTopicMessageForSave = {
   parentId: number
   text: string
 }
 
-export type TTopicComment = {
-  id: number
-  topicId: number
-  author: string
-  authorAvatar: string | null
-  createdDate: string
-  text: string
-  replies: TTopicReply[]
-}
-
-export type TTopicReply = {
-  replyId: number
-  id: number
-  author: string
-  authorAvatar: string | null
-  replyCreatedAt: string
-  message: string
-}
-
-export type TTopicListServerData = {
-  topics: TTopicServerData[]
-  LastPage: number
-}
-
-export type TTopicServerData = {
-  id: number
-  topic: string
-  message: string
-  userId: number
-  author: string
-  authorAvatar: string | null
-  createdAt: string
-}
-
-export type TCommentListServerData = {
-  Comments: TCommentServerData[]
-}
-
-export type TRepliesListServerData = {
-  Replies: TTopicReply[]
-}
-
+//ответ после сохранения комента
 export type TCommentServerData = {
   id: number
   topicId: number
   message: string
   author: string
   authorAvatar: string | null
-  commentCreatedAt: string
+  createdDate: string
   replies: TTopicReply[]
+}
+
+export type TTopicReply = {
+  id: number
+  replyId: number
+  author: string
+  authorAvatar: string | null
+  replyCreatedAt: string
+  message: string
+}
+
+//ответ получение всех топикиков
+export type TTopicListServerData = {
+  topics: TTopicByIdServerData[]
+}
+
+//поиск топика по id ответ, дополнить если что-то еще нужно будет
+export type TTopicByIdServerData = {
+  author: string
+  authorAvatar: null
+  commentsCount: number
+  createdAt: string
+  id: number
+  lastMessageDate: string
+  message: string
+  topicName: string
+  updatedAt: string
+}
+
+export type TCommentListServerData = {
+  comments: TCommentServerData[]
+  topicId: number
 }
 
 export type TReactionServerData = {
@@ -67,16 +80,6 @@ export type TReactionServerData = {
 
 export type TReactionListServerData = {
   Reactions: TReactionServerData[]
-}
-
-export type TTopic = {
-  id: number
-  title: string
-  message: string
-  userId: number
-  author: string
-  authorAvatar: string | null
-  createdDate: string
 }
 
 export type TTopicForSave = {

@@ -8,10 +8,6 @@ abstract class BaseApi {
     this.http = axios.create({
       baseURL: `${API.HOST}` + endpoint,
       withCredentials: true,
-      // headers: {
-      //   'Access-Control-Allow-Origin': "*",
-      //   origin: 'http://localhost:2999'
-      // },
     })
   }
 }

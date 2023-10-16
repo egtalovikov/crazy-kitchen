@@ -1,14 +1,36 @@
-import { topicModel } from '../models/topic'
+import { TopicModel } from '../models/topic'
+import { CommentModel } from '../models/comment'
 
 class TopicService {
   async createTopic(topicName: string, message: string, authorId: number) {
-    console.log('createTopic на сервере')
-    const topic = await topicModel.create({
+    const topic = await TopicModel.create({
       topicName,
       message,
       authorId,
-    } as topicModel)
+    } as TopicModel)
     return topic
+  }
+
+  findTopicById(id: number) {
+    return TopicModel.findByPk(id)
+  }
+
+  getTopicAll(limit: number, isOrderUpdatedASC = false) {
+    const UpdatedOrder = isOrderUpdatedASC ? 'ASC' : 'DESC'
+    return TopicModel.findAndCountAll({
+      offset: limit,
+      limit,
+      order: [['updatedAt', UpdatedOrder]],
+    })
+  }
+
+  async getCommentsByTopicId(topicId: number, limit: number) {
+    return CommentModel.findAll({
+      where: {
+        topicId: topicId,
+      },
+      limit: limit,
+    })
   }
 }
 

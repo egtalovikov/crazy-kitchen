@@ -1,7 +1,7 @@
 import { Column, DataType, Model, Table } from 'sequelize-typescript'
 
 @Table
-export class topicModel extends Model<topicModel> {
+export class TopicModel extends Model<TopicModel> {
   @Column(DataType.STRING)
   topicName: string | undefined
 

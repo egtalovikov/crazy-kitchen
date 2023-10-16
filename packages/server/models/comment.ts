@@ -1,7 +1,7 @@
 import { Column, DataType, Model, Table } from 'sequelize-typescript'
 
 @Table
-export class commentModel extends Model<commentModel> {
+export class CommentModel extends Model<CommentModel> {
   @Column(DataType.STRING)
   message: string | undefined
 
@@ -9,5 +9,5 @@ export class commentModel extends Model<commentModel> {
   topicId: number | undefined
 
   @Column(DataType.INTEGER)
-  userId: number | undefined
+  authorId: number | undefined
 }

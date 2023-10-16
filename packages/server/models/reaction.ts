@@ -13,7 +13,7 @@ export type Reaction = {
 }
 
 @Table
-export class reactionModel extends Model<Reaction> {
+export class ReactionModel extends Model<ReactionModel> {
   @Column(
     DataType.ENUM(
       Reactions.like,

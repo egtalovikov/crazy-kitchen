@@ -1,12 +1,12 @@
-import { commentModel } from '../models/comment'
+import { CommentModel } from '../models/comment'
 
 class CommentService {
-  async createComment(message: string, topicId: number, userId: number) {
-    const comment = await commentModel.create({
+  async createComment(message: string, topicId: number, authorId: number) {
+    const comment = await CommentModel.create({
       message,
       topicId,
-      userId,
-    } as commentModel)
+      authorId,
+    } as CommentModel)
     return comment
   }
 }
