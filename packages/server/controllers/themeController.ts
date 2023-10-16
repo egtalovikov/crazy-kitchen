@@ -4,6 +4,7 @@ import type { ISiteTheme } from '../models/theme/theme'
 import themeService from '../services/themeService'
 import type { IUserTheme } from '../models/theme/userTheme'
 import ApiError from '../exceptions/apiError'
+import authService from '../services/authService'
 
 class ThemesController {
   createThemes = async (themesData: Omit<ISiteTheme, 'uuid'>[]) => {
@@ -18,6 +19,20 @@ class ThemesController {
     try {
       const [{ dataValues: newTheme }] = await themeService.createTheme(theme)
       return newTheme
+    } catch (e) {
+      return console.error(e)
+    }
+  }
+
+  getThemes = async (): Promise<ISiteTheme[] | void> => {
+    try {
+      const themesList = await themeService.getThemes()
+
+      if (themesList.length === 0) {
+        return []
+      }
+
+      return themesList.map(({ dataValues }) => dataValues)
     } catch (e) {
       return console.error(e)
     }
@@ -75,6 +90,71 @@ class ThemesController {
       const response = await themeService.getUserTheme(data)
       const { dataValues } = response ?? {}
       return dataValues
+    } catch (e) {
+      return console.error(e)
+    }
+  }
+
+  getUserThemes = async () => {
+    try {
+      const themesList = await themeService.getUserThemes()
+
+      if (themesList.length === 0) {
+        return []
+      }
+
+      return themesList.map(({ dataValues }) => dataValues)
+    } catch (e) {
+      return console.error(e)
+    }
+  }
+
+  getUserThemesByUserId = async (
+    userId: number | undefined
+  ): Promise<IUserTheme[] | void> => {
+    try {
+      if (!userId) {
+        return []
+      }
+
+      const themesList = await themeService.getUserThemesByUserId(userId)
+
+      if (themesList.length === 0) {
+        return []
+      }
+
+      return themesList.map(({ dataValues }) => dataValues)
+    } catch (e) {
+      return console.error(e)
+    }
+  }
+
+  getCurrentUserTheme = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const errors = validationResult(req)
+
+      if (!errors.isEmpty()) {
+        return next(
+          ApiError.BadRequest('Ошибка переданных данных', errors.array())
+        )
+      }
+
+      const { uuid, authCookie } = req.cookies
+      const { dataValues: user } =
+        (await authService.findUserByCookies(uuid, authCookie)) ?? {}
+
+      const response = await themeService.getCurrentUserTheme(user.UserId)
+      const { dataValues } = response ?? {}
+
+      const { name, description } =
+        ((await this.getTheme({ uuid: dataValues?.themeId })) as ISiteTheme) ??
+        {}
+
+      return res.json({ name, description })
     } catch (e) {
       return console.error(e)
     }
