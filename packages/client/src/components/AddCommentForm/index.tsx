@@ -8,28 +8,15 @@ import React, {
 import Input from '@mui/material/Input'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
-import EmojiList from '../../__mocks__/EmojiList'
 import styles from './AddCommentForm.module.scss'
 import emojiButton from '../../assets/images/emoji-button.png'
+import { EmojiPicker } from '../../components/emojiPicker/emogiPicker'
+import classNames from 'classnames'
 
 export const AddCommentForm: React.FC = () => {
   const [comment, setComment] = useState<string>('')
   const emojisEl = useRef<HTMLButtonElement>(null)
   const [isOpen, setIsOpen] = useState(false)
-
-  const renderEmojies = () => {
-    return EmojiList.map((emoji, index) => {
-      return (
-        <span
-          style={{ marginRight: '5px' }}
-          className={styles.emoji}
-          key={index}
-          onClick={handlerEmojiClick}>
-          {emoji}
-        </span>
-      )
-    })
-  }
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setComment(event.target.value)
@@ -83,14 +70,16 @@ export const AddCommentForm: React.FC = () => {
         <button
           className={styles['emoji-button']}
           style={{ backgroundImage: `url(${emojiButton})` }}
-          onClick={e => handlerButtonClick(e)}
+          onClick={handlerButtonClick}
           ref={emojisEl}></button>
       </div>
       <div
-        className={`${styles.popup} ${isOpen ? styles['popup_open'] : ''} ${
+        className={classNames(
+          styles.popup,
+          isOpen && styles.popup_open,
           styles[`popup_${'bottom'}`]
-        }`}>
-        {renderEmojies()}
+        )}>
+        <EmojiPicker onReactionAdd={handlerEmojiClick} />
       </div>
 
       <Button

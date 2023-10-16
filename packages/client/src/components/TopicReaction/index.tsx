@@ -1,8 +1,6 @@
 import React, { MouseEvent, useState } from 'react'
-import EmojiList from '../../__mocks__/EmojiList'
 import Card from '@mui/joy/Card'
-
-import styles from '@components/AddCommentForm/AddCommentForm.module.scss'
+import { EmojiPicker } from '../../components/emojiPicker/emogiPicker'
 
 interface Reactions {
   [key: string]: number
@@ -17,23 +15,14 @@ export const TopicReaction: React.FC = () => {
 
     const newReactions: Reactions = { ...reactions }
 
-    newReactions[emoji!] = (newReactions[emoji!] || 0) + 1
-
-    setReactions(newReactions)
-  }
-
-  const renderEmojies = () => {
-    return EmojiList.map((emoji, index) => {
-      return (
-        <span
-          style={{ marginRight: '5px' }}
-          className={styles.emoji}
-          key={index}
-          onClick={handlerEmojiClick}>
-          {emoji}
-        </span>
-      )
-    })
+    if (emoji !== null) {
+      if (newReactions[emoji]) {
+        newReactions[emoji]++
+      } else {
+        newReactions[emoji] = 1
+      }
+      setReactions(newReactions)
+    }
   }
 
   return (
@@ -46,7 +35,7 @@ export const TopicReaction: React.FC = () => {
             </span>
           ))}
         </div>
-        <div>{renderEmojies()}</div>
+        <EmojiPicker onReactionAdd={handlerEmojiClick} />
       </Card>
     </div>
   )
