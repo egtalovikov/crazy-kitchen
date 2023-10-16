@@ -15,7 +15,7 @@ const URLS = [
   '/internal-server-error',
 ]
 
-this.addEventListener('install', async (event) => {
+this.addEventListener('install', async event => {
   try {
     const cache = await caches.open(CACHE_NAME)
     console.log('Opened cache')
@@ -26,11 +26,11 @@ this.addEventListener('install', async (event) => {
   }
 })
 
-this.addEventListener('activate', async (event) => {
+this.addEventListener('activate', async event => {
   try {
-    const cacheNames = await caches.keys();
+    const cacheNames = await caches.keys()
     await Promise.all(
-      cacheNames.map(async (cacheName) => {
+      cacheNames.map(async cacheName => {
         if (cacheName !== CACHE_NAME) {
           await caches.delete(cacheName)
         }
@@ -42,9 +42,9 @@ this.addEventListener('activate', async (event) => {
   }
 })
 
-this.addEventListener('fetch', async (event) => {
+this.addEventListener('fetch', async event => {
   try {
-    const response = await caches.match(event.request);
+    const response = await caches.match(event.request)
     if (response) {
       return response
     }
@@ -52,7 +52,11 @@ this.addEventListener('fetch', async (event) => {
     const fetchRequest = event.request.clone()
     const fetchedResponse = await fetch(fetchRequest)
 
-    if (!fetchedResponse || fetchedResponse.status !== 200 || fetchedResponse.type !== 'basic') {
+    if (
+      !fetchedResponse ||
+      fetchedResponse.status !== 200 ||
+      fetchedResponse.type !== 'basic'
+    ) {
       return fetchedResponse
     }
 
@@ -63,7 +67,6 @@ this.addEventListener('fetch', async (event) => {
     await cache.put(event.request, responseToCache)
 
     return fetchedResponse
-
   } catch (err) {
     console.log(err)
     throw err

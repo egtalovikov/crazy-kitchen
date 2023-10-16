@@ -13,10 +13,10 @@
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
   padding: 40px;
   &Text {
-    @include whiteFs24()
+    @include whiteFs24();
   }
   &_title {
-    @include whiteFs38()
+    @include whiteFs38();
   }
 }
 
