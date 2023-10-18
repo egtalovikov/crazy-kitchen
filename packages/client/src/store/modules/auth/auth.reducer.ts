@@ -1,4 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { getUserInfo } from '../../../api/auth'
+import { getOAuthId, postOAuthSignIn } from '../../../api/OAuth'
+import { OAuthSingInData } from '../../../api/OAuth/OAuth.types'
+import { AUTHORIZATION_STATUS } from '../../../utils/consts'
 import { getUserInfo } from '@api/auth'
 import { AUTHORIZATION_STATUS } from '@utils/consts'
 import { AuthState } from '../../types'
@@ -14,6 +18,7 @@ const initialState: AuthState = {
   avatar: null,
   password: null,
   authorizedStatus: AUTHORIZATION_STATUS.UNKNOWN,
+  yandexOAuthId: '',
 }
 
 export const fetchUserData = createAsyncThunk('fetchUserData', async () => {
@@ -21,6 +26,22 @@ export const fetchUserData = createAsyncThunk('fetchUserData', async () => {
 
   return response
 })
+
+export const fetchYandexId = createAsyncThunk<{ service_id: string }, string>(
+  'fetchYandexId',
+  async params => {
+    const { data } = await getOAuthId(params)
+    console.log('data', data)
+    return data
+  }
+)
+
+export const signInYandex = createAsyncThunk(
+  'signInYandex',
+  async (data: OAuthSingInData) => {
+    await postOAuthSignIn(data)
+  }
+)
 
 export const authSlice = createSlice({
   name: 'auth',
@@ -44,6 +65,19 @@ export const authSlice = createSlice({
     addCase(fetchUserData.rejected, state => {
       state.authorizedStatus = AUTHORIZATION_STATUS.NO_AUTH
     })
+    addCase(signInYandex.pending, state => {
+      state.authorizedStatus = AUTHORIZATION_STATUS.UNKNOWN
+    }),
+      addCase(signInYandex.fulfilled, state => {
+        state.authorizedStatus = AUTHORIZATION_STATUS.AUTH
+      }),
+      addCase(signInYandex.rejected, state => {
+        state.authorizedStatus = AUTHORIZATION_STATUS.NO_AUTH
+      }),
+      addCase(fetchYandexId.fulfilled, (state, { payload }) => {
+        console.log('pa', payload)
+        state.yandexOAuthId = payload?.service_id
+      })
   },
 })
 
