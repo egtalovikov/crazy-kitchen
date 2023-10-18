@@ -11,17 +11,13 @@ class ThemeService {
       ({ dataValues }) => dataValues.name
     )
 
-    const themesObjectsList = themesData.flatMap(({ name, description }) => {
-      if (!existingThemesNames.includes(name)) {
-        return {
+    const themesObjectsList = themesData
+      .filter(({ name }) => !existingThemesNames.includes(name))
+      .map(({ name, description }) => ({
           name,
           description,
           uuid: randomUUID(),
-        }
-      }
-
-      return []
-    })
+      }));
 
     await SiteTheme.bulkCreate(themesObjectsList)
   }
