@@ -40,6 +40,15 @@
   top: 12px;
 }
 
+.wrapperLeftButtons {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-self: flex-start;
+  margin-right: 24px;
+  top: 12px;
+}
+
 .wrapperBottomButton {
   margin-top: 24px;
 }
