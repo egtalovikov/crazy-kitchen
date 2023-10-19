@@ -28,7 +28,7 @@ const Profile = () => {
         const data = await getUserInfo()
         setUser(data)
       } catch (e) {
-        console.log(e)
+        console.error(e)
       }
     }
     void fetchUser()

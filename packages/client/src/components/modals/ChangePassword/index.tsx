@@ -28,7 +28,7 @@ const ChangePassword = ({ open, handleClose }: ChangePasswordProps) => {
       setNewPasswordValue('')
       handleClose()
     } catch (e) {
-      console.log(e)
+      console.error(e)
     }
   }
 

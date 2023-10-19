@@ -6,7 +6,7 @@ export const getOAuthId = async (redirect_uri: string) => {
     const response = await $host.get(
       `oauth/yandex/service-id?redirect_uri=${redirect_uri}`
     )
-    console.log('response', response)
+
     return response
   } catch (error) {
     console.error(error)

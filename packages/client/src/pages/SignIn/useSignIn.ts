@@ -60,7 +60,7 @@ export const useSignIn = () => {
     event
   ) => {
     event?.preventDefault()
-    console.log(values)
+
     try {
       await postSignIn(values)
 

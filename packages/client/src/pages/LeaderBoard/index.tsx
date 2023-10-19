@@ -15,7 +15,7 @@ const Leaderboard = () => {
         const players = await getLeaderBoard()
         setPlayers(players)
       } catch (error) {
-        console.log(error)
+        console.error(error)
       }
     }
     request()

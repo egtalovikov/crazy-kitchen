@@ -32,7 +32,7 @@ const ChangeAvatar = ({
         setUser({ ...user, avatar: data.avatar })
         handleClose()
       } catch (e) {
-        console.log(e)
+        console.error(e)
       }
     }
   }

@@ -27,7 +27,6 @@ export const useSignUp = () => {
   }
   const onSubmitHandler: SubmitHandler<LoginInputs> = async (values, event) => {
     event?.preventDefault()
-    console.log(values)
 
     try {
       await postSignUp(values)

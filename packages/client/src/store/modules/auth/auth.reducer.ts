@@ -29,7 +29,6 @@ export const fetchYandexId = createAsyncThunk<{ service_id: string }, string>(
   'fetchYandexId',
   async params => {
     const { data } = await getOAuthId(params)
-    console.log('data', data)
     return data
   }
 )
@@ -73,7 +72,6 @@ export const authSlice = createSlice({
         state.authorizedStatus = AUTHORIZATION_STATUS.NO_AUTH
       }),
       addCase(fetchYandexId.fulfilled, (state, { payload }) => {
-        console.log('pa', payload)
         state.yandexOAuthId = payload?.service_id
       })
   },
