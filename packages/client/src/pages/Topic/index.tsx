@@ -15,7 +15,7 @@ const Topic = () => {
   useEffect(() => {
     const getComments = async () => {
       const { data } = await forumApi.getComments(location.state.id)
-      setComments(data.comments)
+      setComments(data)
     }
 
     getComments()

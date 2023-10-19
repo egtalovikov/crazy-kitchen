@@ -1,6 +1,7 @@
 import React from 'react'
 import { Comment } from '../Comment'
 import Box from '@mui/material/Box'
+import { TCommentFullServerData } from '../../api/forum/forum.types'
 
 const commentList = ({ comments }: { comments: [] }) => {
   return (
@@ -15,26 +16,21 @@ const commentList = ({ comments }: { comments: [] }) => {
         padding: '40px 15px',
         marginTop: '40px',
       }}>
-      {comments.map(
-        (comment: {
-          message: string
-          author: string
-          createdDate: string | number | Date
-          authorAvatar: string
-        }) => (
+      {!!comments &&
+        comments.map((comment: TCommentFullServerData) => (
           <Comment
+            key={comment?.id}
             commentText={comment.message}
-            commentAuthor={comment.author}
-            commentDate={new Date(comment.createdDate).toLocaleString()}
+            commentAuthor={`${comment?.User?.first_name} ${comment?.User?.second_name}`}
+            commentDate={new Date(comment?.createdAt).toLocaleString()}
             commentAvatar={
-              comment.authorAvatar
+              comment?.User?.avatar
                 ? 'https://ya-praktikum.tech/api/v2/resources' +
-                  comment.authorAvatar
+                  comment.User.avatar
                 : ''
             }
           />
-        )
-      )}
+        ))}
     </Box>
   )
 }

@@ -49,5 +49,5 @@ export interface CardProps {
   title: string
   mainText: string
   createdAt: string
-  id: string
+  id: number
 }

@@ -8,13 +8,7 @@ import { TOPIC_ROUTE_CREATE } from '../../utils/consts'
 import { useGoToRoute } from '../../utils/useGoToRoute'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import forumApi from '../../api/forum'
-
-type Topic = {
-  message: string
-  topic: string
-  createdAt: string
-  id: string
-}
+import { TTopicByIdServerData } from '../../api/forum/forum.types'
 
 const Forum = () => {
   const { goRoute } = useGoToRoute()
@@ -27,7 +21,7 @@ const Forum = () => {
     const getTopics = async () => {
       try {
         const { data } = await forumApi.getTopics()
-        setTopics(data.topics)
+        setTopics(data)
       } catch (e) {
         console.log(e)
       }
@@ -50,16 +44,18 @@ const Forum = () => {
           placeholder={'Давай поищем тебе топик'}
           classes={{ root: styles.search }}
         />
-        {topics.map((topic: Topic) => (
-          <TopicCardPreview
-            title={topic.topic}
-            mainText={topic.message}
-            createdAt={topic.createdAt}
-            id={topic.id}
-          />
-        ))}
+        {!!topics &&
+          topics.map((topic: TTopicByIdServerData) => (
+            <TopicCardPreview
+              key={topic.id}
+              title={topic.topicName}
+              mainText={topic.message}
+              createdAt={topic.createdAt}
+              id={topic.id}
+            />
+          ))}
         <ButtonBlue onClickCallback={() => goRoute(TOPIC_ROUTE_CREATE)}>
-          Cоздать свой классный топик
+          Создать свой классный топик
         </ButtonBlue>
       </Container>
     </div>

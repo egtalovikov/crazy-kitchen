@@ -6,32 +6,27 @@ class ForumApi extends BaseApi {
   constructor() {
     super(API.ENDPOINTS.FORUM.ENDPOINT)
   }
-
   async getTopics() {
     return $ourHost.get('/topics/100')
   }
 
   async getComments(id: string) {
-    return $ourHost.get(`/comments/${id}/100`)
+    return $ourHost.get(`/comments/${id}`)
   }
 
-  async createTopic(authorId: number | null, title: string, mainText: string) {
+  async createTopic(UserId: number | null, topicName: string, message: string) {
     return $ourHost.post('/topics', {
-      authorId,
-      title,
-      mainText,
+      UserId,
+      topicName,
+      message,
     })
   }
 
-  async createComment(
-    topicId: number,
-    message: string,
-    authorId: number | null
-  ) {
+  async createComment(TopicId: number, message: string, UserId: number | null) {
     return $ourHost.post('/comments', {
-      topicId,
+      TopicId,
       message,
-      authorId,
+      UserId,
     })
   }
 }
