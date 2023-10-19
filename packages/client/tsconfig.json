@@ -15,7 +15,6 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "no-unused-vars": "off",
     "paths": {
       "@/*": ["./src/*"],
       "@assets/*": ["./src/assets/*"],
