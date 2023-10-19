@@ -19,6 +19,7 @@ const SignIn = () => {
     reset,
     register,
     onSubmitHandler,
+    yandexOAuthUrl,
   } = useSignIn()
 
   useEffect(() => {
@@ -86,6 +87,11 @@ const SignIn = () => {
               sx={{ mt: 3, mb: 2 }}>
               Войти
             </Button>
+            <Box>
+              <Link variant="body2" href={yandexOAuthUrl}>
+                {'Войти через Яндекс'}
+              </Link>
+            </Box>
             <Link component="button" variant="body2" onClick={goToSignIn}>
               {'Нет аккаунта? Зарегистрируйтесь!'}
             </Link>
