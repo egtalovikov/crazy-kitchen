@@ -12,7 +12,6 @@ const useAuthorizationStatus = (): AuthorizationStatusProps => {
   const authorizationStatus = useSelector(authorizedStatusSelector)
 
   const isAuthorized = authorizationStatus === 'AUTH'
-  console.log('isAuthorized', isAuthorized)
   const isNotAuthorized = authorizationStatus === 'NO_AUTH'
   const isUnknown = authorizationStatus === 'UNKNOWN'
 
