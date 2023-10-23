@@ -1,5 +1,6 @@
 import { $host } from '../index'
 import { SignInData, SignUpData } from './auth.types'
+import userApi from './userApi'
 
 export const postSignUp = async (data: SignUpData) => {
   try {
@@ -25,8 +26,8 @@ export const postSignIn = async (data: SignInData) => {
 
 export const getUserInfo = async () => {
   try {
-    const { data } = await $host.get('auth/user')
-
+    const res = await $host.get('auth/user')
+    const { data } = res
     return data
   } catch (error) {
     console.error(error)
