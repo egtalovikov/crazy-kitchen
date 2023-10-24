@@ -12,3 +12,8 @@ export const userIdSelector = createSelector(
   [authSelector],
   authSelector => authSelector?.id
 )
+
+export const yandexOAuthIdSelector = createSelector(
+  [authSelector],
+  authSelector => authSelector?.yandexOAuthId
+)
