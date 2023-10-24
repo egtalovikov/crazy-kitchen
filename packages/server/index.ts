@@ -1,18 +1,81 @@
 import dotenv from 'dotenv'
+import cors from 'cors'
+import fs from 'fs'
+import path from 'path'
+
+import { createApp } from 'h3'
+import { createServer as createViteServer, ViteDevServer } from 'vite'
+import { listen } from 'listhen'
+import sirv from 'sirv'
 dotenv.config()
 
 import express from 'express'
 import { dbConnect } from './db'
 import apiRouter from './api/api-router'
 import bodyParser from 'body-parser'
-//import {yandexRouter} from "./utils/constants";
 
 const app = express()
-app.use(bodyParser.json())
 
 const port = Number(process.env.SERVER_PORT) || 3001
 
-async function startServer() {
+const DEV_ENV = 'development'
+
+const bootstrap = async () => {
+  const app = createApp()
+  let vite: ViteDevServer
+
+  if (process.env.NODE_ENV === DEV_ENV) {
+    vite = await createViteServer({
+      server: { middlewareMode: true },
+      appType: 'custom',
+    })
+
+    // @ts-ignore
+    app.use(vite.middlewares)
+  } else {
+    // @ts-ignore
+    app.use(
+      // @ts-ignore
+      sirv('dist/client', {
+        gzip: true,
+      })
+    )
+  }
+
+  // @ts-ignore
+  app.use('*', async (req, res, next) => {
+    const url = req.originalUrl
+    let template, render
+
+    try {
+      if (process.env.NODE_ENV === DEV_ENV) {
+        template = fs.readFileSync(path.resolve('./index.html'), 'utf-8')
+
+        template = await vite.transformIndexHtml(url, template)
+
+        render = (await vite.ssrLoadModule('/src/entry-server.tsx')).render
+      } else {
+        template = fs.readFileSync(
+          path.resolve('dist/client/index.html'),
+          'utf-8'
+        )
+        // @ts-ignore
+        render = (await import('./dist/server/entry-server.js')).render
+      }
+
+      const appHtml = await render({ path: url })
+
+      const html = template.replace(`<!--ssr-outlet-->`, appHtml)
+
+      res.statusCode = 200
+      res.setHeader('Content-Type', 'text/html').end(html)
+    } catch (error) {
+      // @ts-ignore
+      vite.ssrFixStacktrace(error)
+      next(error)
+    }
+  })
+  
   console.log('startServer')
   await dbConnect() // Дождаться запуска базы данных
   await new Promise(resolve => setTimeout(resolve, 5000))
@@ -26,60 +89,16 @@ async function startServer() {
     res.header('Access-Control-Allow-Credentials', 'true')
     next()
   })
-  //app.use('/api/v2', yandexRouter)
-  // app.use(
-  //   '/api/v2',
-  //   createProxyMiddleware({
-  //     changeOrigin: true,
-  //     cookieDomainRewrite: {
-  //       '*': '',
-  //     },
-  //     target: 'https://ya-praktikum.tech',
-  //     selfHandleResponse: true,
-  //     headers: {
-  //       Connection: 'keep-alive',
-  //     },
-  //     onProxyRes: responseInterceptor(async (responseBuffer, proxyRes, req) => {
-  //       console.log('1111')
-  //       if (
-  //         /\/api\/v2\/o?auth((\/sign(in|up))|(\/yandex))/.test(
-  //           (req as express.Request).path
-  //         ) &&
-  //         proxyRes.headers['set-cookie']
-  //       ) {
-  //         console.log('если запрос на авторизацию')
-  //         authService.addCookie(
-  //           decodeURIComponent(proxyRes.headers['set-cookie']?.toString())
-  //         )
-  //       } else if (
-  //         (req as express.Request).path === '/api/v2/auth/user' &&
-  //         req.headers.cookie
-  //       ) {
-  //         console.log('если сделали запрос юзера', responseBuffer)
-  //         if (responseBuffer.toString()) {
-  //           await userService.createUserUpdCookie(
-  //             JSON.parse(responseBuffer.toString()),
-  //             decodeURIComponent(req.headers.cookie)
-  //           )
-  //         }
-  //       }
-  //       return responseBuffer
-  //     }),
-  //   })
-  // )
-
+  
   app.use(bodyParser.json())
-
-  // @ts-ignore
-  //app.use('/api/v2', cookieParser(), authMiddleware, apiRouter)
   app.use('/api/v2', apiRouter)
 
-  await app.get('/', (_, res) => {
-    res.json('👋 howdy from the server :)')
-  })
-
-  await app.listen(port, () => {
-    console.log(`➜ 🎸 server is listening on port!: ${port}`)
-  })
+  return { app }
 }
-void startServer()
+
+bootstrap()
+  .then(async ({ app }) => {
+    // @ts-ignore
+    await listen(app, { port })
+  })
+  .catch(console.error)
