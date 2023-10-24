@@ -4,7 +4,7 @@ import { Provider } from 'react-redux'
 import configureStore from 'redux-mock-store'
 import { AUTHORIZATION_STATUS } from './utils/consts'
 
-const appContent = 'Войти'
+const appContent = 'Вперед'
 
 //@ts-ignore
 global.fetch = jest.fn(() =>
@@ -14,7 +14,7 @@ global.fetch = jest.fn(() =>
 test('Example test', async () => {
   const initialState = {
     authReducer: {
-      authorizedStatus: AUTHORIZATION_STATUS.NO_AUTH,
+      authorizedStatus: AUTHORIZATION_STATUS.AUTH,
     },
   }
 
