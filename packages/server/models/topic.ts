@@ -1,13 +1,17 @@
-import { Column, DataType, Model, Table } from 'sequelize-typescript'
+import { DataType, Model } from 'sequelize-typescript'
+import type { ModelAttributes } from 'sequelize/types'
 
-@Table
-export class TopicModel extends Model<TopicModel> {
-  @Column(DataType.STRING)
-  topicName: string | undefined
+export type TopicCreationAttributes = {
+  topicName: string
+  message: string
+}
 
-  @Column(DataType.STRING)
-  message: string | undefined
-
-  @Column(DataType.INTEGER)
-  authorId: number | undefined
+export const TopicModel: ModelAttributes<Model, TopicCreationAttributes> = {
+  topicName: {
+    type: DataType.STRING,
+    allowNull: false,
+  },
+  message: {
+    type: DataType.STRING(2000),
+  },
 }

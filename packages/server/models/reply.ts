@@ -1,16 +1,12 @@
-import { Column, DataType, Model, Table } from 'sequelize-typescript'
+import { DataType, Model } from 'sequelize-typescript'
+import type { ModelAttributes } from 'sequelize/types'
 
-@Table
-export class ReplyModel extends Model<ReplyModel> {
-  @Column(DataType.STRING)
-  message: string | undefined
+export type Reply = {
+  message: string
+}
 
-  @Column(DataType.INTEGER)
-  topicId: number | undefined
-
-  @Column(DataType.INTEGER)
-  authorId: number | undefined
-
-  @Column(DataType.INTEGER)
-  replyId: number | undefined
+export const ReplyModel: ModelAttributes<Model, Reply> = {
+  message: {
+    type: DataType.STRING(2000),
+  },
 }

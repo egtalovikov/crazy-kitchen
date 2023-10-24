@@ -47,27 +47,46 @@ export type TTopicReply = {
   message: string
 }
 
-//ответ получение всех топикиков
-export type TTopicListServerData = {
-  topics: TTopicByIdServerData[]
-}
-
 //поиск топика по id ответ, дополнить если что-то еще нужно будет
 export type TTopicByIdServerData = {
-  author: string
-  authorAvatar: null
-  commentsCount: number
-  createdAt: string
   id: number
-  lastMessageDate: string
-  message: string
   topicName: string
+  message: string
+  createdAt: string
   updatedAt: string
+  UserId: number
+  User: {
+    first_name: string
+    second_name: string
+    display_name: string
+    avatar: string
+  }
 }
 
-export type TCommentListServerData = {
-  comments: TCommentServerData[]
-  topicId: number
+export type TCommentFullServerData = {
+  id: number
+  message: string
+  createdAt: string
+  updatedAt: string
+  UserId: number
+  TopicId: number
+  User: {
+    first_name: string
+    second_name: string
+    display_name: string
+    avatar: string
+  }
+  Replies: [
+    {
+      message: string
+      User: {
+        first_name: string
+        second_name: string
+        display_name: string
+        avatar: string
+      }
+    }
+  ]
 }
 
 export type TReactionServerData = {

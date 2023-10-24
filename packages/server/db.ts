@@ -1,12 +1,11 @@
 import { Sequelize, SequelizeOptions } from 'sequelize-typescript'
 import { CommentModel } from './models/comment'
-import { ReactionModel } from './models/reaction'
 import { ReplyModel } from './models/reply'
 import { TopicModel } from './models/topic'
-import { userTheme } from './models/theme/userTheme'
-import { siteTheme } from './models/theme/theme'
 import dotenv from 'dotenv'
 import { Op } from 'sequelize'
+import { UserModel } from './models/user'
+import { AuthModel } from './models/auth'
 import themeService from './services/themeService'
 const { POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB, POSTGRES_PORT } =
   process.env
@@ -27,15 +26,26 @@ export const sequelize = new Sequelize(sequelizeOptions)
 // Инициализируем модели
 export const UserTheme = sequelize.define('UserTheme', userTheme, {})
 export const SiteTheme = sequelize.define('SiteTheme', siteTheme, {})
+export const Auth = sequelize.define('Auth', AuthModel, {})
+export const User = sequelize.define('User', UserModel, {})
+export const Topic = sequelize.define('Topic', TopicModel, {})
+export const Comment = sequelize.define('Comment', CommentModel, {})
+export const Reply = sequelize.define('Reply', ReplyModel, {})
 
 //Устанавливаем связи между таблицами
-// TopicModel.hasMany(commentModel, { foreignKey: 'topicId' });
-// commentModel.belongsTo(topicModel);
-// commentModel.hasMany(replyModel, { foreignKey: { allowNull: false } });
-// commentModel.hasMany(reactionModel, { foreignKey: { allowNull: false } });
-// replyModel.belongsTo(commentModel);
-// reactionModel.belongsTo(commentModel);
+User.hasMany(Topic, { foreignKey: 'UserId' })
+User.hasMany(Comment, { foreignKey: 'UserId' })
+User.hasMany(Reply, { foreignKey: 'UserId' })
+Reply.belongsTo(User, { foreignKey: 'UserId' })
 
+Topic.hasMany(Comment, { foreignKey: 'TopicId' })
+Topic.hasMany(Reply, { foreignKey: 'TopicId' })
+
+Comment.hasMany(Reply, { foreignKey: 'CommentId' })
+Reply.belongsTo(Comment, { foreignKey: 'CommentId' })
+
+Topic.belongsTo(User)
+Comment.belongsTo(User)
 UserTheme.belongsTo(SiteTheme, {
   foreignKey: { name: 'themeId', allowNull: false },
 })
@@ -43,15 +53,8 @@ UserTheme.belongsTo(SiteTheme, {
 export async function dbConnect() {
   console.log('dbConnect')
   try {
-    await sequelize.addModels([
-      TopicModel,
-      ReactionModel,
-      ReplyModel,
-      CommentModel,
-    ])
     // Синхронизация базы данных
     await sequelize.sync({ alter: true })
-
     await themeService.createManyThemes([
       { name: 'light', description: 'Light theme for site' },
       { name: 'dark', description: 'Dark theme for site' },

@@ -12,6 +12,10 @@ const API = {
       TOPICS: '/topics',
       TOPIC: '/topic',
     },
+    USER: {
+      ENDPOINT: '',
+      SAVE: '/user',
+    },
     THEME: {
       ENDPOINT: '/theme',
     },

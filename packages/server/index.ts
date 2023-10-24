@@ -5,8 +5,10 @@ import express from 'express'
 import { dbConnect } from './db'
 import apiRouter from './api/api-router'
 import bodyParser from 'body-parser'
+//import {yandexRouter} from "./utils/constants";
 
 const app = express()
+app.use(bodyParser.json())
 
 const port = Number(process.env.SERVER_PORT) || 3001
 
@@ -24,8 +26,52 @@ async function startServer() {
     res.header('Access-Control-Allow-Credentials', 'true')
     next()
   })
+  //app.use('/api/v2', yandexRouter)
+  // app.use(
+  //   '/api/v2',
+  //   createProxyMiddleware({
+  //     changeOrigin: true,
+  //     cookieDomainRewrite: {
+  //       '*': '',
+  //     },
+  //     target: 'https://ya-praktikum.tech',
+  //     selfHandleResponse: true,
+  //     headers: {
+  //       Connection: 'keep-alive',
+  //     },
+  //     onProxyRes: responseInterceptor(async (responseBuffer, proxyRes, req) => {
+  //       console.log('1111')
+  //       if (
+  //         /\/api\/v2\/o?auth((\/sign(in|up))|(\/yandex))/.test(
+  //           (req as express.Request).path
+  //         ) &&
+  //         proxyRes.headers['set-cookie']
+  //       ) {
+  //         console.log('если запрос на авторизацию')
+  //         authService.addCookie(
+  //           decodeURIComponent(proxyRes.headers['set-cookie']?.toString())
+  //         )
+  //       } else if (
+  //         (req as express.Request).path === '/api/v2/auth/user' &&
+  //         req.headers.cookie
+  //       ) {
+  //         console.log('если сделали запрос юзера', responseBuffer)
+  //         if (responseBuffer.toString()) {
+  //           await userService.createUserUpdCookie(
+  //             JSON.parse(responseBuffer.toString()),
+  //             decodeURIComponent(req.headers.cookie)
+  //           )
+  //         }
+  //       }
+  //       return responseBuffer
+  //     }),
+  //   })
+  // )
 
   app.use(bodyParser.json())
+
+  // @ts-ignore
+  //app.use('/api/v2', cookieParser(), authMiddleware, apiRouter)
   app.use('/api/v2', apiRouter)
 
   await app.get('/', (_, res) => {

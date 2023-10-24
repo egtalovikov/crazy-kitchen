@@ -1,13 +1,12 @@
-import { Column, DataType, Model, Table } from 'sequelize-typescript'
+import { DataType, Model } from 'sequelize-typescript'
+import type { ModelAttributes } from 'sequelize/types'
 
-@Table
-export class CommentModel extends Model<CommentModel> {
-  @Column(DataType.STRING)
-  message: string | undefined
+export type Comment = {
+  message: string
+}
 
-  @Column(DataType.INTEGER)
-  topicId: number | undefined
-
-  @Column(DataType.INTEGER)
-  authorId: number | undefined
+export const CommentModel: ModelAttributes<Model, Comment> = {
+  message: {
+    type: DataType.STRING(2000),
+  },
 }

@@ -8,27 +8,18 @@ Example request:
 fetch('http://localhost:3000/api/topics',{
 	method: "POST",
 	body: JSON.stringify({
-        topicName: "Тест название топика 1",
+        topicName: "Тест название топика 1", 
         message: "Тест сообщение топика 1",
-        authorId: 1212123
+        UserId: 1212123
 	}),
 	 headers: {
       "Content-Type": "application/json"
     }
 })
 ```
-
 Example response:
-
 ```
-{
-    "id": 1,
-    "topicName": "Тест название топика 1",
-    "message": "Тест сообщение топика 1",
-    "authorId": 1212123,
-    "updatedAt": "2023-07-22T16:02:31.210Z",
-    "createdAt": "2023-07-22T16:02:31.210Z"
-}
+ok
 ```
 
 <br>
@@ -42,60 +33,65 @@ http://localhost:3000/api/topic/1
 ```
 
 Example response:
-
 ```
 {
-    "author": "User1",
-    "authorAvatar": null,
-    "commentsCount": "2",
-    "createdAt": "2023-07-24T09:34:17.177Z",
-    "id": 1,
-    "lastMessageDate": "2023-07-24T13:40:12.914Z",
-    "message": "Тест сообщение топика 1",
-    "topic": "Тест название топика 1",
-    "updatedAt": "2023-07-24T09:34:17.177Z"
+    "id": 42,
+    "topicName": "Первый топик",
+    "message": "Описание топика",
+    "createdAt": "2023-10-18T14:42:13.356Z",
+    "updatedAt": "2023-10-18T14:42:13.356Z",
+    "UserId": 1347151,
+    "User": {
+        "first_name": "Евгения",
+        "second_name": "П",
+        "display_name": null,
+        "avatar": null
+    }
 }
 
 ```
+
 
 ### GET /api/topics/:limit (Get Topic list with page and limits)
 
 Result ordered by lastMessage DESC
 Example request:
-
 ```
 http://localhost:3000/api/topics/2
 ```
-
 Example response:
 
 ```
-{
-    "topics": [
-        {
-            "author": "1111",
-            "authorAvatar": null,
-            "commentsCount": "2",
-            "createdAt": "2023-07-24T09:34:17.177Z",
-            "id": 1,
-            "lastMessageDate": "2023-07-24T13:40:12.914Z",
-            "message": "Тест сообщение топика 1",
-            "topic": "Тест название топика 1",
-            "updatedAt": "2023-07-24T09:34:17.177Z"
-        },
-        {
-            "author": "2222",
-            "authorAvatar": null,
-            "commentsCount": "0",
-            "createdAt": "2023-07-24T09:52:38.160Z",
-            "id": 2,
-            "lastMessageDate": "2023-07-24T09:52:38.160Z",
-            "message": "Тест сообщение топика 2",
-            "topic": "Тест название топика 2",
-            "updatedAt": "2023-07-24T09:52:38.160Z"
+[
+    {
+        "id": 43,
+        "topicName": "Второй топик",
+        "message": "Описание второго топика",
+        "createdAt": "2023-10-18T15:03:39.704Z",
+        "updatedAt": "2023-10-18T15:03:39.704Z",
+        "UserId": 1347151,
+        "User": {
+            "first_name": "Евгения",
+            "second_name": "П",
+            "display_name": null,
+            "avatar": null
         }
-    ]
-}
+    },
+    {
+        "id": 42,
+        "topicName": "Первый топик",
+        "message": "Описание топика",
+        "createdAt": "2023-10-18T14:42:13.356Z",
+        "updatedAt": "2023-10-18T14:42:13.356Z",
+        "UserId": 1347151,
+        "User": {
+            "first_name": "Евгения",
+            "second_name": "П",
+            "display_name": null,
+            "avatar": null
+        }
+    }
+]
 ```
 
 ## COMMENTS
@@ -103,34 +99,22 @@ Example response:
 ### POST /api/comments (Create Comment)
 
 Example request:
-
 ```
 fetch('http://localhost:3000/api/comments',{
 	method: "POST",
 	body: JSON.stringify({
-      topicId: 2,
-      message: "Тест комментарий к топику 2"
-      authorId: "1212123"
+      UserId: 1347151,
+      TopicId: 43,
+      message: "Комент ко второму топику",
 	}),
 	 headers: {
       "Content-Type": "application/json"
     }
 })
 ```
-
 Example response:
-
 ```
-{
-    "id": 4,
-    "message": "Тест комментарий к топику 2",
-    "topicId": 2,
-    "author": "some user",
-    "createdAt": "2023-07-20T10:25:03.243Z",
-    "author": "someAuthor",
-    "authorAvatar": null,
-    "replies": null,
-}
+ok
 ```
 
 <br>
@@ -144,64 +128,52 @@ http://localhost:3000/api/comments/3/2
 ```
 
 Example response:
-
 ```
-{
-    "comments": [
-        {
-            "author": "user1",
-            "authorAvatar": null,
-            "createdDate": "2023-07-24T13:40:12.914Z",
-            "id": 1,
-            "topicId": 1,
-            "message": "Тест комментарий 2 к топику 1",
-            "replies": [
-                {
-                    "author": "user1",
-                    "authorAvatar": null,
-                    "id": 1,
-                    "message": "Тест ответ 2 к комментарию 1",
-                    "replyCreatedAt": "2023-07-24T14:57:28.565Z",
-                    "replyId": 1
-                },
-                {
-                    "author": "user2",
-                    "authorAvatar": null,
-                    "id": 2,
-                    "message": "Тест ответ 1 к комментарию 1",
-                    "replyCreatedAt": "2023-07-24T14:57:21.420Z",
-                    "replyId": 1
-                }
-            ],
+[
+    {
+        "id": 4,
+        "message": "Комментарии к первому топику",
+        "createdAt": "2023-10-18T17:24:59.308Z",
+        "updatedAt": "2023-10-18T17:24:59.308Z",
+        "UserId": 1347151,
+        "TopicId": 42,
+        "User": {
+            "first_name": "Евгения",
+            "second_name": "П",
+            "display_name": null,
+            "avatar": null
         },
-        {
-            "author": "user3",
-            "authorAvatar": null,
-            "createdDate": "2023-07-24T13:40:08.703Z",
-            "id": 2,
-            "topicId": 1,
-            "message": "Тест комментарий к топику 1",
-            "replies": [
-                {
-                    "author": "2222",
-                    "authorAvatar": null,
-                    "id": 1,
-                    "message": "Тест ответ 2 к комментарию 1",
-                    "replyCreatedAt": "2023-07-24T14:57:28.565Z",
-                    "replyId": 2
-                },
-                {
-                    "author": "user4",
-                    "authorAvatar": null,
-                    "id": 2,
-                    "message": "Тест ответ 1 к комментарию 1",
-                    "replyCreatedAt": "2023-07-24T14:57:21.420Z",
-                    "replyId": 2
+        "Replies": [
+            {
+                "message": "Ответ к первому комментарию к первому топику",
+                "User": {
+                    "first_name": "Евгения",
+                    "second_name": "П",
+                    "display_name": null,
+                    "avatar": null
                 }
-            ],
-        }
-    ],
-}
+            },
+            {
+                "message": "Еще один ответ к первому комментарию к первому топику",
+                "User": {
+                    "first_name": "Евгения",
+                    "second_name": "П",
+                    "display_name": null,
+                    "avatar": null
+                }
+            },
+            {
+                "message": "да да",
+                "User": {
+                    "first_name": "Oleg",
+                    "second_name": "Коровкин",
+                    "display_name": "Zver",
+                    "avatar": null
+                }
+            }
+        ]
+    }
+]
 ```
 
 <br>
@@ -216,9 +188,10 @@ Example request:
 fetch('http://localhost:3000/api/replies', {
 	method: "POST",
 		body: JSON.stringify({
-        commentId: 1,
-        message: "Тест ответ 2 к комментарию 1",
-        userId: '323123'
+          UserId: 1347151,
+          TopicId: 43,
+          message: "Ответ ко второму коменту ко второму топику",
+          CommentId: 2
 	    }),
 	 headers: {
       "Content-Type": "application/json"
@@ -229,14 +202,7 @@ fetch('http://localhost:3000/api/replies', {
 Example response:
 
 ```
-{
-    "id": 1,
-    "message": "Тест ответ 1 к комментарию 1",
-    "CommentId": 1,
-    "UserId": 897,
-    "updatedAt": "2023-07-22T17:14:35.139Z",
-    "createdAt": "2023-07-22T17:14:35.139Z"
-}
+Ok
 ```
 
 ## REACTIONS
@@ -249,7 +215,7 @@ Example request:
 fetch('http://localhost:3000/api/reactions',{
 	method: "POST",
 	body: JSON.stringify({
-        reaction: "fire",
+        reaction: "fire", 
         commentId: 1,
         userId: 5454
 	}),
@@ -274,7 +240,6 @@ Example response:
 ### GET /api/reactions/:commentId (Get all reactions)
 
 Example response:
-
 ```
 {
     Reactions: [    {
@@ -293,5 +258,5 @@ Example response:
         }]
 }
 ```
-
 <br>
+

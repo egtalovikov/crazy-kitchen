@@ -1,19 +1,18 @@
-import { ReplyModel } from '../models/reply'
+import { Reply } from '../db'
 
 class ReplyService {
   async createReply(
     message: string,
-    topicId: number,
-    authorId: number,
-    replyId: number
+    TopicId: number,
+    UserId: number,
+    CommentId: number
   ) {
-    const reply = await ReplyModel.create({
+    await Reply.create({
       message,
-      topicId,
-      authorId,
-      replyId,
-    } as ReplyModel)
-    return reply
+      TopicId,
+      UserId,
+      CommentId,
+    })
   }
 }
 

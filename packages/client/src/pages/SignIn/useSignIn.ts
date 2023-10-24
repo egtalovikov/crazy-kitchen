@@ -1,15 +1,19 @@
-import { useNavigate } from 'react-router-dom'
-import { useAppDispatch } from '../../hooks/useAppDispatch'
-import { MAIN_ROUTE, REGISTRATION_ROUTE } from '../../utils/consts'
-import { postSignIn } from '../../api/auth'
-import { fetchUserData } from '../../store/modules/auth/auth.reducer'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { useAppDispatch } from '@hooks/useAppDispatch'
+import { MAIN_ROUTE, REGISTRATION_ROUTE } from '@utils/consts'
+import { postSignIn } from '@api/auth'
+import {
+  fetchUserData,
+  fetchYandexId,
+  signInYandex,
+} from '@store/modules/auth/auth.reducer'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  registerSchema,
-  RegisterInputs,
-  LoginInputs,
-} from '../../utils/validationsSchema'
+import { useEffect } from 'react'
+import useAuthorizationStatus from '../../hooks/useAuthorizationStatus'
+import { yandexOAuthIdSelector } from '../../store/modules/auth/auth.selector'
+import { registerSchema, RegisterInputs } from '@utils/validationsSchema'
 
 export const useSignIn = () => {
   const {
@@ -22,8 +26,30 @@ export const useSignIn = () => {
     resolver: zodResolver(registerSchema),
   })
 
+  const { isAuthorized } = useAuthorizationStatus()
+
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  const yandexOAuthId = useSelector(yandexOAuthIdSelector)
+
+  const yandexOAuthUrl = `https://oauth.yandex.ru/authorize?response_type=code&client_id=${yandexOAuthId}&redirect_uri=${window.location.href}`
+  useEffect(() => {
+    const codeYandexOAuth = searchParams.get('code')
+    if (codeYandexOAuth && !isAuthorized) {
+      const data = {
+        code: `${codeYandexOAuth}`,
+        redirect_uri: `${window.location.href.split('?')[0]}`,
+      }
+      dispatch(signInYandex(data))
+      dispatch(fetchUserData())
+      navigate(MAIN_ROUTE)
+      setSearchParams('')
+    } else if (!isAuthorized) {
+      dispatch(fetchYandexId(`${window.location.href}`))
+    }
+  }, [])
 
   const goToSignIn = () => {
     navigate(REGISTRATION_ROUTE)
@@ -53,5 +79,8 @@ export const useSignIn = () => {
     reset,
     onSubmitHandler,
     handleSubmit,
+    searchParams,
+    setSearchParams,
+    yandexOAuthUrl,
   }
 }
