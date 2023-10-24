@@ -28,7 +28,6 @@ export const getUserInfo = async () => {
   try {
     const res = await $host.get('auth/user')
     const { data } = res
-    //временное сохранение
     await userApi.saveUser(data)
     return data
   } catch (error) {

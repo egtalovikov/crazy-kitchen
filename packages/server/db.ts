@@ -23,7 +23,6 @@ const sequelizeOptions: SequelizeOptions = {
 // Создаем инстанс Sequelize
 export const sequelize = new Sequelize(sequelizeOptions)
 
-// Инициализируем модели
 export const UserTheme = sequelize.define('UserTheme', userTheme, {})
 export const SiteTheme = sequelize.define('SiteTheme', siteTheme, {})
 export const Auth = sequelize.define('Auth', AuthModel, {})

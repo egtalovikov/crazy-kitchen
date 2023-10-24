@@ -15,6 +15,7 @@ import apiRouter from './api/api-router'
 import bodyParser from 'body-parser'
 
 const app = express()
+app.use(bodyParser.json())
 
 const port = Number(process.env.SERVER_PORT) || 3001
 

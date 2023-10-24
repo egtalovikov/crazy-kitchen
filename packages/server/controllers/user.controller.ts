@@ -5,7 +5,6 @@ import { ApiError } from '../api.error'
 import UserService from '../services/user.service'
 
 class UserController {
-  //временное сохранение юзера
   async createUser(req: Request, res: Response, next: NextFunction) {
     try {
       const errors = validationResult(req)

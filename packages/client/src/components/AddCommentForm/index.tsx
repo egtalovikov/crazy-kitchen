@@ -2,6 +2,8 @@ import React, {
   ChangeEvent,
   MouseEvent,
   useEffect,
+  Dispatch, 
+  SetStateAction,
   useRef,
   useState,
 } from 'react'
@@ -9,12 +11,26 @@ import Input from '@mui/material/Input'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import styles from './AddCommentForm.module.scss'
+import forumApi from '../../api/forum'
 import emojiButton from '../../assets/images/emoji-button.png'
 import { EmojiPicker } from '../../components/emojiPicker/emogiPicker'
 import classNames from 'classnames'
+import { useSelector } from 'react-redux'
+import { CoreRootState } from '../../store/types'
 
-export const AddCommentForm: React.FC = () => {
+export const AddCommentForm = ({
+  topicId,
+  comments,
+  setComments,
+}: {
+  topicId: number
+  comments: []
+  setComments: Dispatch<SetStateAction<any>>
+}) => {
   const [comment, setComment] = useState<string>('')
+  const { id } = useSelector(
+    (rootState: CoreRootState) => rootState.authReducer
+  )
   const emojisEl = useRef<HTMLButtonElement>(null)
   const [isOpen, setIsOpen] = useState(false)
 
@@ -22,6 +38,15 @@ export const AddCommentForm: React.FC = () => {
     setComment(event.target.value)
   }
 
+  const handleSubmit = async () => {
+    try {
+      const { data } = await forumApi.createComment(topicId, comment, id)
+      setComment('')
+      setComments([...comments, { ...data, createdDate: data.createdAt }])
+    } catch (e) {
+      console.log(e)
+    }
+    
   const handlerButtonClick = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     setIsOpen(!isOpen)
