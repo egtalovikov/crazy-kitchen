@@ -6,3 +6,8 @@ export type TThemeData = {
 export type TThemeListData = {
   Themes: TThemeData[]
 }
+
+export type TChangeThemeRequestData = {
+  themeName: string
+  userId: number | null
+}

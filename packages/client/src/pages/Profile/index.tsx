@@ -13,6 +13,7 @@ import { getUserInfo } from '../../api/user'
 import ChangePassword from '../../components/modals/ChangePassword'
 import ChangeAvatar from '../../components/modals/ChangeAvatar'
 import { User } from '../../types/user'
+import NightModeToggle from '../../components/NightModeToggle'
 
 const Profile = () => {
   const [changePasswordVisible, setChangePasswordVisible] = useState(false)
@@ -68,6 +69,7 @@ const Profile = () => {
           alignItems={'center'}
           direction={'column'}
           p={5}>
+          <NightModeToggle />
           <Avatar
             alt={`${user.first_name} ${user.second_name}`}
             src={avatarUrl}

@@ -17,6 +17,11 @@ export interface AuthState {
   yandexOAuthId: string
 }
 
+export interface ThemeState {
+  nameTheme: string
+  descriptionTheme: string | null
+}
+
 // todo one style
 export type TGameState = {
   globalGameState: GlobalGameState
@@ -25,4 +30,5 @@ export type TGameState = {
 export interface CoreRootState {
   authReducer: AuthState
   game: TGameState
+  theme: ThemeState
 }
