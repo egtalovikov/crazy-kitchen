@@ -16,6 +16,9 @@ const API = {
       ENDPOINT: '',
       SAVE: '/user',
     },
+    THEME: {
+      ENDPOINT: '/theme',
+    },
   },
 }
 

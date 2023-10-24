@@ -6,8 +6,8 @@ import {
   DialogContent,
   DialogTitle,
 } from '@mui/material'
-import { changeAvatar } from '../../../api/user'
-import { User } from '../../../types/user'
+import { changeAvatar } from '@api/user'
+import { User } from '@/types/user'
 
 type ChangeAvatarProps = {
   open: boolean

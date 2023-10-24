@@ -6,6 +6,7 @@ import CommentList from '../../components/CommentList'
 import { AddCommentForm } from '../../components/AddCommentForm'
 import { useLocation } from 'react-router-dom'
 import forumApi from '../../api/forum'
+import { TopicReaction } from '../../components/TopicReaction'
 
 const Topic = () => {
   const location = useLocation()
@@ -35,6 +36,7 @@ const Topic = () => {
           topicId={location.state.id}
         />
         <CommentList comments={comments} />
+        <TopicReaction />
       </Container>
     </div>
   )

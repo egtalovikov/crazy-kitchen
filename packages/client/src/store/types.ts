@@ -1,6 +1,5 @@
-import { GlobalGameState } from '../pages/Game/game/types/commonTypes'
+import { GlobalGameState } from '@gameTypes/commonTypes'
 import { store } from './index'
-import { TLevelParams } from '../pages/Game/game/types/commonTypes'
 
 export type AppDispatch = typeof store.dispatch
 
@@ -15,17 +14,21 @@ export interface AuthState {
   phone: string | null
   avatar: string | null
   authorizedStatus: string
+  yandexOAuthId: string
+}
+
+export interface ThemeState {
+  nameTheme: string
+  descriptionTheme: string | null
 }
 
 // todo one style
 export type TGameState = {
-  gameState: GlobalGameState
-  score: number
-  remainingTime: number
-  level: TLevelParams
+  globalGameState: GlobalGameState
 }
 
 export interface CoreRootState {
   authReducer: AuthState
   game: TGameState
+  theme: ThemeState
 }

@@ -1,4 +1,12 @@
 import dotenv from 'dotenv'
+import cors from 'cors'
+import fs from 'fs'
+import path from 'path'
+
+import { createApp } from 'h3'
+import { createServer as createViteServer, ViteDevServer } from 'vite'
+import { listen } from 'listhen'
+import sirv from 'sirv'
 dotenv.config()
 
 import express from 'express'
@@ -11,7 +19,64 @@ app.use(bodyParser.json())
 
 const port = Number(process.env.SERVER_PORT) || 3001
 
-async function startServer() {
+const DEV_ENV = 'development'
+
+const bootstrap = async () => {
+  const app = createApp()
+  let vite: ViteDevServer
+
+  if (process.env.NODE_ENV === DEV_ENV) {
+    vite = await createViteServer({
+      server: { middlewareMode: true },
+      appType: 'custom',
+    })
+
+    // @ts-ignore
+    app.use(vite.middlewares)
+  } else {
+    // @ts-ignore
+    app.use(
+      // @ts-ignore
+      sirv('dist/client', {
+        gzip: true,
+      })
+    )
+  }
+
+  // @ts-ignore
+  app.use('*', async (req, res, next) => {
+    const url = req.originalUrl
+    let template, render
+
+    try {
+      if (process.env.NODE_ENV === DEV_ENV) {
+        template = fs.readFileSync(path.resolve('./index.html'), 'utf-8')
+
+        template = await vite.transformIndexHtml(url, template)
+
+        render = (await vite.ssrLoadModule('/src/entry-server.tsx')).render
+      } else {
+        template = fs.readFileSync(
+          path.resolve('dist/client/index.html'),
+          'utf-8'
+        )
+        // @ts-ignore
+        render = (await import('./dist/server/entry-server.js')).render
+      }
+
+      const appHtml = await render({ path: url })
+
+      const html = template.replace(`<!--ssr-outlet-->`, appHtml)
+
+      res.statusCode = 200
+      res.setHeader('Content-Type', 'text/html').end(html)
+    } catch (error) {
+      // @ts-ignore
+      vite.ssrFixStacktrace(error)
+      next(error)
+    }
+  })
+  
   console.log('startServer')
   await dbConnect() // Дождаться запуска базы данных
   await new Promise(resolve => setTimeout(resolve, 5000))
@@ -25,16 +90,16 @@ async function startServer() {
     res.header('Access-Control-Allow-Credentials', 'true')
     next()
   })
-
+  
   app.use(bodyParser.json())
   app.use('/api/v2', apiRouter)
 
-  await app.get('/', (_, res) => {
-    res.json('👋 howdy from the server :)')
-  })
-
-  await app.listen(port, () => {
-    console.log(`➜ 🎸 server is listening on port!: ${port}`)
-  })
+  return { app }
 }
-void startServer()
+
+bootstrap()
+  .then(async ({ app }) => {
+    // @ts-ignore
+    await listen(app, { port })
+  })
+  .catch(console.error)

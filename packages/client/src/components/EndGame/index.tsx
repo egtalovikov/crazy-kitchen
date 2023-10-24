@@ -1,26 +1,25 @@
-import React from 'react'
+import React, { FC } from 'react'
 import styles from './EndGame.module.scss'
-import { useGoToRoute } from '../../utils/useGoToRoute'
+import { useGoToRoute } from '@utils/useGoToRoute'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import { GAME_ROUTE, MAIN_ROUTE } from '../../utils/consts'
-import { useSelector } from 'react-redux'
-import { CoreRootState } from '../../store/types'
-import Engine from '../../pages/Game/game/core/engine'
+import { MAIN_ROUTE } from '@utils/consts'
+import engine from '@game/core/engine'
+import gameState from '@game/store/gameState'
 
-export const EndGame = () => {
+export const EndGame: FC = () => {
   const { goRoute } = useGoToRoute()
-  const { score } = useSelector((rootState: CoreRootState) => rootState.game)
+  const { score } = gameState
+  const gameOverMessage = engine.isGameWinned() ? 'Вы выиграли' : 'Вы проиграли'
 
-  const handleGameComplete = () => {
-    Engine.getInstance().startGame()
-    goRoute(GAME_ROUTE)
-  }
+  const startGameOver = () => engine.restartGame()
+
   return (
     <div className={`${styles.wrapper} ${styles.opened}`}>
       <div className={styles.container}>
         <Typography className={styles.title}>Игра окончена!</Typography>
+        <Typography className={styles.title}>{gameOverMessage}</Typography>
         <Typography className={styles.title}>
           Бургеров собрано: {score}
         </Typography>
@@ -32,7 +31,7 @@ export const EndGame = () => {
           className={styles.buttonsContainer}
           alignItems={'center'}
           justifyContent={'center'}>
-          <Button variant={'outlined'} onClick={handleGameComplete}>
+          <Button variant={'outlined'} onClick={startGameOver}>
             Начать заново
           </Button>
           <Button variant={'outlined'} onClick={() => goRoute(MAIN_ROUTE)}>
