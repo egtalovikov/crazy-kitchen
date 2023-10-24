@@ -9,13 +9,13 @@
   display: flex;
   visibility: hidden;
   opacity: 0;
-  transition: visibility .5s linear, opacity .5s linear;
+  transition: visibility 0.5s linear, opacity 0.5s linear;
   align-items: center;
   justify-content: center;
 }
 
 .container {
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   color: #000000;
   max-width: 282px;
   padding: 25px 22px;
