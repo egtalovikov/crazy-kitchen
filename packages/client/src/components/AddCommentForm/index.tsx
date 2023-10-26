@@ -2,7 +2,7 @@ import React, {
   ChangeEvent,
   MouseEvent,
   useEffect,
-  Dispatch, 
+  Dispatch,
   SetStateAction,
   useRef,
   useState,
@@ -46,7 +46,8 @@ export const AddCommentForm = ({
     } catch (e) {
       console.log(e)
     }
-    
+  }
+
   const handlerButtonClick = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     setIsOpen(!isOpen)
@@ -55,11 +56,6 @@ export const AddCommentForm = ({
   const handlerEmojiClick = (e: MouseEvent<HTMLSpanElement>) => {
     const target = e.target as HTMLSpanElement
     setComment(prev => `${prev}${target.textContent}`)
-  }
-
-  const handleSubmit = () => {
-    console.log('Submitted comment:', comment)
-    setComment('')
   }
 
   useEffect(() => {
