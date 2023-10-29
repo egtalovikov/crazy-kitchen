@@ -5,7 +5,10 @@ import { TopicModel } from './models/topic'
 import dotenv from 'dotenv'
 import { Op } from 'sequelize'
 import { UserModel } from './models/user'
+import { userTheme } from './models/theme/userTheme'
+import { siteTheme } from './models/theme/theme'
 import { AuthModel } from './models/auth'
+
 import themeService from './services/themeService'
 const { POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB, POSTGRES_PORT } =
   process.env

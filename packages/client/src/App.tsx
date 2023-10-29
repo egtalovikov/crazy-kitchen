@@ -9,6 +9,7 @@ import { Provider } from 'react-redux'
 import { ThemeProvider } from '@mui/material/styles'
 import { useColorTheme } from './theme/useColorTheme'
 import { fetchUserTheme } from './store/modules/theme/theme.reducer'
+import { BrowserRouter } from 'react-router-dom'
 
 function App() {
   const { theme } = useColorTheme()
@@ -31,16 +32,12 @@ function App() {
   }, [])
 
   return (
-    <React.StrictMode>
-      <ErrorBoundary>
-        <Provider store={store}>
-          <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <AppRouter />
-          </ThemeProvider>
-        </Provider>
-      </ErrorBoundary>
-    </React.StrictMode>
+    <BrowserRouter>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <AppRouter />
+      </ThemeProvider>
+    </BrowserRouter>
   )
 }
 

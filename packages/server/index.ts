@@ -1,5 +1,4 @@
 import dotenv from 'dotenv'
-import cors from 'cors'
 import fs from 'fs'
 import path from 'path'
 
@@ -7,6 +6,7 @@ import { createApp } from 'h3'
 import { createServer as createViteServer, ViteDevServer } from 'vite'
 import { listen } from 'listhen'
 import sirv from 'sirv'
+
 dotenv.config()
 
 import express from 'express'
@@ -76,7 +76,7 @@ const bootstrap = async () => {
       next(error)
     }
   })
-  
+
   console.log('startServer')
   await dbConnect() // Дождаться запуска базы данных
   await new Promise(resolve => setTimeout(resolve, 5000))
@@ -90,7 +90,7 @@ const bootstrap = async () => {
     res.header('Access-Control-Allow-Credentials', 'true')
     next()
   })
-  
+
   app.use(bodyParser.json())
   app.use('/api/v2', apiRouter)
 
