@@ -66,7 +66,6 @@ class Client
 
   public update = (time: number) => {
     // TODO: make update using trajectory?
-    console.log(time)
     if (this.isMoving) {
       if (this.coordinates.x + this.width <= 0) {
         this.isMoving = false
@@ -108,10 +107,8 @@ class Client
   // TODO: is there a way to create only one method for this and dish.ts setHover?
   public setHover = (intersects: boolean, dish: Dish) => {
     if (intersects && this.objectFits(dish) && !this.isHovered) {
-      console.log('client hover')
       this.isHovered = true
     } else if (this.isHovered && !intersects) {
-      console.log('client hover end')
       this.isHovered = false
     }
   }
