@@ -9,6 +9,6 @@ const cast = (spell: string, item: any) => {
 }
 
 test('spell casting', () => {
-  const result = cast(magic, '🐸')
+  const result = cast(magic, '🦁')
   expect(result).toBe('🐷')
 })
