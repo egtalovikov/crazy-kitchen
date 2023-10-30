@@ -81,6 +81,7 @@ const bootstrap = async () => {
   await dbConnect() // Дождаться запуска базы данных
   await new Promise(resolve => setTimeout(resolve, 5000))
 
+  // @ts-ignore
   app.use(function (_req, res, next) {
     res.header('Access-Control-Allow-Origin', 'http://127.0.0.1:2999')
     res.header(
@@ -91,7 +92,9 @@ const bootstrap = async () => {
     next()
   })
 
+  // @ts-ignore
   app.use(bodyParser.json())
+  // @ts-ignore
   app.use('/api/v2', apiRouter)
 
   return { app }
