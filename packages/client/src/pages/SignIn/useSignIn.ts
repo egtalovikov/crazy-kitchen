@@ -14,6 +14,8 @@ import { useEffect } from 'react'
 import useAuthorizationStatus from '../../hooks/useAuthorizationStatus'
 import { yandexOAuthIdSelector } from '../../store/modules/auth/auth.selector'
 import { registerSchema, RegisterInputs } from '@utils/validationsSchema'
+import authApi from '@api/auth/authApi'
+import userApi from '@api/auth/userApi'
 
 export const useSignIn = () => {
   const {
@@ -63,8 +65,20 @@ export const useSignIn = () => {
     console.log(values)
     try {
       await postSignIn(values)
+      const data = dispatch(fetchUserData())
 
-      dispatch(fetchUserData())
+      data
+        .then(res => {
+          return authApi.token(+res.payload.id)
+        })
+        .then(() => {
+          data.then(res => {
+            setTimeout(() => {
+              userApi.saveUser(res.payload)
+            }, 3000)
+          })
+        })
+
       navigate(MAIN_ROUTE)
     } catch (error) {
       console.error(error)
