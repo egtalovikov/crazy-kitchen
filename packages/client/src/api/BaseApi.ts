@@ -7,7 +7,7 @@ abstract class BaseApi {
   protected constructor(endpoint: string) {
     this.http = axios.create({
       baseURL: `${API.HOST}` + endpoint,
-      withCredentials: true,
+      // withCredentials: true,
     })
   }
 }

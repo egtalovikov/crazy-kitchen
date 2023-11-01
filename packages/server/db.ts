@@ -7,7 +7,6 @@ import { Op } from 'sequelize'
 import { UserModel } from './models/user'
 import { userTheme } from './models/theme/userTheme'
 import { siteTheme } from './models/theme/theme'
-import { AuthModel } from './models/auth'
 
 import themeService from './services/themeService'
 const { POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB, POSTGRES_PORT } =
@@ -28,7 +27,6 @@ export const sequelize = new Sequelize(sequelizeOptions)
 
 export const UserTheme = sequelize.define('UserTheme', userTheme, {})
 export const SiteTheme = sequelize.define('SiteTheme', siteTheme, {})
-export const Auth = sequelize.define('Auth', AuthModel, {})
 export const User = sequelize.define('User', UserModel, {})
 export const Topic = sequelize.define('Topic', TopicModel, {})
 export const Comment = sequelize.define('Comment', CommentModel, {})
