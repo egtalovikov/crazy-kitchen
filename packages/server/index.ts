@@ -1,10 +1,7 @@
 import dotenv from 'dotenv'
 import fs from 'fs'
 import path from 'path'
-
-import { createApp } from 'h3'
 import { createServer as createViteServer, ViteDevServer } from 'vite'
-import { listen } from 'listhen'
 import sirv from 'sirv'
 
 dotenv.config()
@@ -21,8 +18,7 @@ const port = Number(process.env.SERVER_PORT) || 3001
 
 const DEV_ENV = 'development'
 
-const bootstrap = async () => {
-  const app = createApp()
+async function startServer() {
   let vite: ViteDevServer
 
   if (process.env.NODE_ENV === DEV_ENV) {
@@ -37,13 +33,30 @@ const bootstrap = async () => {
     // @ts-ignore
     app.use(
       // @ts-ignore
-      sirv('dist/client', {
+      sirv('client/dist', {
         gzip: true,
       })
     )
   }
 
-  // @ts-ignore
+  await dbConnect() // Дождаться запуска базы данных
+  await new Promise(resolve => setTimeout(resolve, 5000))
+
+  app.use(function (_req, res, next) {
+    res.header('Access-Control-Allow-Origin', 'http://127.0.0.1:2999')
+    res.header(
+      'Access-Control-Allow-Headers',
+      'Origin, X-Requested-With, Content-Type, Accept'
+    )
+    res.header('Access-Control-Allow-Credentials', 'true')
+
+    next()
+  })
+
+  app.use(bodyParser.json())
+
+  app.use('/api/v2', apiRouter)
+
   app.use('*', async (req, res, next) => {
     const url = req.originalUrl
     let template, render
@@ -57,7 +70,7 @@ const bootstrap = async () => {
         render = (await vite.ssrLoadModule('/src/entry-server.tsx')).render
       } else {
         template = fs.readFileSync(
-          path.resolve('dist/client/index.html'),
+          path.resolve('client/dist/index.html'),
           'utf-8'
         )
         // @ts-ignore
@@ -77,32 +90,12 @@ const bootstrap = async () => {
     }
   })
 
-  console.log('startServer')
-  await dbConnect() // Дождаться запуска базы данных
-  await new Promise(resolve => setTimeout(resolve, 5000))
-
-  // @ts-ignore
-  app.use(function (_req, res, next) {
-    res.header('Access-Control-Allow-Origin', 'http://127.0.0.1:2999')
-    res.header(
-      'Access-Control-Allow-Headers',
-      'Origin, X-Requested-With, Content-Type, Accept'
-    )
-    res.header('Access-Control-Allow-Credentials', 'true')
-    next()
+  await app.get('/', (_, res) => {
+    res.json('👋 howdy from the server :)')
   })
 
-  // @ts-ignore
-  app.use(bodyParser.json())
-  // @ts-ignore
-  app.use('/api/v2', apiRouter)
-
-  return { app }
+  await app.listen(port, () => {
+    console.log(`➜ 🎸 server is listening on port!: ${port}`)
+  })
 }
-
-bootstrap()
-  .then(async ({ app }) => {
-    // @ts-ignore
-    await listen(app, { port })
-  })
-  .catch(console.error)
+void startServer()
