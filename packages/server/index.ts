@@ -33,7 +33,7 @@ async function startServer() {
     // @ts-ignore
     app.use(
       // @ts-ignore
-      sirv('dist/client', {
+      sirv('client/dist', {
         gzip: true,
       })
     )
@@ -70,7 +70,7 @@ async function startServer() {
         render = (await vite.ssrLoadModule('/src/entry-server.tsx')).render
       } else {
         template = fs.readFileSync(
-          path.resolve('dist/client/index.html'),
+          path.resolve('client/dist/index.html'),
           'utf-8'
         )
         // @ts-ignore
