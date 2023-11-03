@@ -6,6 +6,7 @@ import sirv from 'sirv'
 
 dotenv.config()
 
+import cors from 'cors'
 import express from 'express'
 import { dbConnect } from './db'
 import apiRouter from './api/api-router'
@@ -13,6 +14,7 @@ import bodyParser from 'body-parser'
 
 const app = express()
 app.use(bodyParser.json())
+app.use(cors())
 
 const port = Number(process.env.SERVER_PORT) || 3001
 
@@ -42,8 +44,9 @@ async function startServer() {
   await dbConnect() // Дождаться запуска базы данных
   await new Promise(resolve => setTimeout(resolve, 5000))
 
+  app.options('*', cors())
+
   app.use(function (_req, res, next) {
-    res.header('Access-Control-Allow-Origin', '*')
     res.header(
       'Access-Control-Allow-Headers',
       'Origin, X-Requested-With, Content-Type, Accept'
@@ -56,6 +59,16 @@ async function startServer() {
   app.use(bodyParser.json())
 
   app.use('/api/v2', apiRouter)
+
+  // @ts-ignore
+  app.use((error, req, res, next) => {
+    console.log('Error', error)
+    console.log('req', req)
+    console.log('Error Handling Middleware called')
+    console.log('Error Handling Middleware called')
+    console.log('Path: ', req.path)
+    next() // (optional) invoking next middleware
+  })
 
   app.use('*', async (req, res, next) => {
     const url = req.originalUrl
