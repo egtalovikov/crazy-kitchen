@@ -60,16 +60,6 @@ async function startServer() {
 
   app.use('/api/v2', apiRouter)
 
-  // @ts-ignore
-  app.use((error, req, res, next) => {
-    console.log('Error', error)
-    console.log('req', req)
-    console.log('Error Handling Middleware called')
-    console.log('Error Handling Middleware called')
-    console.log('Path: ', req.path)
-    next() // (optional) invoking next middleware
-  })
-
   app.use('*', async (req, res, next) => {
     const url = req.originalUrl
     let template, render
@@ -105,6 +95,16 @@ async function startServer() {
 
   await app.get('/', (_, res) => {
     res.json('👋 howdy from the server :)')
+  })
+
+  // @ts-ignore
+  app.use((error, req, res, next) => {
+    console.log('Error', error)
+    console.log('req', req)
+    console.log('Error Handling Middleware called')
+    console.log('Error Handling Middleware called')
+    console.log('Path: ', req.path)
+    next() // (optional) invoking next middleware
   })
 
   await app.listen(port, () => {
