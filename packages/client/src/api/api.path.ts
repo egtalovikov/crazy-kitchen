@@ -1,5 +1,6 @@
 const APP_HOST = `${__SERVER_URL__}/api`
 const HOST = `${APP_HOST}/v2`
+console.log('T', __SERVER_URL__)
 console.log('HOST', HOST)
 console.log('env', process.env.NODE_ENV)
 const API = {
