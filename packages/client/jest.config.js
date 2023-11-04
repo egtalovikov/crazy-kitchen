@@ -7,8 +7,7 @@ export default {
   testMatch: ['<rootDir>/src/**/*.test.{ts,tsx}'],
   globals: {
     __SERVER_PORT__: process.env.SERVER_PORT,
-    __BASE_URL__: process.env.BASE_URL,
-    __SERVER_URL__: process.env.SERVER_URL
+    __BASE_URL__: process.env.BASE_URL
   },
   moduleNameMapper: {
     '^@components/(.*)': '<rootDir>/src/components/$1',
