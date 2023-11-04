@@ -1,4 +1,6 @@
-const APP_HOST = `http://${__SERVER_HOST__ || 'localhost'}:3000/api`
+const APP_HOST = `${__SERVER_HOST__}`
+  ? `http://${__SERVER_HOST__}:3000/api`
+  : `http://localhost:3000/api`
 const HOST = `${APP_HOST}/v2`
 
 const API = {
