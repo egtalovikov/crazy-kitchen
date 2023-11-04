@@ -12,9 +12,7 @@ export default defineConfig({
   define: {
     __SERVER_PORT__: process.env.SERVER_PORT,
     __BASE_URL__: `"${process.env.BASE_URL}"`,
-    __SERVER_URL__: process.env.NODE_ENV
-      ? `'http://localhost:3000'`
-      : `'${process.env.SERVER_HOST}:3000'`,
+    __SERVER_URL__: `"${process.env.SERVER_URL}"`,
   },
   plugins: [react()],
   resolve: {

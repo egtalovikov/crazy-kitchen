@@ -17,7 +17,7 @@ services:
     environment:
       - CLIENT_PORT=${CLIENT_PORT}
       - SERVER_PORT=${SERVER_PORT}
-      - SERVER_HOST=${SERVER_HOST}
+      - SERVER_URL=${SERVER_URL}
     depends_on:
       - server
     networks:
